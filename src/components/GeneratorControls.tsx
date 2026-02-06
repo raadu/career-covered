@@ -99,7 +99,7 @@ Rules:
                         flex items-center gap-2 px-8 py-3 rounded-lg font-bold text-white shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0
                         ${isLoading || !jobDescription 
                             ? 'bg-gray-300 cursor-not-allowed shadow-none' 
-                            : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-blue-500/30'
+                            : 'bg-gradient-to-r from-cyan-500 via-blue-600 to-violet-600 hover:from-cyan-600 hover:to-violet-700 shadow-cyan-500/30'
                         }
                     `}
                 >
