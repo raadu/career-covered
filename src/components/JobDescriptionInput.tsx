@@ -14,6 +14,7 @@ const JobDescriptionInput = () => {
             onChange={(val) => dispatch(setJobDescription(val))}
             isExpanded={isJobDescExpanded}
             onToggleExpand={() => dispatch(toggleJobDescExpanded())}
+            onClear={() => dispatch(setJobDescription(''))}
             placeholder="Paste the job requirements here. We'll extract keywords and match them to your skills."
             required
         />

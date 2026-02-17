@@ -14,6 +14,7 @@ const TemplateInput = () => {
             onChange={(val) => dispatch(setTemplate(val))}
             isExpanded={isTemplateExpanded}
             onToggleExpand={() => dispatch(toggleTemplateExpanded())}
+            onClear={() => dispatch(setTemplate(''))}
             placeholder="Paste your existing cover letter here. We'll largely keep your tone and structure but adapt it to the job."
         />
     );
