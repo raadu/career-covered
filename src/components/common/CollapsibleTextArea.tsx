@@ -25,7 +25,7 @@ const CollapsibleTextArea: React.FC<CollapsibleTextAreaProps> = ({
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden transition-all duration-300">
       <div 
-        className="p-4 flex items-center justify-between cursor-pointer bg-gray-50 border-b border-gray-200 hover:bg-gray-100 transition-colors"
+        className="py-2 px-4 flex items-center justify-between cursor-pointer bg-gray-50 border-b border-gray-200 hover:bg-gray-100 transition-colors"
         onClick={onToggleExpand}
       >
         <label className="font-semibold text-gray-700 flex items-center gap-2 cursor-pointer select-none">
@@ -35,7 +35,7 @@ const CollapsibleTextArea: React.FC<CollapsibleTextAreaProps> = ({
         <div className="flex items-center gap-3">
           {onClear && value && (
             <button 
-              className="text-[10px] bg-black text-white hover:bg-gray-800 transition-colors py-0.5 px-2 rounded uppercase font-bold tracking-wider"
+              className="text-[10px] bg-black text-white py-0.5 px-2 rounded uppercase font-bold tracking-wider transition-all duration-200 border border-black hover:bg-gray-600 hover:border-gray-700 hover:shadow-sm active:scale-95"
               onClick={(e) => {
                 e.stopPropagation();
                 onClear();
