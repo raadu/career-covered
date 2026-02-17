@@ -7,10 +7,10 @@ import ResultDisplay from './components/ResultDisplay';
 function App() {
   return (
     <Layout>
-      <div className="space-y-6 pb-12">
+      <div className="space-y-6 pb-4">
         <header className="mb-8 md:mb-10">
-           <h2 className="text-3xl font-bold text-gray-800 tracking-tight">Create Your Cover Letter</h2>
-           <p className="text-gray-500 mt-2 text-lg">
+           <h2 className="text-xl font-bold text-gray-800 tracking-tight">Create Cover Letter</h2>
+           <p className="text-gray-500 text-md">
              Paste your template and the job description to generate a tailored cover letter in seconds.
            </p>
         </header>
