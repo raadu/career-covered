@@ -9,6 +9,7 @@ interface CollapsibleTextAreaProps {
   onToggleExpand: () => void;
   placeholder?: string;
   required?: boolean;
+  onClear?: () => void;
 }
 
 const CollapsibleTextArea: React.FC<CollapsibleTextAreaProps> = ({
@@ -18,7 +19,8 @@ const CollapsibleTextArea: React.FC<CollapsibleTextAreaProps> = ({
   isExpanded,
   onToggleExpand,
   placeholder,
-  required
+  required,
+  onClear
 }) => {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden transition-all duration-300">
@@ -30,9 +32,22 @@ const CollapsibleTextArea: React.FC<CollapsibleTextAreaProps> = ({
           {label}
           {required && <span className="text-red-500 text-sm">*</span>}
         </label>
-        <button className="text-gray-500 hover:text-blue-600 transition-colors">
-          {isExpanded ? <FaChevronUp /> : <FaChevronDown />}
-        </button>
+        <div className="flex items-center gap-3">
+          {onClear && value && (
+            <button 
+              className="text-[10px] bg-black text-white hover:bg-gray-800 transition-colors py-0.5 px-2 rounded uppercase font-bold tracking-wider"
+              onClick={(e) => {
+                e.stopPropagation();
+                onClear();
+              }}
+            >
+              Clear
+            </button>
+          )}
+          <button className="text-gray-500 hover:text-blue-600 transition-colors">
+            {isExpanded ? <FaChevronUp /> : <FaChevronDown />}
+          </button>
+        </div>
       </div>
 
       <div className={`transition-all duration-300 ease-in-out relative ${isExpanded ? 'h-auto' : 'h-20'}`}>
