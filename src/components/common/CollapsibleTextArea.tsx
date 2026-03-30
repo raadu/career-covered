@@ -56,7 +56,7 @@ const CollapsibleTextArea: React.FC<CollapsibleTextAreaProps> = ({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
-          rows={isExpanded ? 12 : 2}
+          rows={isExpanded ? 10 : 2}
           onClick={() => !isExpanded && onToggleExpand()}
         />
         {!isExpanded && (
