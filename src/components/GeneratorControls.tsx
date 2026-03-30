@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 import { buildCoverLetterPrompt } from '../utils/promptUtils';
 import { useDispatch, useSelector } from 'react-redux';
 import { FaBolt, FaKey } from 'react-icons/fa';
@@ -9,7 +10,7 @@ import ModelSelector from './ModelSelector';
 
 const GeneratorControls = () => {
     const dispatch = useDispatch();
-    const { apiKey, jobDescription, template, model } = useSelector((state: RootState) => state.coverLetter);
+    const { apiKey, jobDescription, template, model, generatedLetter } = useSelector((state: RootState) => state.coverLetter);
     const [generate, { isLoading, error }] = useGenerateCoverLetterMutation();
     const [showKeyInput, setShowKeyInput] = useState(!apiKey);
 
@@ -27,8 +28,10 @@ const GeneratorControls = () => {
             dispatch(setAllCollapsed()); // Collapse inputs for better view
             const result = await generate({ apiKey, prompt, model: model || 'llama-3.3-70b-versatile' }).unwrap();
             dispatch(setGeneratedLetter(result));
+            toast.success("Cover letter generated successfully!");
         } catch (err) {
             console.error('Generation failed', err);
+            toast.error("Failed to generate cover letter. Please try again.");
         }
     };
 
@@ -98,7 +101,7 @@ const GeneratorControls = () => {
                     ) : (
                         <>
                            <FaBolt />
-                           Generate Cover Letter
+                           {generatedLetter ? "Generate Another One" : "Generate Cover Letter"}
                         </>
                     )}
                 </button>

@@ -1,3 +1,4 @@
+import { Toaster } from 'react-hot-toast';
 import Layout from './layout/Layout';
 import TemplateInput from './components/TemplateInput';
 import JobDescriptionInput from './components/JobDescriptionInput';
@@ -7,6 +8,7 @@ import ResultDisplay from './components/ResultDisplay';
 function App() {
   return (
     <Layout>
+      <Toaster position="bottom-right" />
       <div className="space-y-2 pb-2">
         <header className="mb-3 md:mb-4">
            <h2 className="text-xl font-bold text-gray-800 tracking-tight">Create Cover Letter</h2>
