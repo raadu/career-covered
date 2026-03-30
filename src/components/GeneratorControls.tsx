@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { buildCoverLetterPrompt } from '../utils/promptUtils';
 import { useDispatch, useSelector } from 'react-redux';
 import { FaBolt, FaKey } from 'react-icons/fa';
 import type { RootState } from '../store/store';
@@ -20,21 +21,7 @@ const GeneratorControls = () => {
         if (!jobDescription) return;
 
         // Construct prompt
-        const prompt = `
-You are an expert career consultant.
-Task: Write a professional cover letter.
-Context:
-- Job Description:
-${jobDescription}
-
-${template ? `- User's Background/Style (Adapt this): \n${template}` : '- User has not provided a template. Use standard professional format.'}
-
-Rules:
-1. Keep it concise (under 400 words).
-2. Match the tone of the company/industry.
-3. Highlight 3-4 key matches between User Template skills and Job Description requirements.
-4. Output strictly the cover letter text. No preamble.
-        `;
+        const prompt = buildCoverLetterPrompt(jobDescription, template);
 
         try {
             dispatch(setAllCollapsed()); // Collapse inputs for better view
@@ -46,9 +33,9 @@ Rules:
     };
 
     return (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex flex-col items-start gap-4">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-3 flex flex-col items-start gap-2">
             
-            <div className="flex flex-col md:flex-row w-full gap-4 items-center justify-between">
+            <div className="flex flex-col md:flex-row w-full gap-3 items-center justify-between">
                 {/* API Key Section */}
                 <div className="flex-1 w-full md:w-auto">
                 {showKeyInput ? (
@@ -96,10 +83,10 @@ Rules:
                     onClick={handleGenerate}
                     disabled={isLoading || !jobDescription}
                     className={`
-                        flex items-center gap-2 px-8 py-3 rounded-lg font-bold text-white shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0
+                        flex items-center gap-2 px-4 py-2 text-sm rounded-lg font-semibold text-white shadow transition-all transform hover:-translate-y-0.5 active:translate-y-0
                         ${isLoading || !jobDescription 
                             ? 'bg-gray-300 cursor-not-allowed shadow-none' 
-                            : 'bg-gradient-to-r from-cyan-500 via-blue-600 to-violet-600 hover:from-cyan-600 hover:to-violet-700 shadow-cyan-500/30'
+                            : 'bg-gradient-to-r from-cyan-500 via-blue-600 to-violet-600 hover:from-cyan-600 hover:to-violet-700 shadow-cyan-500/20'
                         }
                     `}
                 >
