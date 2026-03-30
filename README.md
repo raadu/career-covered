@@ -1,73 +1,51 @@
-# React + TypeScript + Vite
+# Career Covered - Cover Letter Creator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Career Covered is a smart, fast, and automated cover letter generator built with React, Vite, Tailwind CSS, and powered by Groq's high-performance LLM APIs. 
 
-Currently, two official plugins are available:
+It takes your existing cover letter template and a job description, then intelligently tailors the cover letter specifically for that role. It strictly preserves your tone, style, and structure while updating the targeted skills, company values, and position details.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
+- 🚀 **Lightning Fast:** Generates tailored cover letters in seconds.
+- 🎨 **Sleek UI:** Modern, responsive design that fits comfortably on one screen.
+- 🤖 **Multiple AI Models:** Choose between LLama 3.3 70B, Llama 3.1 8B, and Mixtral 8x7B.
 
-## React Compiler
+## How to Use
+1. Obtain an API Key from [Groq](https://console.groq.com/keys).
+2. Click the `Update API Key` (key icon) button at the bottom left of the app, paste your key, and click "Done".
+3. Select your preferred AI Model from the dropdown. 
+4. Expand the **"Your Cover Letter Template"** section and paste your standard cover letter.
+5. Expand the **"Job Description"** section and paste the details of the job you're applying for.
+6. Click **"Generate Cover Letter"**.
+7. Review your tailored cover letter on the right panel and click the Copy icon to copy it to your clipboard!
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## How to Run the System Locally
+To run this application on your own machine, follow these steps:
 
-## Expanding the ESLint configuration
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/raadu/career-covered.git
+   cd career-covered
+   ```
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+2. **Install dependencies:**
+   Make sure you have [Node.js](https://nodejs.org/) installed, then run:
+   ```bash
+   npm install
+   ```
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+3. **Start the development server:**
+   ```bash
+   npm run dev
+   ```
+4. **Open your browser:**
+   Navigate to the URL provided in your terminal (typically `http://localhost:5173/`).
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## How to Test It
+Since the application relies primarily on manual visual testing and third-party API integration, the best way to test the core logic is:
+1. **Manual User Testing:** Follow the "How to Use" steps above using the local development server. Provide a dummy job description and template to observe how the AI processes the rules and generates the output.
+2. **Linting and Type Checking:** You can run the built-in linters and TypeScript compiler checks to ensure code quality and catch type errors:
+   ```bash
+   npm run lint
+   npm run build
+   ```
+There is currently no automated unit testing suite (like Jest or Vitest) configured. Future test additions would include unit tests for `src/utils/promptUtils.ts` and integration tests for component rendering.
