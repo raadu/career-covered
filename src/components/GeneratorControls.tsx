@@ -2,17 +2,22 @@ import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { buildCoverLetterPrompt } from '../utils/promptUtils';
 import { useDispatch, useSelector } from 'react-redux';
-import { FaBolt, FaKey } from 'react-icons/fa';
+import { FaBolt, FaKey, FaQuestionCircle } from 'react-icons/fa';
 import type { RootState } from '../store/store';
 import { setApiKey, setGeneratedLetter, setAllCollapsed, setModel } from '../store/coverLetterSlice';
 import { useGenerateCoverLetterMutation } from '../store/apiSlice';
 import ModelSelector from './ModelSelector';
+import ApiHelpModal from './ApiHelpModal';
+
+const PROVIDER_NAME = "Groq";
+const PROVIDER_URL = "https://console.groq.com/keys";
 
 const GeneratorControls = () => {
     const dispatch = useDispatch();
     const { apiKey, jobDescription, template, model, generatedLetter } = useSelector((state: RootState) => state.coverLetter);
     const [generate, { isLoading, error }] = useGenerateCoverLetterMutation();
     const [showKeyInput, setShowKeyInput] = useState(!apiKey);
+    const [showHelpModal, setShowHelpModal] = useState(false);
 
     const handleGenerate = async () => {
         if (!apiKey) {
@@ -51,25 +56,40 @@ const GeneratorControls = () => {
                                 type="password"
                                 value={apiKey}
                                 onChange={(e) => dispatch(setApiKey(e.target.value))}
-                                placeholder="Enter Groq API Key"
+                                placeholder={`Enter ${PROVIDER_NAME} API Key`}
                                 className="pl-10 w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm"
                              />
                          </div>
                          <button 
+                            onClick={() => setShowHelpModal(true)}
+                            className="text-blue-500 hover:text-blue-600 p-1 flex items-center justify-center rounded transition-colors"
+                            title="Help with API Key"
+                         >
+                            <FaQuestionCircle size={14} />
+                         </button>
+                         <button 
                             onClick={() => setShowKeyInput(false)}
-                            className="text-gray-500 hover:text-gray-700 text-sm"
+                            className="text-gray-500 hover:text-gray-700 text-sm font-medium"
                          >
                             Done
                          </button>
                     </div>
                 ) : (
-                     <button 
-                        onClick={() => setShowKeyInput(true)}
-                        className="text-xs text-gray-500 flex items-center gap-1 hover:text-blue-600 transition-colors"
-                     >
-                        <FaKey size={10} />
-                        Update API Key
-                     </button>
+                     <div className="flex items-center gap-3">
+                         <button 
+                            onClick={() => setShowKeyInput(true)}
+                            className="text-xs text-gray-500 flex items-center gap-1 hover:text-blue-600 transition-colors"
+                         >
+                            <FaKey size={10} />
+                            Update API Key
+                         </button>
+                         <button
+                            onClick={() => setShowHelpModal(true)}
+                            className="text-[10px] font-semibold bg-blue-50 text-blue-600 border border-blue-200 px-2 py-0.5 flex items-center gap-1 rounded uppercase hover:bg-blue-100 transition-colors shadow-sm"
+                         >
+                            <FaQuestionCircle size={10} /> Help
+                         </button>
+                     </div>
                 )}
             </div>
 
@@ -79,6 +99,13 @@ const GeneratorControls = () => {
                     onModelChange={(val) => dispatch(setModel(val))} 
                 />
             </div>
+
+            <ApiHelpModal 
+                isOpen={showHelpModal} 
+                onClose={() => setShowHelpModal(false)}
+                providerName={PROVIDER_NAME}
+                providerUrl={PROVIDER_URL}
+            />
 
             {/* Generate Button */}
             <div className="w-full md:w-auto flex flex-col items-end">
