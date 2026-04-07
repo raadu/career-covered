@@ -8,6 +8,7 @@ interface CoverLetterState {
   model: string;
   isTemplateExpanded: boolean;
   isJobDescExpanded: boolean;
+  isGenerating: boolean;
 }
 
 const savedTemplate = localStorage.getItem('cl_template') || '';
@@ -28,6 +29,7 @@ const initialState: CoverLetterState = {
   model: savedModel,
   isTemplateExpanded: !savedTemplate, // Auto-collapse if saved
   isJobDescExpanded: true,
+  isGenerating: false,
 };
 
 export const coverLetterSlice = createSlice({
@@ -58,6 +60,12 @@ export const coverLetterSlice = createSlice({
     setAllCollapsed: (state) => {
         state.isTemplateExpanded = false;
         state.isJobDescExpanded = false;
+    },
+    setIsGenerating: (state, action: PayloadAction<boolean>) => {
+      state.isGenerating = action.payload;
+    },
+    clearGeneratedLetter: (state) => {
+      state.generatedLetter = '';
     }
   },
 });
@@ -70,7 +78,9 @@ export const {
   setModel,
   toggleTemplateExpanded,
   toggleJobDescExpanded,
-  setAllCollapsed
+  setAllCollapsed,
+  setIsGenerating,
+  clearGeneratedLetter
 } = coverLetterSlice.actions;
 
 export default coverLetterSlice.reducer;

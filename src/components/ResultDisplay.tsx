@@ -1,11 +1,21 @@
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { FaCopy, FaCheck } from 'react-icons/fa';
 import { type RootState } from '../store/store';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import { setGeneratedLetter } from '../store/coverLetterSlice';
 
 const ResultDisplay = () => {
     const { generatedLetter } = useSelector((state: RootState) => state.coverLetter);
+    const dispatch = useDispatch();
     const [copied, setCopied] = useState(false);
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+    useEffect(() => {
+        if (textareaRef.current) {
+            textareaRef.current.style.height = 'auto';
+            textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+        }
+    }, [generatedLetter]);
 
     const handleCopy = () => {
         navigator.clipboard.writeText(generatedLetter);
@@ -34,9 +44,17 @@ const ResultDisplay = () => {
                 </button>
             </div>
             <div className="p-8">
-                <div className="prose max-w-none text-gray-800 whitespace-pre-wrap font-serif leading-relaxed">
-                    {generatedLetter}
-                </div>
+                <textarea
+                    ref={textareaRef}
+                    value={generatedLetter}
+                    onChange={(e) => dispatch(setGeneratedLetter(e.target.value))}
+                    className="w-full min-h-[400px] border-0 focus:ring-1 focus:ring-blue-100 rounded-lg p-2 text-gray-800 whitespace-pre-wrap font-serif leading-relaxed bg-transparent transition-all outline-none resize-none"
+                    spellCheck="false"
+                    placeholder="Your generated cover letter will appear here..."
+                />
+            </div>
+            <div className="px-8 pb-4 text-[11px] text-gray-400 italic">
+                Tip: You can edit the text above to personalize it further.
             </div>
         </div>
     );
