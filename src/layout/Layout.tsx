@@ -1,5 +1,6 @@
 import React from 'react';
 import { FaFileAlt, FaUserShield } from 'react-icons/fa';
+import Footer from './Footer';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -16,7 +17,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           isExpanded ? 'w-56' : 'w-16'
         } bg-white border-r border-gray-200 hidden md:flex flex-col transition-all duration-300 ease-in-out relative`}
       >
-        <div className="p-4 border-b border-gray-100 flex items-center justify-between h-16">
+        <div className="p-4 border-b border-gray-100 flex items-center justify-between h-16" title="Career Covered">
           <div className="flex items-center gap-3">
             <div className="bg-gradient-to-br from-cyan-500 to-blue-600 text-white p-1.5 rounded-lg shrink-0 shadow-lg shadow-cyan-500/30">
               <FaUserShield size={16} />
@@ -61,7 +62,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <div className="flex-1 flex flex-col h-full overflow-hidden">
         {/* Mobile Header (Visible only on small screens) */}
         <header className="md:hidden bg-white border-b border-gray-200 p-4 flex items-center justify-between">
-           <div className="flex items-center gap-2">
+           <div className="flex items-center gap-2" title="Career Covered">
               <div className="bg-gradient-to-br from-cyan-500 to-blue-600 text-white p-1.5 rounded-lg shadow-lg shadow-cyan-500/30">
                 <FaUserShield size={16} />
               </div>
@@ -70,10 +71,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         </header>
 
         {/* Scrollable Content Area */}
-        <main className="flex-1 overflow-y-auto p-4 md:p-2">
-          <div className="w-full px-4 py-2">
+        <main className="flex-1 overflow-y-auto flex flex-col p-4 md:p-2">
+          <div className="flex-1 w-full px-4 py-2">
             {children}
           </div>
+          <Footer />
         </main>
       </div>
     </div>

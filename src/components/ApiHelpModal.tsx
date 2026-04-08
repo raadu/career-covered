@@ -12,11 +12,15 @@ const ApiHelpModal: React.FC<ApiHelpModalProps> = ({ isOpen, onClose, providerNa
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+      onClick={onClose}
+    >
       <div 
         className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden transform transition-all"
         role="dialog"
         aria-modal="true"
+        onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between p-4 border-b border-gray-100">
           <h3 className="text-lg font-semibold text-gray-800">
