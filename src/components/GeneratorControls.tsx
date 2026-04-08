@@ -2,12 +2,13 @@ import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { buildCoverLetterPrompt } from '../utils/promptUtils';
 import { useDispatch, useSelector } from 'react-redux';
-import { FaBolt, FaKey, FaQuestionCircle } from 'react-icons/fa';
+import { FaBolt, FaKey, FaQuestionCircle, FaSlidersH } from 'react-icons/fa';
 import type { RootState } from '../store/store';
 import { setApiKey, setGeneratedLetter, setAllCollapsed, setModel } from '../store/coverLetterSlice';
 import { useGenerateCoverLetterMutation } from '../store/apiSlice';
 import ModelSelector from './ModelSelector';
 import ApiHelpModal from './ApiHelpModal';
+import CustomizeModal from './CustomizeModal';
 
 const PROVIDER_NAME = "Groq";
 const PROVIDER_URL = "https://console.groq.com/keys";
@@ -18,6 +19,7 @@ const GeneratorControls = () => {
     const [generate, { isLoading, error }] = useGenerateCoverLetterMutation();
     const [showKeyInput, setShowKeyInput] = useState(!apiKey);
     const [showHelpModal, setShowHelpModal] = useState(false);
+    const [showCustomizeModal, setShowCustomizeModal] = useState(false);
 
     const handleGenerate = async () => {
         if (!apiKey) {
@@ -93,7 +95,16 @@ const GeneratorControls = () => {
                 )}
             </div>
 
-            <div className="w-full md:w-auto">
+            <div className="w-full md:w-auto flex items-center gap-2">
+                <button
+                    onClick={() => setShowCustomizeModal(true)}
+                    className="group relative flex items-center gap-1.5 px-3 h-9 text-xs font-semibold rounded-lg border border-cyan-200 bg-cyan-50 text-cyan-700 hover:bg-cyan-100 overflow-hidden shadow-sm transition-all"
+                >
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-60 w-full h-full transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out animate-[shimmer_2s_infinite]"></div>
+                    {/* Add fallback pulse on icon so there's always animation */}
+                    <FaSlidersH className="animate-pulse" size={12} />
+                    <span className="relative z-10">Customize More</span>
+                </button>
                 <ModelSelector 
                     selectedModel={model} 
                     onModelChange={(val) => dispatch(setModel(val))} 
@@ -106,6 +117,10 @@ const GeneratorControls = () => {
                 providerName={PROVIDER_NAME}
                 providerUrl={PROVIDER_URL}
             />
+            <CustomizeModal 
+                isOpen={showCustomizeModal} 
+                onClose={() => setShowCustomizeModal(false)}
+            />
 
             {/* Generate Button */}
             <div className="w-full md:w-auto flex flex-col items-end">
@@ -113,7 +128,7 @@ const GeneratorControls = () => {
                     onClick={handleGenerate}
                     disabled={isLoading || !jobDescription}
                     className={`
-                        flex items-center gap-2 px-4 py-2 text-sm rounded-lg font-semibold text-white shadow transition-all transform hover:-translate-y-0.5 active:translate-y-0
+                        flex items-center justify-center gap-2 px-4 h-9 text-xs rounded-lg font-semibold text-white shadow transition-all transform hover:-translate-y-0.5 active:translate-y-0
                         ${isLoading || !jobDescription 
                             ? 'bg-gray-300 cursor-not-allowed shadow-none' 
                             : 'bg-gradient-to-r from-cyan-500 via-blue-600 to-violet-600 hover:from-cyan-600 hover:to-violet-700 shadow-cyan-500/20'

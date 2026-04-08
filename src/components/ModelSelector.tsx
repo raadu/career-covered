@@ -14,7 +14,7 @@ const AVAILABLE_MODELS = [
 
 const ModelSelector: React.FC<ModelSelectorProps> = ({ selectedModel, onModelChange }) => {
   return (
-    <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg py-1 px-2 text-xs w-full md:w-auto">
+    <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-2 text-xs w-full md:w-auto h-9">
       <div className="text-gray-400 pl-1">
         <FaRobot />
       </div>
