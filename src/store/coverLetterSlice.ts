@@ -9,6 +9,11 @@ interface CoverLetterState {
   isTemplateExpanded: boolean;
   isJobDescExpanded: boolean;
   isGenerating: boolean;
+  customization: {
+    limitWords: boolean;
+    wordCount: number;
+    minimalChanges: boolean;
+  };
 }
 
 const savedTemplate = localStorage.getItem('cl_template') || '';
@@ -30,6 +35,11 @@ const initialState: CoverLetterState = {
   isTemplateExpanded: !savedTemplate, // Auto-collapse if saved
   isJobDescExpanded: true,
   isGenerating: false,
+  customization: {
+    limitWords: localStorage.getItem('cl_limitWords') === 'true',
+    wordCount: parseInt(localStorage.getItem('cl_wordCount') || '400', 10),
+    minimalChanges: localStorage.getItem('cl_minimalChanges') === 'true',
+  },
 };
 
 export const coverLetterSlice = createSlice({
@@ -66,6 +76,12 @@ export const coverLetterSlice = createSlice({
     },
     clearGeneratedLetter: (state) => {
       state.generatedLetter = '';
+    },
+    setCustomization: (state, action: PayloadAction<CoverLetterState['customization']>) => {
+      state.customization = action.payload;
+      localStorage.setItem('cl_limitWords', String(action.payload.limitWords));
+      localStorage.setItem('cl_wordCount', String(action.payload.wordCount));
+      localStorage.setItem('cl_minimalChanges', String(action.payload.minimalChanges));
     }
   },
 });
@@ -80,7 +96,8 @@ export const {
   toggleJobDescExpanded,
   setAllCollapsed,
   setIsGenerating,
-  clearGeneratedLetter
+  clearGeneratedLetter,
+  setCustomization
 } = coverLetterSlice.actions;
 
 export default coverLetterSlice.reducer;

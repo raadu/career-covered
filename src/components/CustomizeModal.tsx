@@ -1,21 +1,62 @@
 import React, { useState, useEffect } from 'react';
 import { FaTimes, FaSlidersH } from 'react-icons/fa';
 
+export interface CustomizationOptions {
+  limitWords: boolean;
+  wordCount: number;
+  minimalChanges: boolean;
+}
+
 interface CustomizeModalProps {
   isOpen: boolean;
   onClose: () => void;
+  initialOptions: CustomizationOptions;
+  onSave: (options: CustomizationOptions) => void;
 }
 
-const CustomizeModal: React.FC<CustomizeModalProps> = ({ isOpen, onClose }) => {
-  const [limitWords, setLimitWords] = useState<boolean>(() => localStorage.getItem('cl_limitWords') === 'true');
-  const [wordCount, setWordCount] = useState<number>(() => parseInt(localStorage.getItem('cl_wordCount') || '300', 10));
-  const [minimalChanges, setMinimalChanges] = useState<boolean>(() => localStorage.getItem('cl_minimalChanges') === 'true');
+const CustomizeModal: React.FC<CustomizeModalProps> = ({ isOpen, onClose, initialOptions, onSave }) => {
+  const [limitWords, setLimitWords] = useState<boolean>(initialOptions.limitWords);
+  const [wordCountStr, setWordCountStr] = useState<string>(String(initialOptions.wordCount));
+  const [minimalChanges, setMinimalChanges] = useState<boolean>(initialOptions.minimalChanges);
+  const [error, setError] = useState<string>('');
 
   useEffect(() => {
-    localStorage.setItem('cl_limitWords', String(limitWords));
-    localStorage.setItem('cl_wordCount', String(wordCount));
-    localStorage.setItem('cl_minimalChanges', String(minimalChanges));
-  }, [limitWords, wordCount, minimalChanges]);
+    if (isOpen) {
+      setLimitWords(initialOptions.limitWords);
+      setWordCountStr(String(initialOptions.wordCount));
+      setMinimalChanges(initialOptions.minimalChanges);
+    }
+  }, [isOpen, initialOptions]);
+
+  const handleWordCountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Only allow digits
+    const val = e.target.value.replace(/\D/g, '');
+    setWordCountStr(val);
+    if (error) setError('');
+  };
+
+  const handleSave = () => {
+    if (limitWords) {
+      const finalWordCount = parseInt(wordCountStr, 10);
+      if (isNaN(finalWordCount) || finalWordCount < 50 || finalWordCount > 1000) {
+        setError("Numbers should be between 50 - 1000");
+        return;
+      }
+      setWordCountStr(String(finalWordCount));
+      onSave({
+        limitWords,
+        wordCount: finalWordCount,
+        minimalChanges
+      });
+    } else {
+      setError('');
+      onSave({
+        limitWords,
+        wordCount: parseInt(wordCountStr, 10) || 400,
+        minimalChanges
+      });
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -77,15 +118,17 @@ const CustomizeModal: React.FC<CustomizeModalProps> = ({ isOpen, onClose }) => {
               <div className="pl-8 animate-in fade-in slide-in-from-top-2 duration-200">
                 <div className="flex items-center gap-2">
                   <input 
-                    type="number" 
-                    min={50}
-                    max={1000}
-                    value={wordCount}
-                    onChange={(e) => setWordCount(parseInt(e.target.value) || 300)}
-                    className="w-24 p-1.5 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-cyan-500 focus:border-transparent outline-none transition-all"
+                    type="text" 
+                    value={wordCountStr}
+                    onChange={handleWordCountChange}
+                    placeholder="Numbers should be between 50 - 1000"
+                    className={`flex-1 p-1.5 text-sm border ${error ? 'border-red-500' : 'border-gray-300'} rounded-md focus:ring-2 ${error ? 'focus:ring-red-500' : 'focus:ring-cyan-500'} focus:border-transparent outline-none transition-all`}
                   />
                   <span className="text-sm text-gray-500">words</span>
                 </div>
+                {error && (
+                  <p className="text-red-500 text-xs mt-1">{error}</p>
+                )}
               </div>
             )}
           </div>
@@ -122,7 +165,7 @@ const CustomizeModal: React.FC<CustomizeModalProps> = ({ isOpen, onClose }) => {
         {/* Footer */}
         <div className="p-4 border-t border-gray-100 bg-gray-50 flex justify-end">
           <button
-            onClick={onClose}
+            onClick={handleSave}
             className="px-5 py-2 text-sm font-medium text-white bg-gray-800 rounded-lg hover:bg-gray-900 transition-colors shadow-sm"
           >
             Save Options

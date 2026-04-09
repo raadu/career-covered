@@ -2,34 +2,39 @@ import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { buildCoverLetterPrompt } from '../utils/promptUtils';
 import { useDispatch, useSelector } from 'react-redux';
-import { FaBolt, FaKey, FaQuestionCircle, FaSlidersH } from 'react-icons/fa';
+import { FaBolt, FaKey, FaQuestionCircle, FaSlidersH, FaArrowRight } from 'react-icons/fa';
 import type { RootState } from '../store/store';
-import { setApiKey, setGeneratedLetter, setAllCollapsed, setModel } from '../store/coverLetterSlice';
+import { setApiKey, setGeneratedLetter, setAllCollapsed, setModel, setCustomization } from '../store/coverLetterSlice';
 import { useGenerateCoverLetterMutation } from '../store/apiSlice';
 import ModelSelector from './ModelSelector';
 import ApiHelpModal from './ApiHelpModal';
-import CustomizeModal from './CustomizeModal';
+import CustomizeModal, { type CustomizationOptions } from './CustomizeModal';
 
 const PROVIDER_NAME = "Groq";
 const PROVIDER_URL = "https://console.groq.com/keys";
 
 const GeneratorControls = () => {
     const dispatch = useDispatch();
-    const { apiKey, jobDescription, template, model, generatedLetter } = useSelector((state: RootState) => state.coverLetter);
+    const { apiKey, jobDescription, template, model, generatedLetter, customization } = useSelector((state: RootState) => state.coverLetter);
     const [generate, { isLoading, error }] = useGenerateCoverLetterMutation();
     const [showKeyInput, setShowKeyInput] = useState(!apiKey);
     const [showHelpModal, setShowHelpModal] = useState(false);
     const [showCustomizeModal, setShowCustomizeModal] = useState(false);
 
-    const handleGenerate = async () => {
+    const isFilterOn = customization?.limitWords || customization?.minimalChanges;
+
+    const handleGenerate = async (optionsOverride?: CustomizationOptions) => {
         if (!apiKey) {
             setShowKeyInput(true);
             return;
         }
         if (!jobDescription) return;
 
+        const activeCustomization = optionsOverride || customization;
+        const wordCountLimit = activeCustomization?.limitWords ? activeCustomization.wordCount : null;
+
         // Construct prompt
-        const prompt = buildCoverLetterPrompt(jobDescription, template);
+        const prompt = buildCoverLetterPrompt(jobDescription, template, wordCountLimit);
 
         try {
             dispatch(setAllCollapsed()); // Collapse inputs for better view
@@ -95,7 +100,19 @@ const GeneratorControls = () => {
                 )}
             </div>
 
-            <div className="w-full md:w-auto flex items-center gap-2">
+            <div className="w-full md:w-auto flex flex-wrap items-center justify-end gap-2">
+                <div 
+                    title="Shows if any custom cover letter filters are applied"
+                    className={`flex items-center gap-1.5 px-2.5 h-9 text-xs font-semibold transition-colors cursor-default ${
+                        isFilterOn 
+                        ? 'text-emerald-600' 
+                        : 'text-rose-600'
+                    }`}
+                >
+                    <div className={`w-2 h-2 rounded-full ${isFilterOn ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-rose-500'}`}></div>
+                    <span>Custom Filter is {isFilterOn ? 'ON' : 'OFF'}</span>
+                    <FaArrowRight size={10} className="opacity-70" />
+                </div>
                 <button
                     onClick={() => setShowCustomizeModal(true)}
                     className="group relative flex items-center gap-1.5 px-3 h-9 text-xs font-semibold rounded-lg border border-cyan-200 bg-cyan-50 text-cyan-700 hover:bg-cyan-100 overflow-hidden shadow-sm transition-all"
@@ -120,12 +137,18 @@ const GeneratorControls = () => {
             <CustomizeModal 
                 isOpen={showCustomizeModal} 
                 onClose={() => setShowCustomizeModal(false)}
+                initialOptions={customization!}
+                onSave={(options) => {
+                    dispatch(setCustomization(options));
+                    setShowCustomizeModal(false);
+                    handleGenerate(options);
+                }}
             />
 
             {/* Generate Button */}
             <div className="w-full md:w-auto flex flex-col items-end">
                 <button
-                    onClick={handleGenerate}
+                    onClick={() => handleGenerate()}
                     disabled={isLoading || !jobDescription}
                     className={`
                         flex items-center justify-center gap-2 px-4 h-9 text-xs rounded-lg font-semibold text-white shadow transition-all transform hover:-translate-y-0.5 active:translate-y-0
