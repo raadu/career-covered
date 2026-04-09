@@ -34,7 +34,7 @@ const GeneratorControls = () => {
         const wordCountLimit = activeCustomization?.limitWords ? activeCustomization.wordCount : null;
 
         // Construct prompt
-        const prompt = buildCoverLetterPrompt(jobDescription, template, wordCountLimit);
+        const prompt = buildCoverLetterPrompt(jobDescription, template, wordCountLimit, activeCustomization?.minimalChanges);
 
         try {
             dispatch(setAllCollapsed()); // Collapse inputs for better view
