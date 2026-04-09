@@ -54,29 +54,29 @@ const GeneratorControls = () => {
                 {/* API Key Section */}
                 <div className="flex-1 w-full md:w-auto">
                 {showKeyInput ? (
-                    <div className="flex items-center gap-2 w-full">
-                         <div className="relative flex-1">
-                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <FaKey className="text-gray-400" />
+                    <div className="flex items-center gap-2 w-full animate-in flex-in slide-in-from-left-2 duration-300">
+                         <div className="relative flex-1 group">
+                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors group-focus-within:text-blue-500">
+                                <FaKey className="text-gray-400 group-focus-within:text-blue-500 transition-colors" size={12} />
                              </div>
                              <input
                                 type="password"
                                 value={apiKey}
                                 onChange={(e) => dispatch(setApiKey(e.target.value))}
                                 placeholder={`Enter ${PROVIDER_NAME} API Key`}
-                                className="pl-10 w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-sm"
+                                className="pl-9 w-full h-9 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-sm bg-gray-50/50 focus:bg-white transition-all placeholder:text-gray-400 font-mono"
                              />
                          </div>
                          <button 
                             onClick={() => setShowHelpModal(true)}
-                            className="text-blue-500 hover:text-blue-600 p-1 flex items-center justify-center rounded transition-colors"
+                            className="text-gray-400 hover:text-blue-500 p-2 flex items-center justify-center rounded-lg hover:bg-blue-50 transition-all"
                             title="Help with API Key"
                          >
                             <FaQuestionCircle size={14} />
                          </button>
                          <button 
                             onClick={() => setShowKeyInput(false)}
-                            className="text-gray-500 hover:text-gray-700 text-sm font-medium"
+                            className="bg-gray-800 hover:bg-black text-white px-3 h-9 rounded-lg text-xs font-bold transition-all shadow-sm active:scale-95"
                          >
                             Done
                          </button>
@@ -85,16 +85,16 @@ const GeneratorControls = () => {
                      <div className="flex items-center gap-3">
                          <button 
                             onClick={() => setShowKeyInput(true)}
-                            className="text-xs text-gray-500 flex items-center gap-1 hover:text-blue-600 transition-colors"
+                            className="group flex items-center gap-2 px-3 py-1.5 rounded-lg border border-gray-100 bg-white hover:border-blue-200 hover:bg-blue-50 text-gray-500 hover:text-blue-600 transition-all text-[11px] font-semibold shadow-sm"
                          >
-                            <FaKey size={10} />
+                            <FaKey size={10} className="group-hover:rotate-12 transition-transform" />
                             Update API Key
                          </button>
                          <button
                             onClick={() => setShowHelpModal(true)}
-                            className="text-[10px] font-semibold bg-blue-50 text-blue-600 border border-blue-200 px-2 py-0.5 flex items-center gap-1 rounded uppercase hover:bg-blue-100 transition-colors shadow-sm"
+                            className="flex items-center gap-1.5 px-2 py-1 text-[10px] font-bold text-gray-400 hover:text-blue-500 transition-colors uppercase tracking-wider"
                          >
-                            <FaQuestionCircle size={10} /> Help
+                            <FaQuestionCircle size={11} /> Help
                          </button>
                      </div>
                 )}
@@ -102,7 +102,7 @@ const GeneratorControls = () => {
 
             <div className="w-full md:w-auto flex flex-wrap items-center justify-end gap-2">
                 <div 
-                    title="Shows if any custom cover letter filters are applied"
+                    title="Click Customize More to change settings."
                     className={`flex items-center gap-1.5 px-2.5 h-9 text-xs font-semibold transition-colors cursor-default ${
                         isFilterOn 
                         ? 'text-emerald-600' 
@@ -115,6 +115,7 @@ const GeneratorControls = () => {
                 </div>
                 <button
                     onClick={() => setShowCustomizeModal(true)}
+                    title="Customize as you needed."
                     className="group relative flex items-center gap-1.5 px-3 h-9 text-xs font-semibold rounded-lg border border-cyan-200 bg-cyan-50 text-cyan-700 hover:bg-cyan-100 overflow-hidden shadow-sm transition-all"
                 >
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-60 w-full h-full transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out animate-[shimmer_2s_infinite]"></div>
@@ -138,6 +139,7 @@ const GeneratorControls = () => {
                 isOpen={showCustomizeModal} 
                 onClose={() => setShowCustomizeModal(false)}
                 initialOptions={customization!}
+                hasTemplate={!!template}
                 onSave={(options) => {
                     dispatch(setCustomization(options));
                     setShowCustomizeModal(false);
