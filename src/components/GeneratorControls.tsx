@@ -69,14 +69,16 @@ const GeneratorControls = () => {
                          </div>
                          <button 
                             onClick={() => setShowHelpModal(true)}
-                            className="text-gray-400 hover:text-blue-500 p-2 flex items-center justify-center rounded-lg hover:bg-blue-50 transition-all"
+                            className="flex items-center gap-1.5 text-gray-400 hover:text-blue-500 p-2 rounded-lg hover:bg-blue-50 transition-all font-bold text-[10px] uppercase tracking-wider"
                             title="Help with API Key"
                          >
                             <FaQuestionCircle size={14} />
+                            <span>Help</span>
                          </button>
                          <button 
                             onClick={() => setShowKeyInput(false)}
-                            className="bg-gray-800 hover:bg-black text-white px-3 h-9 rounded-lg text-xs font-bold transition-all shadow-sm active:scale-95"
+                            disabled={!apiKey || !apiKey.trim()}
+                            className="bg-gray-800 hover:bg-black text-white px-3 h-9 rounded-lg text-xs font-bold transition-all shadow-sm active:scale-95 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed disabled:shadow-none disabled:active:scale-100"
                          >
                             Done
                          </button>

@@ -1,16 +1,20 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { FaCopy, FaCheck, FaFilePdf, FaFileWord } from 'react-icons/fa';
+import { FaCopy, FaCheck, FaFilePdf, FaFileWord, FaSpinner } from 'react-icons/fa';
 import { type RootState } from '../store/store';
 import { useState, useRef, useEffect } from 'react';
 import { setGeneratedLetter } from '../store/coverLetterSlice';
 import jsPDF from 'jspdf';
 import { Document, Packer, Paragraph, TextRun } from 'docx';
 import { saveAs } from 'file-saver';
+import { useGenerateCoverLetterMutation } from '../store/apiSlice';
 
 const ResultDisplay = () => {
-    const { generatedLetter, jobDescription } = useSelector((state: RootState) => state.coverLetter);
+    const { generatedLetter, jobDescription, template, apiKey, model } = useSelector((state: RootState) => state.coverLetter);
     const dispatch = useDispatch();
+    const [generate] = useGenerateCoverLetterMutation();
     const [copied, setCopied] = useState(false);
+    const [isDownloading, setIsDownloading] = useState<'pdf' | 'word' | null>(null);
+    const [extractedName, setExtractedName] = useState<string | null>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     useEffect(() => {
@@ -26,6 +30,27 @@ const ResultDisplay = () => {
         setTimeout(() => setCopied(false), 2000);
     };
 
+    const extractNameFromTemplate = async (): Promise<string> => {
+        if (extractedName) return extractedName;
+        if (!template || !apiKey) return 'Cover_Letter';
+
+        try {
+            const prompt = `From this cover letter template, strictly find the user's Firstname and Lastname. Return only 'Firstname Lastname'. If not found, return 'NOT_FOUND'. \n\nTemplate:\n${template}`;
+            const result = await generate({ apiKey, prompt, model: model || 'llama-3.3-70b-versatile' }).unwrap();
+            
+            if (result && result.trim() !== 'NOT_FOUND' && result.length < 50) {
+                const cleanName = result.trim().replace(/\s+/g, '_');
+                const finalName = `Cover_Letter_${cleanName}`;
+                setExtractedName(finalName);
+                return finalName;
+            }
+        } catch (err) {
+            console.error('Failed to extract name', err);
+        }
+        
+        return 'Cover_Letter';
+    };
+
     const extractEmployerName = (text: string) => {
         if (!text) return null;
         // Simple heuristic to find "Company: Name" or similar in text
@@ -36,7 +61,8 @@ const ResultDisplay = () => {
         return null;
     };
 
-    const handleDownloadPDF = () => {
+    const handleDownloadPDF = async () => {
+        setIsDownloading('pdf');
         const doc = new jsPDF();
         
         // Arial is not a built-in standard PDF font without external loading, 
@@ -56,13 +82,13 @@ const ResultDisplay = () => {
             y += 7; // Line height
         }
         
-        const employerName = extractEmployerName(jobDescription) || extractEmployerName(generatedLetter);
-        const fileName = employerName ? `cover_letter_${employerName}.pdf` : 'cover_letter.pdf';
-        
-        doc.save(fileName);
+        const fileName = await extractNameFromTemplate();
+        doc.save(`${fileName}.pdf`);
+        setIsDownloading(null);
     };
 
     const handleDownloadWord = async () => {
+        setIsDownloading('word');
         const paragraphs = generatedLetter.split('\n').map(line => 
             new Paragraph({
                 children: [
@@ -83,10 +109,9 @@ const ResultDisplay = () => {
         });
         
         const blob = await Packer.toBlob(doc);
-        const employerName = extractEmployerName(jobDescription) || extractEmployerName(generatedLetter);
-        const fileName = employerName ? `cover_letter_${employerName}.docx` : 'cover_letter.docx';
-        
-        saveAs(blob, fileName);
+        const fileName = await extractNameFromTemplate();
+        saveAs(blob, `${fileName}.docx`);
+        setIsDownloading(null);
     };
 
     if (!generatedLetter) return null;
@@ -98,19 +123,21 @@ const ResultDisplay = () => {
                 <div className="flex items-center gap-2">
                     <button
                         onClick={handleDownloadPDF}
-                        className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all bg-white text-red-600 hover:text-red-700 hover:bg-red-50 shadow-sm border border-gray-200"
+                        disabled={!!isDownloading}
+                        className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all bg-white text-red-600 hover:text-red-700 hover:bg-red-50 shadow-sm border border-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                         title="Download as PDF"
                     >
-                        <FaFilePdf />
-                        Download as PDF
+                        {isDownloading === 'pdf' ? <FaSpinner className="animate-spin" /> : <FaFilePdf />}
+                        {isDownloading === 'pdf' ? 'Preparing PDF...' : 'Download as PDF'}
                     </button>
                     <button
                         onClick={handleDownloadWord}
-                        className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all bg-white text-blue-600 hover:text-blue-700 hover:bg-blue-50 shadow-sm border border-gray-200"
+                        disabled={!!isDownloading}
+                        className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all bg-white text-blue-600 hover:text-blue-700 hover:bg-blue-50 shadow-sm border border-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
                         title="Download as WORD"
                     >
-                        <FaFileWord />
-                        Download as WORD
+                        {isDownloading === 'word' ? <FaSpinner className="animate-spin" /> : <FaFileWord />}
+                        {isDownloading === 'word' ? 'Preparing Word...' : 'Download as WORD'}
                     </button>
                     <button
                         onClick={handleCopy}
