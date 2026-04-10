@@ -1,5 +1,6 @@
 import React from 'react';
-import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import { FaChevronDown, FaChevronUp, FaCopy } from 'react-icons/fa';
+import toast from 'react-hot-toast';
 
 interface CollapsibleTextAreaProps {
   label: string;
@@ -22,6 +23,24 @@ const CollapsibleTextArea: React.FC<CollapsibleTextAreaProps> = ({
   required,
   onClear
 }) => {
+  const handleCopy = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!value) {
+        toast.error("Nothing to copy!");
+        return;
+    }
+    navigator.clipboard.writeText(value);
+    toast.success(`${label} copied!`, {
+        icon: '📋',
+        style: {
+            borderRadius: '10px',
+            background: '#333',
+            color: '#fff',
+            fontSize: '12px'
+        },
+    });
+  };
+
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden transition-all duration-300">
       <div 
@@ -33,6 +52,16 @@ const CollapsibleTextArea: React.FC<CollapsibleTextAreaProps> = ({
           {required && <span className="text-red-500 text-sm">*</span>}
         </label>
         <div className="flex items-center gap-3">
+          {value && (
+            <button 
+              className="group flex items-center gap-1.5 text-[10px] bg-white text-gray-600 py-0.5 px-2 rounded border border-gray-200 uppercase font-bold tracking-wider transition-all duration-200 hover:bg-gray-50 hover:border-gray-300 hover:text-black shadow-sm active:scale-95"
+              onClick={handleCopy}
+              title={`Copy ${label}`}
+            >
+              <FaCopy size={10} className="group-hover:text-blue-500 transition-colors" />
+              Copy
+            </button>
+          )}
           {onClear && value && (
             <button 
               className="text-[10px] bg-black text-white py-0.5 px-2 rounded uppercase font-bold tracking-wider transition-all duration-200 border border-black hover:bg-gray-600 hover:border-gray-700 hover:shadow-sm active:scale-95"

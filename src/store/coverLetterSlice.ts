@@ -8,6 +8,12 @@ interface CoverLetterState {
   model: string;
   isTemplateExpanded: boolean;
   isJobDescExpanded: boolean;
+  isGenerating: boolean;
+  customization: {
+    limitWords: boolean;
+    wordCount: number;
+    minimalChanges: boolean;
+  };
 }
 
 const savedTemplate = localStorage.getItem('cl_template') || '';
@@ -28,6 +34,12 @@ const initialState: CoverLetterState = {
   model: savedModel,
   isTemplateExpanded: !savedTemplate, // Auto-collapse if saved
   isJobDescExpanded: true,
+  isGenerating: false,
+  customization: {
+    limitWords: localStorage.getItem('cl_limitWords') === 'true',
+    wordCount: parseInt(localStorage.getItem('cl_wordCount') || '400', 10),
+    minimalChanges: localStorage.getItem('cl_minimalChanges') === 'true',
+  },
 };
 
 export const coverLetterSlice = createSlice({
@@ -58,6 +70,18 @@ export const coverLetterSlice = createSlice({
     setAllCollapsed: (state) => {
         state.isTemplateExpanded = false;
         state.isJobDescExpanded = false;
+    },
+    setIsGenerating: (state, action: PayloadAction<boolean>) => {
+      state.isGenerating = action.payload;
+    },
+    clearGeneratedLetter: (state) => {
+      state.generatedLetter = '';
+    },
+    setCustomization: (state, action: PayloadAction<CoverLetterState['customization']>) => {
+      state.customization = action.payload;
+      localStorage.setItem('cl_limitWords', String(action.payload.limitWords));
+      localStorage.setItem('cl_wordCount', String(action.payload.wordCount));
+      localStorage.setItem('cl_minimalChanges', String(action.payload.minimalChanges));
     }
   },
 });
@@ -70,7 +94,10 @@ export const {
   setModel,
   toggleTemplateExpanded,
   toggleJobDescExpanded,
-  setAllCollapsed
+  setAllCollapsed,
+  setIsGenerating,
+  clearGeneratedLetter,
+  setCustomization
 } = coverLetterSlice.actions;
 
 export default coverLetterSlice.reducer;

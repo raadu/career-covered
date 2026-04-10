@@ -1,4 +1,12 @@
-export const buildCoverLetterPrompt = (jobDescription: string, template: string): string => {
+export const buildCoverLetterPrompt = (jobDescription: string, template: string, wordCountLimit: number | null = null, minimalChanges: boolean = true): string => {
+    const wordRule = wordCountLimit 
+        ? `1. Write the cover letter in ${wordCountLimit} words. Strictly under this limit.` 
+        : `1. Keep it concise (under 400 words).`;
+
+    const changesRule = minimalChanges
+        ? `2. Only change Position Name, Company name and related skills.`
+        : `2. You can use professional tone to change the related skills and motivation.`;
+
     return `
 You are an expert career consultant.
 Task: Write a professional cover letter.
@@ -9,10 +17,10 @@ ${jobDescription}
 ${template ? `- User's Background/Style (Adapt this): \n${template}` : '- User has not provided a template. Use standard professional format.'}
 
 Rules:
-1. Keep it concise (under 400 words).
-2. Only change Position Name, Company name, related skills.
+${wordRule}
+${changesRule}
 3. If you see "[One line about product or company value that matches with me]", replace it with a line about product or company value that matches with the job description.
 4. Leave the rest of the template as it is.
-4. Output strictly the cover letter text. No preamble.
+5. Output strictly the cover letter text. No preamble.
         `;
 };
