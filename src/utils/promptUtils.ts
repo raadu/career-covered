@@ -1,4 +1,20 @@
-export const buildCoverLetterPrompt = (jobDescription: string, template: string, wordCountLimit: number | null = null, minimalChanges: boolean = true): string => {
+const formatCustomPrompt = (customPrompt?: string): string => {
+    const trimmedCustomPrompt = customPrompt?.trim();
+
+    if (!trimmedCustomPrompt) {
+        return '';
+    }
+
+    return `\nAdditional user instruction: ${trimmedCustomPrompt}`;
+};
+
+export const buildCoverLetterPrompt = (
+    jobDescription: string,
+    template: string,
+    wordCountLimit: number | null = null,
+    minimalChanges: boolean = true,
+    customPrompt?: string
+): string => {
     const wordRule = wordCountLimit 
         ? `1. Write the cover letter in ${wordCountLimit} words. Strictly under this limit.` 
         : `1. Keep it concise (under 400 words).`;
@@ -21,6 +37,6 @@ ${wordRule}
 ${changesRule}
 3. If you see "[One line about product or company value that matches with me]", replace it with a line about product or company value that matches with the job description.
 4. Leave the rest of the template as it is.
-5. Output strictly the cover letter text. No preamble.
+5. Output strictly the cover letter text. No preamble.${formatCustomPrompt(customPrompt)}
         `;
 };

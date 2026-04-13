@@ -7,11 +7,16 @@ export interface CustomizationOptions {
   minimalChanges: boolean;
 }
 
+export interface CustomizeModalSavePayload {
+  options: CustomizationOptions;
+  customPrompt: string;
+}
+
 interface CustomizeModalProps {
   isOpen: boolean;
   onClose: () => void;
   initialOptions: CustomizationOptions;
-  onSave: (options: CustomizationOptions) => void;
+  onSave: (payload: CustomizeModalSavePayload) => void;
   hasTemplate: boolean;
 }
 
@@ -19,6 +24,7 @@ const CustomizeModal: React.FC<CustomizeModalProps> = ({ isOpen, onClose, initia
   const [limitWords, setLimitWords] = useState<boolean>(initialOptions.limitWords);
   const [wordCountStr, setWordCountStr] = useState<string>(String(initialOptions.wordCount));
   const [minimalChanges, setMinimalChanges] = useState<boolean>(initialOptions.minimalChanges);
+  const [customPrompt, setCustomPrompt] = useState<string>('');
   const [error, setError] = useState<string>('');
 
   useEffect(() => {
@@ -26,6 +32,7 @@ const CustomizeModal: React.FC<CustomizeModalProps> = ({ isOpen, onClose, initia
       setLimitWords(initialOptions.limitWords);
       setWordCountStr(String(initialOptions.wordCount));
       setMinimalChanges(initialOptions.minimalChanges);
+      setCustomPrompt('');
     }
   }, [isOpen, initialOptions]);
 
@@ -37,6 +44,8 @@ const CustomizeModal: React.FC<CustomizeModalProps> = ({ isOpen, onClose, initia
   };
 
   const handleSave = () => {
+    const trimmedCustomPrompt = customPrompt.trim();
+
     if (limitWords) {
       const finalWordCount = parseInt(wordCountStr, 10);
       if (isNaN(finalWordCount) || finalWordCount < 50 || finalWordCount > 1000) {
@@ -45,16 +54,22 @@ const CustomizeModal: React.FC<CustomizeModalProps> = ({ isOpen, onClose, initia
       }
       setWordCountStr(String(finalWordCount));
       onSave({
-        limitWords,
-        wordCount: finalWordCount,
-        minimalChanges
+        options: {
+          limitWords,
+          wordCount: finalWordCount,
+          minimalChanges
+        },
+        customPrompt: trimmedCustomPrompt
       });
     } else {
       setError('');
       onSave({
-        limitWords,
-        wordCount: parseInt(wordCountStr, 10) || 400,
-        minimalChanges
+        options: {
+          limitWords,
+          wordCount: parseInt(wordCountStr, 10) || 400,
+          minimalChanges
+        },
+        customPrompt: trimmedCustomPrompt
       });
     }
   };
@@ -164,6 +179,21 @@ const CustomizeModal: React.FC<CustomizeModalProps> = ({ isOpen, onClose, initia
               </div>
             </>
           )}
+
+          <hr className="border-gray-100" />
+
+          <div className="space-y-2">
+            <label htmlFor="custom-prompt" className="block text-sm font-medium text-gray-700">
+              Custom Prompt
+            </label>
+            <textarea
+              id="custom-prompt"
+              value={customPrompt}
+              onChange={(e) => setCustomPrompt(e.target.value)}
+              placeholder="Wanna add or remove anything from your cover letter? Type here in your own words."
+              className="min-h-28 w-full rounded-lg border border-gray-300 p-3 text-sm text-gray-700 outline-none transition-all placeholder:text-gray-400 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
+            />
+          </div>
 
         </div>
 

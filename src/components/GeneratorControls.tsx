@@ -8,7 +8,7 @@ import { setApiKey, setGeneratedLetter, setAllCollapsed, setModel, setCustomizat
 import { useGenerateCoverLetterMutation } from '../store/apiSlice';
 import ModelSelector from './ModelSelector';
 import ApiHelpModal from './ApiHelpModal';
-import CustomizeModal, { type CustomizationOptions } from './CustomizeModal';
+import CustomizeModal, { type CustomizationOptions, type CustomizeModalSavePayload } from './CustomizeModal';
 
 const PROVIDER_NAME = "Groq";
 const PROVIDER_URL = "https://console.groq.com/keys";
@@ -23,7 +23,7 @@ const GeneratorControls = () => {
 
     const isFilterOn = customization?.limitWords || customization?.minimalChanges;
 
-    const handleGenerate = async (optionsOverride?: CustomizationOptions) => {
+    const handleGenerate = async (optionsOverride?: CustomizationOptions, customPrompt?: string) => {
         if (!apiKey) {
             setShowKeyInput(true);
             return;
@@ -34,7 +34,13 @@ const GeneratorControls = () => {
         const wordCountLimit = activeCustomization?.limitWords ? activeCustomization.wordCount : null;
 
         // Construct prompt
-        const prompt = buildCoverLetterPrompt(jobDescription, template, wordCountLimit, activeCustomization?.minimalChanges);
+        const prompt = buildCoverLetterPrompt(
+            jobDescription,
+            template,
+            wordCountLimit,
+            activeCustomization?.minimalChanges,
+            customPrompt
+        );
 
         try {
             dispatch(setAllCollapsed()); // Collapse inputs for better view
@@ -142,10 +148,10 @@ const GeneratorControls = () => {
                 onClose={() => setShowCustomizeModal(false)}
                 initialOptions={customization!}
                 hasTemplate={!!template}
-                onSave={(options) => {
+                onSave={({ options, customPrompt }: CustomizeModalSavePayload) => {
                     dispatch(setCustomization(options));
                     setShowCustomizeModal(false);
-                    handleGenerate(options);
+                    handleGenerate(options, customPrompt);
                 }}
             />
 

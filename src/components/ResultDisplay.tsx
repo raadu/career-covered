@@ -9,7 +9,7 @@ import { saveAs } from 'file-saver';
 import { useGenerateCoverLetterMutation } from '../store/apiSlice';
 
 const ResultDisplay = () => {
-    const { generatedLetter, jobDescription, template, apiKey, model } = useSelector((state: RootState) => state.coverLetter);
+    const { generatedLetter, template, apiKey, model } = useSelector((state: RootState) => state.coverLetter);
     const dispatch = useDispatch();
     const [generate] = useGenerateCoverLetterMutation();
     const [copied, setCopied] = useState(false);
@@ -49,16 +49,6 @@ const ResultDisplay = () => {
         }
         
         return 'Cover_Letter';
-    };
-
-    const extractEmployerName = (text: string) => {
-        if (!text) return null;
-        // Simple heuristic to find "Company: Name" or similar in text
-        const match = text.match(/(?:Company|Employer)\s*[:\-]\s*([a-zA-Z0-9\s]+)/i);
-        if (match && match[1]) {
-            return match[1].trim().replace(/\s+/g, '_');
-        }
-        return null;
     };
 
     const handleDownloadPDF = async () => {
