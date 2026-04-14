@@ -1,12 +1,12 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { FaCopy, FaCheck, FaFilePdf, FaFileWord, FaSpinner } from 'react-icons/fa';
-import { type RootState } from '../store/store';
+import { type RootState } from 'store';
 import { useState, useRef, useEffect } from 'react';
-import { setGeneratedLetter } from '../store/coverLetterSlice';
+import { setGeneratedLetter } from 'store/coverLetterSlice';
 import jsPDF from 'jspdf';
 import { Document, Packer, Paragraph, TextRun } from 'docx';
 import { saveAs } from 'file-saver';
-import { useGenerateCoverLetterMutation } from '../store/apiSlice';
+import { useGenerateCoverLetterMutation } from 'store/apiSlice';
 
 const ResultDisplay = () => {
     const { generatedLetter, template, apiKey, model } = useSelector((state: RootState) => state.coverLetter);

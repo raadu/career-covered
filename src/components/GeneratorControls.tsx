@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import toast from 'react-hot-toast';
-import { buildCoverLetterPrompt } from '../utils/promptUtils';
+import { buildCoverLetterPrompt } from 'utils/promptUtils';
 import { useDispatch, useSelector } from 'react-redux';
 import { FaBolt, FaKey, FaQuestionCircle, FaSlidersH, FaArrowRight } from 'react-icons/fa';
-import type { RootState } from '../store/store';
-import { setApiKey, setGeneratedLetter, setAllCollapsed, setModel, setCustomization } from '../store/coverLetterSlice';
-import { useGenerateCoverLetterMutation } from '../store/apiSlice';
-import ModelSelector from './ModelSelector';
-import ApiHelpModal from './ApiHelpModal';
-import CustomizeModal, { type CustomizationOptions, type CustomizeModalSavePayload } from './CustomizeModal';
+import type { RootState } from 'store';
+import { setApiKey, setGeneratedLetter, setAllCollapsed, setModel, setCustomization } from 'store/coverLetterSlice';
+import { useGenerateCoverLetterMutation } from 'store/apiSlice';
+import ModelSelector from 'components/ModelSelector';
+import ApiHelpModal from 'components/ApiHelpModal';
+import CustomizeModal, { type CustomizationOptions, type CustomizeModalSavePayload } from 'components/CustomizeModal';
 
 const PROVIDER_NAME = "Groq";
 const PROVIDER_URL = "https://console.groq.com/keys";

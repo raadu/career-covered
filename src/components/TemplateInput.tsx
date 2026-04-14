@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { type RootState } from '../store/store';
-import { setTemplate, toggleTemplateExpanded } from '../store/coverLetterSlice';
-import CollapsibleTextArea from './common/CollapsibleTextArea';
+import { type RootState } from 'store';
+import { setTemplate, toggleTemplateExpanded } from 'store/coverLetterSlice';
+import CollapsibleTextArea from 'components/common/CollapsibleTextArea';
 
 const TemplateInput = () => {
     const dispatch = useDispatch();

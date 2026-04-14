@@ -1,6 +1,6 @@
 import { configureStore, type Middleware } from '@reduxjs/toolkit';
-import coverLetterReducer from './coverLetterSlice';
-import { apiSlice } from './apiSlice';
+import coverLetterReducer from 'store/coverLetterSlice';
+import { apiSlice } from 'store/apiSlice';
 
 // Middleware to persist state
 const persistenceMiddleware: Middleware = (store) => (next) => (action) => {

@@ -1,11 +1,11 @@
 import { Toaster } from 'react-hot-toast';
-import Layout from './layout/Layout';
-import TemplateInput from './components/TemplateInput';
-import JobDescriptionInput from './components/JobDescriptionInput';
-import GeneratorControls from './components/GeneratorControls';
-import ResultDisplay from './components/ResultDisplay';
+import Layout from 'layout/Layout';
+import TemplateInput from 'components/TemplateInput';
+import JobDescriptionInput from 'components/JobDescriptionInput';
+import GeneratorControls from 'components/GeneratorControls';
+import ResultDisplay from 'components/ResultDisplay';
 
-function App() {
+const App = () => {
   return (
     <Layout>
       <Toaster position="bottom-right" />

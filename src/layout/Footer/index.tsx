@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import PrivacyModal from '../components/PrivacyModal';
+import { useState } from 'react';
+import PrivacyModal from 'components/PrivacyModal';
 
-const Footer: React.FC = () => {
+const Footer = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (

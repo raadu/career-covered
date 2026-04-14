@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { type RootState } from '../store/store';
-import { setJobDescription, toggleJobDescExpanded } from '../store/coverLetterSlice';
-import CollapsibleTextArea from './common/CollapsibleTextArea';
+import { type RootState } from 'store';
+import { setJobDescription, toggleJobDescExpanded } from 'store/coverLetterSlice';
+import CollapsibleTextArea from 'components/common/CollapsibleTextArea';
 
 const JobDescriptionInput = () => {
     const dispatch = useDispatch();

@@ -1,4 +1,3 @@
-import React from 'react';
 import { FaTimes } from 'react-icons/fa';
 
 interface PrivacyModalProps {
@@ -6,7 +5,7 @@ interface PrivacyModalProps {
   onClose: () => void;
 }
 
-const PrivacyModal: React.FC<PrivacyModalProps> = ({ isOpen, onClose }) => {
+const PrivacyModal = ({ isOpen, onClose }: PrivacyModalProps) => {
   if (!isOpen) return null;
 
   return (

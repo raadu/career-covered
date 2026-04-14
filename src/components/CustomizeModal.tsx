@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, ChangeEvent } from 'react';
 import { FaTimes, FaSlidersH } from 'react-icons/fa';
 
 export interface CustomizationOptions {
@@ -20,7 +20,7 @@ interface CustomizeModalProps {
   hasTemplate: boolean;
 }
 
-const CustomizeModal: React.FC<CustomizeModalProps> = ({ isOpen, onClose, initialOptions, onSave, hasTemplate }) => {
+const CustomizeModal = ({ isOpen, onClose, initialOptions, onSave, hasTemplate }: CustomizeModalProps) => {
   const [limitWords, setLimitWords] = useState<boolean>(initialOptions.limitWords);
   const [wordCountStr, setWordCountStr] = useState<string>(String(initialOptions.wordCount));
   const [minimalChanges, setMinimalChanges] = useState<boolean>(initialOptions.minimalChanges);
@@ -36,7 +36,7 @@ const CustomizeModal: React.FC<CustomizeModalProps> = ({ isOpen, onClose, initia
     }
   }, [isOpen, initialOptions]);
 
-  const handleWordCountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleWordCountChange = (e: ChangeEvent<HTMLInputElement>) => {
     // Only allow digits
     const val = e.target.value.replace(/\D/g, '');
     setWordCountStr(val);

@@ -1,4 +1,3 @@
-import React from 'react';
 import { FaTimes, FaExternalLinkAlt } from 'react-icons/fa';
 
 interface ApiHelpModalProps {
@@ -8,7 +7,7 @@ interface ApiHelpModalProps {
   providerUrl: string;
 }
 
-const ApiHelpModal: React.FC<ApiHelpModalProps> = ({ isOpen, onClose, providerName, providerUrl }) => {
+const ApiHelpModal = ({ isOpen, onClose, providerName, providerUrl }: ApiHelpModalProps) => {
   if (!isOpen) return null;
 
   return (
