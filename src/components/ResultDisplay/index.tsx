@@ -55,8 +55,6 @@ const ResultDisplay = () => {
         setIsDownloading('pdf');
         const doc = new jsPDF();
         
-        // Arial is not a built-in standard PDF font without external loading, 
-        // using Helvetica which is the exact PDF equivalent.
         doc.setFont("helvetica");
         doc.setFontSize(12);
 
@@ -64,12 +62,12 @@ const ResultDisplay = () => {
         
         let y = 20;
         for (let i = 0; i < lines.length; i++) {
-            if (y > 280) { // Check if near bottom
+            if (y > 280) { 
                 doc.addPage();
                 y = 20;
             }
             doc.text(lines[i], 15, y);
-            y += 7; // Line height
+            y += 7; 
         }
         
         const fileName = await extractNameFromTemplate();
