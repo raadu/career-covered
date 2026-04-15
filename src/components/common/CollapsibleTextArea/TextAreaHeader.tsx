@@ -1,6 +1,5 @@
 import { type MouseEvent } from "react";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa";
-import { LuCopy, LuEraser } from "react-icons/lu";
+import { LuChevronDown, LuChevronUp, LuCopy, LuEraser } from "react-icons/lu";
 
 interface TextAreaHeaderProps {
   label: string;
@@ -59,7 +58,7 @@ const TextAreaHeader = ({
           </div>
         )}
         <button className="text-gray-400 group-hover:text-blue-500 transition-colors p-1" aria-label={isExpanded ? "Collapse" : "Expand"}>
-          {isExpanded ? <FaChevronUp size={14} /> : <FaChevronDown size={14} />}
+          {isExpanded ? <LuChevronUp size={14} /> : <LuChevronDown size={14} />}
         </button>
       </div>
     </div>

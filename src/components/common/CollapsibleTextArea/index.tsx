@@ -1,8 +1,7 @@
-import React from "react";
-import toast from "react-hot-toast";
 import TextAreaHeader from "./TextAreaHeader";
 import TextAreaBody from "./TextAreaBody";
-import { LuCircleCheck } from "react-icons/lu";
+import { useCopy } from "components/hooks/useCopy";
+import { useClear } from "components/hooks/useClear";
 
 interface CollapsibleTextAreaProps {
   label: string;
@@ -25,38 +24,8 @@ const CollapsibleTextArea = ({
   required,
   onClear,
 }: CollapsibleTextAreaProps) => {
-  const handleCopy = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (!value) {
-      toast.error("Nothing to copy!", {
-        style: {
-          borderRadius: "12px",
-          background: "#1e293b",
-          color: "#f8fafc",
-          padding: "12px 16px",
-          fontSize: "13px",
-        },
-      });
-      return;
-    }
-    navigator.clipboard.writeText(value);
-    toast.success(`${label} copied!`, {
-      icon: <LuCircleCheck className="text-emerald-400" size={18} />,
-      duration: 3000,
-      position: "bottom-center",
-      style: {
-        borderRadius: "16px",
-        background: "rgba(15, 23, 42, 0.95)",
-        backdropFilter: "blur(8px)",
-        color: "#f8fafc",
-        padding: "10px 16px",
-        fontSize: "14px",
-        fontWeight: "500",
-        border: "1px solid rgba(255, 255, 255, 0.1)",
-        boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1)",
-      },
-    });
-  };
+  const { handleCopy } = useCopy();
+  const { handleClear } = useClear();
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-md hover:border-blue-100/50">
@@ -66,8 +35,8 @@ const CollapsibleTextArea = ({
         required={required}
         isExpanded={isExpanded}
         onToggleExpand={onToggleExpand}
-        handleCopy={handleCopy}
-        onClear={onClear}
+        handleCopy={(e) => handleCopy(value, label, e)}
+        onClear={onClear ? (e) => handleClear(onClear, e) : undefined}
       />
       <TextAreaBody
         value={value}
