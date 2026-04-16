@@ -1,21 +1,17 @@
 import { Toaster } from 'react-hot-toast';
-import Layout from './layout/Layout';
-import TemplateInput from './components/TemplateInput';
-import JobDescriptionInput from './components/JobDescriptionInput';
-import GeneratorControls from './components/GeneratorControls';
-import ResultDisplay from './components/ResultDisplay';
+import Layout from 'layout/Layout';
+import MainHeader from 'components/MainHeader';
+import TemplateInput from 'components/TemplateInput';
+import JobDescriptionInput from 'components/JobDescriptionInput';
+import GeneratorControls from 'components/GeneratorControls';
+import ResultDisplay from 'components/ResultDisplay';
 
-function App() {
+const App = () => {
   return (
     <Layout>
       <Toaster position="bottom-right" />
       <div className="space-y-2 pb-2">
-        <header className="mb-3 md:mb-4">
-           <h2 className="text-xl font-bold text-gray-800 tracking-tight">Create Cover Letter</h2>
-           <p className="text-gray-500 text-sm">
-             Paste your template and the job description to generate a tailored cover letter in seconds.
-           </p>
-        </header>
+        <MainHeader />
         
         <div className="space-y-2">
             <TemplateInput />

@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { GROQ_BASE_URL, API_ENDPOINTS } from 'utils/apiConfigUtils';
 
 interface GroqResponse {
   choices: {
@@ -17,20 +18,23 @@ interface GenerateRequest {
 export const apiSlice = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'https://api.groq.com/openai/v1',
+    baseUrl: GROQ_BASE_URL,
     prepareHeaders: (headers) => {
        headers.set('Content-Type', 'application/json');
        return headers;
     }
   }),
+  tagTypes: ['CoverLetter'],
   endpoints: (builder) => ({
+    /**
+     * Generates a cover letter using the Groq API.
+     */
     generateCoverLetter: builder.mutation<string, GenerateRequest>({
       query: ({ apiKey, prompt, model }) => ({
-        url: '/chat/completions',
+        url: API_ENDPOINTS.CHAT_COMPLETIONS,
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${apiKey}`,
-            'Content-Type': 'application/json'
         },
         body: {
           model: model,
@@ -47,6 +51,8 @@ export const apiSlice = createApi({
         return response.choices?.[0]?.message?.content || 'Error: No response generated.';
       },
     }),
+    
+    // Add future endpoints here...
   }),
 });
 
