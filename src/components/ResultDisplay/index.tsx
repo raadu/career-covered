@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { setGeneratedLetter } from 'store/coverLetterSlice';
 import { useGenerateCoverLetterMutation } from 'store/apiSlice';
 import { DEFAULT_MODEL } from 'utils/AIModelUtils';
-import { useCopy } from 'components/hooks/useCopy';
+import { useCopy } from 'hooks/useCopy';
 
 // Modular Components
 import ResultHeader from './ResultHeader';

@@ -18,13 +18,8 @@ interface CoverLetterState {
 
 const savedTemplate = localStorage.getItem('cl_template') || '';
 const savedApiKey = localStorage.getItem('cl_apiKey') || '';
-let savedModel = localStorage.getItem('cl_model') || 'llama-3.3-70b-versatile';
+const savedModel = localStorage.getItem('cl_model') || 'llama-3.3-70b-versatile';
 
-// Migration: If user has old Gemini model saved, reset to Groq model
-if (savedModel.includes('gemini')) {
-    savedModel = 'llama-3.3-70b-versatile';
-    localStorage.removeItem('cl_model'); // Clear legacy persistence
-}
 
 const initialState: CoverLetterState = {
   template: savedTemplate,

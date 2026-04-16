@@ -6,8 +6,8 @@ import { PROVIDER_NAME, PROVIDER_URL, DEFAULT_MODEL } from 'utils/AIModelUtils';
 import type { RootState } from 'store';
 import { setApiKey, setGeneratedLetter, setAllCollapsed, setModel, setCustomization } from 'store/coverLetterSlice';
 import { useGenerateCoverLetterMutation } from 'store/apiSlice';
-import ApiHelpModal from 'components/ApiHelpModal';
-import CustomizeModal, { type CustomizationOptions, type CustomizeModalSavePayload } from 'components/CustomizeModal';
+import ApiHelpModal from 'components/Modals/ApiHelpModal';
+import CustomizeModal, { type CustomizationOptions, type CustomizeModalSavePayload } from 'components/Modals/CustomizeModal';
 import ApiKeySection from './ApiKeySection';
 import ControlActions from './ControlActions';
 import GenerateAction from './GenerateAction';
@@ -91,17 +91,19 @@ const GeneratorControls = () => {
                 providerUrl={PROVIDER_URL}
             />
             
-            <CustomizeModal 
-                isOpen={showCustomizeModal} 
-                onClose={() => setShowCustomizeModal(false)}
-                initialOptions={customization!}
-                hasTemplate={!!template}
-                onSave={({ options, customPrompt }: CustomizeModalSavePayload) => {
-                    dispatch(setCustomization(options));
-                    setShowCustomizeModal(false);
-                    handleGenerate(options, customPrompt);
-                }}
-            />
+            {showCustomizeModal && (
+                <CustomizeModal 
+                    isOpen={showCustomizeModal} 
+                    onClose={() => setShowCustomizeModal(false)}
+                    initialOptions={customization!}
+                    hasTemplate={!!template}
+                    onSave={({ options, customPrompt }: CustomizeModalSavePayload) => {
+                        dispatch(setCustomization(options));
+                        setShowCustomizeModal(false);
+                        handleGenerate(options, customPrompt);
+                    }}
+                />
+            )}
         </div>
     );
 };

@@ -1,0 +1,113 @@
+import { useState, type ChangeEvent } from 'react';
+import Header from './Header';
+import WordLimitSection from './WordLimitSection';
+import MinimalChangesSection from './MinimalChangesSection';
+import CustomPromptSection from './CustomPromptSection';
+import Footer from './Footer';
+
+export interface CustomizationOptions {
+  limitWords: boolean;
+  wordCount: number;
+  minimalChanges: boolean;
+}
+
+export interface CustomizeModalSavePayload {
+  options: CustomizationOptions;
+  customPrompt: string;
+}
+
+interface CustomizeModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  initialOptions: CustomizationOptions;
+  onSave: (payload: CustomizeModalSavePayload) => void;
+  hasTemplate: boolean;
+}
+
+const CustomizeModal = ({ isOpen, onClose, initialOptions, onSave, hasTemplate }: CustomizeModalProps) => {
+  const [limitWords, setLimitWords] = useState<boolean>(initialOptions.limitWords);
+  const [wordCountStr, setWordCountStr] = useState<string>(String(initialOptions.wordCount));
+  const [minimalChanges, setMinimalChanges] = useState<boolean>(initialOptions.minimalChanges);
+  const [customPrompt, setCustomPrompt] = useState<string>('');
+  const [error, setError] = useState<string>('');
+
+
+  const handleWordCountChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value.replace(/\D/g, '');
+    setWordCountStr(val);
+    if (error) setError('');
+  };
+
+  const handleSave = () => {
+    const trimmedCustomPrompt = customPrompt.trim();
+
+    if (limitWords) {
+      const finalWordCount = parseInt(wordCountStr, 10);
+      if (isNaN(finalWordCount) || finalWordCount < 50 || finalWordCount > 1000) {
+        setError("Numbers should be between 50 - 1000");
+        return;
+      }
+      onSave({
+        options: {
+          limitWords,
+          wordCount: finalWordCount,
+          minimalChanges
+        },
+        customPrompt: trimmedCustomPrompt
+      });
+    } else {
+      setError('');
+      onSave({
+        options: {
+          limitWords,
+          wordCount: parseInt(wordCountStr, 10) || 400,
+          minimalChanges
+        },
+        customPrompt: trimmedCustomPrompt
+      });
+    }
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+      onClick={onClose}
+    >
+      <div 
+        className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden transform transition-all"
+        role="dialog"
+        aria-modal="true"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <Header onClose={onClose} />
+        
+        <div className="p-5 space-y-6">
+          <WordLimitSection 
+            limitWords={limitWords}
+            setLimitWords={setLimitWords}
+            wordCountStr={wordCountStr}
+            onWordCountChange={handleWordCountChange}
+            error={error}
+          />
+
+          <MinimalChangesSection 
+            hasTemplate={hasTemplate}
+            minimalChanges={minimalChanges}
+            onToggle={() => setMinimalChanges(!minimalChanges)}
+          />
+
+          <CustomPromptSection 
+            customPrompt={customPrompt}
+            setCustomPrompt={setCustomPrompt}
+          />
+        </div>
+
+        <Footer onSave={handleSave} />
+      </div>
+    </div>
+  );
+};
+
+export default CustomizeModal;
