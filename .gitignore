@@ -31,3 +31,9 @@ dist-ssr
 
 # Codex
 .codex
+
+# Testing
+playwright-report/
+test-results/
+blob-report/
+vitest.report/
