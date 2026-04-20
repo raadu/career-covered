@@ -13,8 +13,14 @@ const ModelSelector = ({ selectedModel, onModelChange }: ModelSelectorProps) => 
         <FaRobot />
       </div>
       <div className="flex-1">
-          <span className="text-[10px] text-gray-500 block leading-tight">AI Model</span>
+          <label 
+            htmlFor="model-select"
+            className="text-[10px] text-gray-500 block leading-tight"
+          >
+            AI Model
+          </label>
           <select 
+            id="model-select"
             value={selectedModel}
             onChange={(e) => onModelChange(e.target.value)}
             className="bg-transparent font-medium text-gray-700 outline-none w-full cursor-pointer text-xs"

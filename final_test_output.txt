@@ -1,0 +1,180 @@
+
+> cover-letter-creator@0.0.0 test
+> vitest --run
+
+
+ RUN  v3.2.4 /Users/raiyadraad/Xtra/Projects/cover-letter-creator
+
+(node:84920) ExperimentalWarning: CommonJS module /Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/@asamuzakjp/css-color/dist/cjs/index.cjs is loading ES Module /Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/@csstools/css-calc/dist/index.mjs using require().
+Support for loading ES Module in require() is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:84921) ExperimentalWarning: CommonJS module /Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/@asamuzakjp/css-color/dist/cjs/index.cjs is loading ES Module /Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/@csstools/css-calc/dist/index.mjs using require().
+Support for loading ES Module in require() is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:84919) ExperimentalWarning: CommonJS module /Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/@asamuzakjp/css-color/dist/cjs/index.cjs is loading ES Module /Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/@csstools/css-calc/dist/index.mjs using require().
+Support for loading ES Module in require() is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:84923) ExperimentalWarning: CommonJS module /Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/@asamuzakjp/css-color/dist/cjs/index.cjs is loading ES Module /Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/@csstools/css-calc/dist/index.mjs using require().
+Support for loading ES Module in require() is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:84917) ExperimentalWarning: CommonJS module /Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/@asamuzakjp/css-color/dist/cjs/index.cjs is loading ES Module /Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/@csstools/css-calc/dist/index.mjs using require().
+Support for loading ES Module in require() is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:84922) ExperimentalWarning: CommonJS module /Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/@asamuzakjp/css-color/dist/cjs/index.cjs is loading ES Module /Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/@csstools/css-calc/dist/index.mjs using require().
+Support for loading ES Module in require() is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:84918) ExperimentalWarning: CommonJS module /Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/@asamuzakjp/css-color/dist/cjs/index.cjs is loading ES Module /Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/@csstools/css-calc/dist/index.mjs using require().
+Support for loading ES Module in require() is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/components/__tests__/CommonButton.test.tsx (4 tests) 180ms
+stderr | src/components/__tests__/ModelSelector.test.tsx > ModelSelector > changes the model in the store when selection changes
+TypeError: onModelChange is not a function
+    at onChange (/Users/raiyadraad/Xtra/Projects/cover-letter-creator/src/components/ModelSelector.tsx:25:30)
+    at executeDispatch (/Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/react-dom/cjs/react-dom-client.development.js:19116:9)
+    at runWithFiberInDEV (/Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+    at processDispatchQueue (/Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/react-dom/cjs/react-dom-client.development.js:19166:19)
+    at /Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/react-dom/cjs/react-dom-client.development.js:19767:9
+    at batchedUpdates$1 (/Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/react-dom/cjs/react-dom-client.development.js:3255:40)
+    at dispatchEventForPluginEventSystem (/Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/react-dom/cjs/react-dom-client.development.js:19320:7)
+    at dispatchEvent (/Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/react-dom/cjs/react-dom-client.development.js:23585:11)
+    at dispatchDiscreteEvent (/Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/react-dom/cjs/react-dom-client.development.js:23553:11)
+    at HTMLDivElement.callTheUserObjectsOperation (/Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30)
+
+ ❯ src/components/__tests__/ModelSelector.test.tsx (2 tests | 1 failed) 92ms
+   ✓ ModelSelector > renders the select field with models 68ms
+   × ModelSelector > changes the model in the store when selection changes 22ms
+     → expected 'llama-3.3-70b-versatile' to be 'llama-3.1-8b-instant' // Object.is equality
+ ✓ src/components/__tests__/JobDescriptionInput.test.tsx (3 tests) 59ms
+ ✓ src/components/__tests__/TemplateInput.test.tsx (3 tests) 61ms
+ ❯ src/components/__tests__/CustomizeModal.test.tsx (5 tests | 1 failed) 224ms
+   ✓ CustomizeModal > renders nothing when isOpen is false 22ms
+   ✓ CustomizeModal > renders the modal when isOpen is true 49ms
+   ✓ CustomizeModal > calls onSave with correct data when Save is clicked 86ms
+   × CustomizeModal > validates word count when limitWords is enabled 48ms
+     → expected "spy" to not be called at all, but actually been called 1 times
+
+Received: 
+
+  1st spy call:
+
+    Array [
+      Object {
+        "customPrompt": "",
+        "options": Object {
+          "limitWords": false,
+          "minimalChanges": true,
+          "wordCount": 400,
+        },
+      },
+    ]
+
+
+Number of calls: 1
+
+   ✓ CustomizeModal > handles malicious custom prompt safely 17ms
+ ✓ src/components/__tests__/ResultDisplay.test.tsx (3 tests) 357ms
+   ✓ ResultDisplay > renders the generated letter if present  326ms
+ ✓ src/components/__tests__/GeneratorControls.test.tsx (3 tests) 341ms
+(node:84939) ExperimentalWarning: CommonJS module /Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/@asamuzakjp/css-color/dist/cjs/index.cjs is loading ES Module /Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/@csstools/css-calc/dist/index.mjs using require().
+Support for loading ES Module in require() is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:84938) ExperimentalWarning: CommonJS module /Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/@asamuzakjp/css-color/dist/cjs/index.cjs is loading ES Module /Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/@csstools/css-calc/dist/index.mjs using require().
+Support for loading ES Module in require() is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:84942) ExperimentalWarning: CommonJS module /Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/@asamuzakjp/css-color/dist/cjs/index.cjs is loading ES Module /Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/@csstools/css-calc/dist/index.mjs using require().
+Support for loading ES Module in require() is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:84943) ExperimentalWarning: CommonJS module /Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/@asamuzakjp/css-color/dist/cjs/index.cjs is loading ES Module /Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/@csstools/css-calc/dist/index.mjs using require().
+Support for loading ES Module in require() is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/utils/__tests__/promptUtils.test.ts (8 tests) 22ms
+ ✓ src/components/__tests__/CollapsibleTextArea.test.tsx (4 tests) 51ms
+ ✓ src/components/__tests__/MainHeader.test.tsx (2 tests) 25ms
+ ✓ src/components/__tests__/Modals.test.tsx (4 tests) 44ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/components/__tests__/CustomizeModal.test.tsx > CustomizeModal > validates word count when limitWords is enabled
+AssertionError: expected "spy" to not be called at all, but actually been called 1 times
+
+Received: 
+
+  1st spy call:
+
+    Array [
+      Object {
+        "customPrompt": "",
+        "options": Object {
+          "limitWords": false,
+          "minimalChanges": true,
+          "wordCount": 400,
+        },
+      },
+    ]
+
+
+Number of calls: 1
+
+ ❯ src/components/__tests__/CustomizeModal.test.tsx:84:28
+     82|         // The first call was from the "initial render/setup" if any, …
+     83|         // we should check it wasn't called *after* we triggered valid…
+     84|         expect(onSave).not.toHaveBeenCalled();
+       |                            ^
+     85|     });
+     86| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  src/components/__tests__/ModelSelector.test.tsx > ModelSelector > changes the model in the store when selection changes
+AssertionError: expected 'llama-3.3-70b-versatile' to be 'llama-3.1-8b-instant' // Object.is equality
+
+Expected: "llama-3.1-8b-instant"
+Received: "llama-3.3-70b-versatile"
+
+ ❯ src/components/__tests__/ModelSelector.test.tsx:19:52
+     17|         fireEvent.change(select, { target: { value: 'llama-3.1-8b-inst…
+     18|         
+     19|         expect(store.getState().coverLetter.model).toBe('llama-3.1-8b-…
+       |                                                    ^
+     20|     });
+     21| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 1 unhandled error during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯⎯ Uncaught Exception ⎯⎯⎯⎯⎯
+TypeError: onModelChange is not a function
+ ❯ onChange src/components/ModelSelector.tsx:25:30
+     23|             id="model-select"
+     24|             value={selectedModel}
+     25|             onChange={(e) => onModelChange(e.target.value)}
+       |                              ^
+     26|             className="bg-transparent font-medium text-gray-700 outlin…
+     27|           >
+ ❯ executeDispatch node_modules/react-dom/cjs/react-dom-client.development.js:19116:9
+ ❯ runWithFiberInDEV node_modules/react-dom/cjs/react-dom-client.development.js:874:13
+ ❯ processDispatchQueue node_modules/react-dom/cjs/react-dom-client.development.js:19166:19
+ ❯ node_modules/react-dom/cjs/react-dom-client.development.js:19767:9
+ ❯ batchedUpdates$1 node_modules/react-dom/cjs/react-dom-client.development.js:3255:40
+ ❯ dispatchEventForPluginEventSystem node_modules/react-dom/cjs/react-dom-client.development.js:19320:7
+ ❯ dispatchEvent node_modules/react-dom/cjs/react-dom-client.development.js:23585:11
+ ❯ dispatchDiscreteEvent node_modules/react-dom/cjs/react-dom-client.development.js:23553:11
+ ❯ HTMLDivElement.callTheUserObjectsOperation node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30
+
+This error originated in "src/components/__tests__/ModelSelector.test.tsx" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "changes the model in the store when selection changes". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+
+ Test Files  2 failed | 9 passed (11)
+      Tests  2 failed | 39 passed (41)
+     Errors  1 error
+   Start at  20:56:40
+   Duration  3.77s (transform 1.63s, setup 4.99s, collect 3.96s, tests 1.46s, environment 7.79s, prepare 1.30s)
+

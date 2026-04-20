@@ -36,7 +36,7 @@ const CollapsibleTextArea = ({
         isExpanded={isExpanded}
         onToggleExpand={onToggleExpand}
         handleCopy={(e) => handleCopy(value, label, e)}
-        onClear={onClear ? (e) => handleClear(onClear, e) : undefined}
+        onClear={onClear ? () => handleClear(onClear) : undefined}
       />
       <TextAreaBody
         value={value}
