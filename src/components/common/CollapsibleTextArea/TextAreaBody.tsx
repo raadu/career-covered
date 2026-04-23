@@ -16,7 +16,7 @@ const TextAreaBody = ({
   return (
     <div
       className={`transition-all duration-300 ease-in-out relative ${
-        isExpanded ? "min-h-[250px] overflow-visible" : "h-24 overflow-hidden"
+        isExpanded ? "min-h-[160px] overflow-visible" : "h-16 overflow-hidden"
       }`}
     >
       <textarea
@@ -26,12 +26,12 @@ const TextAreaBody = ({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        rows={isExpanded ? 12 : 3}
+        rows={isExpanded ? 7 : 2}
         onClick={() => !isExpanded && onToggleExpand()}
       />
       {!isExpanded && (
         <div 
-          className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white via-white/80 to-transparent pointer-events-none transition-opacity duration-300" 
+          className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-white via-white/80 to-transparent pointer-events-none transition-opacity duration-300" 
           onClick={onToggleExpand}
         />
       )}

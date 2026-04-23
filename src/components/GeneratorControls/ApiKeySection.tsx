@@ -1,4 +1,4 @@
-import { FaKey, FaQuestionCircle } from "react-icons/fa";
+import { FaKey, FaQuestionCircle, FaTimes } from "react-icons/fa";
 import CommonButton from "components/common/CommonButton";
 import { PROVIDER_NAME } from "utils/AIModelUtils";
 
@@ -35,6 +35,17 @@ const ApiKeySection = ({
             className="pl-9 w-full h-9 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-sm bg-gray-50/50 focus:bg-white transition-all placeholder:text-gray-400 font-mono"
           />
         </div>
+        
+        {apiKey && (
+          <button
+            onClick={() => setShowKeyInput(false)}
+            className="p-2 text-gray-400 hover:text-red-500 transition-colors rounded-lg hover:bg-red-50"
+            title="Cancel editing"
+          >
+            <FaTimes size={14} />
+          </button>
+        )}
+
         <CommonButton
           variant="ghost"
           onClick={() => setShowHelpModal(true)}
@@ -43,13 +54,9 @@ const ApiKeySection = ({
         >
           Help
         </CommonButton>
-        <CommonButton
-          variant="dark"
-          onClick={() => setShowKeyInput(false)}
-          disabled={!apiKey || !apiKey.trim()}
-        >
+        <div className="bg-emerald-50 text-emerald-600 px-2 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-wider border border-emerald-100 flex items-center justify-center min-w-[50px]">
           Done
-        </CommonButton>
+        </div>
       </div>
     );
   }

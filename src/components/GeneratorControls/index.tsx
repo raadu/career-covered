@@ -2,11 +2,11 @@ import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 import { buildCoverLetterPrompt } from 'utils/promptUtils';
-import { PROVIDER_NAME, PROVIDER_URL, DEFAULT_MODEL } from 'utils/AIModelUtils';
+import { DEFAULT_MODEL } from 'utils/AIModelUtils';
 import type { RootState } from 'store';
 import { setApiKey, setGeneratedLetter, setAllCollapsed, setModel, setCustomization } from 'store/coverLetterSlice';
 import { useGenerateCoverLetterMutation } from 'store/apiSlice';
-import ApiHelpModal from 'components/Modals/ApiHelpModal';
+import OnboardingModal from 'components/Modals/OnboardingModal';
 import CustomizeModal, { type CustomizationOptions, type CustomizeModalSavePayload } from 'components/Modals/CustomizeModal';
 import ApiKeySection from './ApiKeySection';
 import ControlActions from './ControlActions';
@@ -16,15 +16,25 @@ const GeneratorControls = () => {
     const dispatch = useDispatch();
     const { apiKey, jobDescription, template, model, generatedLetter, customization } = useSelector((state: RootState) => state.coverLetter);
     const [generate, { isLoading, error }] = useGenerateCoverLetterMutation();
-    const [showKeyInput, setShowKeyInput] = useState(!apiKey);
+    const [isEditing, setIsEditing] = useState(false);
     const [showHelpModal, setShowHelpModal] = useState(false);
     const [showCustomizeModal, setShowCustomizeModal] = useState(false);
+
+    // Derived state: show input if key is missing OR user clicked "Update"
+    const showKeyInput = !apiKey || isEditing;
+
+    // Reset editing state during render if apiKey becomes available (e.g. from onboarding)
+    const [prevApiKey, setPrevApiKey] = useState(apiKey);
+    if (apiKey !== prevApiKey) {
+      setPrevApiKey(apiKey);
+      if (apiKey) setIsEditing(false);
+    }
 
     const isFilterOn = !!(customization?.limitWords || customization?.minimalChanges);
 
     const handleGenerate = async (optionsOverride?: CustomizationOptions, customPrompt?: string) => {
         if (!apiKey) {
-            setShowKeyInput(true);
+            setIsEditing(true);
             return;
         }
         if (!jobDescription) return;
@@ -64,7 +74,7 @@ const GeneratorControls = () => {
                     apiKey={apiKey}
                     setApiKey={(val) => dispatch(setApiKey(val))}
                     showKeyInput={showKeyInput}
-                    setShowKeyInput={setShowKeyInput}
+                    setShowKeyInput={setIsEditing}
                     setShowHelpModal={setShowHelpModal}
                 />
 
@@ -84,11 +94,10 @@ const GeneratorControls = () => {
                 />
             </div>
 
-            <ApiHelpModal 
-                isOpen={showHelpModal} 
+            <OnboardingModal 
+                isOpen={showHelpModal}
+                onComplete={() => setShowHelpModal(false)}
                 onClose={() => setShowHelpModal(false)}
-                providerName={PROVIDER_NAME}
-                providerUrl={PROVIDER_URL}
             />
             
             {showCustomizeModal && (
