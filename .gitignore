@@ -27,6 +27,17 @@ dist-ssr
 .env
 .env.*
 !.env.example
+!.env.test.example
 
 # Codex
 .codex
+
+# Testing
+playwright-report/
+test-results/
+blob-report/
+vitest.report/
+coverage/
+.vitest/
+*.lcov
+junit.xml

@@ -37,6 +37,13 @@ const CustomizeModal = ({ isOpen, onClose, initialOptions, onSave, hasTemplate }
     setWordCountStr(val);
     if (error) setError('');
   };
+  const handleReset = () => {
+    setLimitWords(false);
+    setWordCountStr('400');
+    setMinimalChanges(false);
+    setCustomPrompt('');
+    setError('');
+  };
 
   const handleSave = () => {
     const trimmedCustomPrompt = customPrompt.trim();
@@ -72,11 +79,11 @@ const CustomizeModal = ({ isOpen, onClose, initialOptions, onSave, hasTemplate }
 
   return (
     <div 
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30 backdrop-blur-md transition-all overscroll-none"
       onClick={onClose}
     >
       <div 
-        className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden transform transition-all"
+        className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-300 border border-white/20"
         role="dialog"
         aria-modal="true"
         onClick={(e) => e.stopPropagation()}
@@ -104,7 +111,7 @@ const CustomizeModal = ({ isOpen, onClose, initialOptions, onSave, hasTemplate }
           />
         </div>
 
-        <Footer onSave={handleSave} />
+        <Footer onSave={handleSave} onReset={handleReset} />
       </div>
     </div>
   );

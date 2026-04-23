@@ -1,11 +1,13 @@
-const formatCustomPrompt = (customPrompt?: string): string => {
-    const trimmedCustomPrompt = customPrompt?.trim();
+import { sanitize } from './sanitizeUtils';
 
-    if (!trimmedCustomPrompt) {
+export const formatCustomPrompt = (customPrompt?: string): string => {
+    const sanitizedPrompt = sanitize(customPrompt).trim();
+
+    if (!sanitizedPrompt) {
         return '';
     }
 
-    return `\nAdditional user instruction: ${trimmedCustomPrompt}`;
+    return `\nAdditional user instruction: ${sanitizedPrompt}`;
 };
 
 export const buildCoverLetterPrompt = (
@@ -15,6 +17,9 @@ export const buildCoverLetterPrompt = (
     minimalChanges: boolean = true,
     customPrompt?: string
 ): string => {
+    const sanitizedJD = sanitize(jobDescription);
+    const sanitizedTemplate = sanitize(template);
+    
     const wordRule = wordCountLimit 
         ? `1. Write the cover letter in ${wordCountLimit} words. Strictly under this limit.` 
         : `1. Keep it concise (under 400 words).`;
@@ -28,9 +33,9 @@ You are an expert career consultant.
 Task: Write a professional cover letter.
 Context:
 - Job Description:
-${jobDescription}
+${sanitizedJD}
 
-${template ? `- User's Background/Style (Adapt this): \n${template}` : '- User has not provided a template. Use standard professional format.'}
+${sanitizedTemplate ? `- User's Background/Style (Adapt this): \n${sanitizedTemplate}` : '- User has not provided a template. Use standard professional format.'}
 
 Rules:
 ${wordRule}

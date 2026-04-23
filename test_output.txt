@@ -1,0 +1,1820 @@
+
+> cover-letter-creator@0.0.0 test
+> vitest --run
+
+
+ RUN  v3.2.4 /Users/raiyadraad/Xtra/Projects/cover-letter-creator
+
+(node:84704) ExperimentalWarning: CommonJS module /Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/@asamuzakjp/css-color/dist/cjs/index.cjs is loading ES Module /Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/@csstools/css-calc/dist/index.mjs using require().
+Support for loading ES Module in require() is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:84700) ExperimentalWarning: CommonJS module /Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/@asamuzakjp/css-color/dist/cjs/index.cjs is loading ES Module /Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/@csstools/css-calc/dist/index.mjs using require().
+Support for loading ES Module in require() is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:84702) ExperimentalWarning: CommonJS module /Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/@asamuzakjp/css-color/dist/cjs/index.cjs is loading ES Module /Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/@csstools/css-calc/dist/index.mjs using require().
+Support for loading ES Module in require() is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:84701) ExperimentalWarning: CommonJS module /Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/@asamuzakjp/css-color/dist/cjs/index.cjs is loading ES Module /Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/@csstools/css-calc/dist/index.mjs using require().
+Support for loading ES Module in require() is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:84706) ExperimentalWarning: CommonJS module /Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/@asamuzakjp/css-color/dist/cjs/index.cjs is loading ES Module /Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/@csstools/css-calc/dist/index.mjs using require().
+Support for loading ES Module in require() is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:84705) ExperimentalWarning: CommonJS module /Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/@asamuzakjp/css-color/dist/cjs/index.cjs is loading ES Module /Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/@csstools/css-calc/dist/index.mjs using require().
+Support for loading ES Module in require() is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:84703) ExperimentalWarning: CommonJS module /Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/@asamuzakjp/css-color/dist/cjs/index.cjs is loading ES Module /Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/@csstools/css-calc/dist/index.mjs using require().
+Support for loading ES Module in require() is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ src/utils/__tests__/promptUtils.test.ts (9 tests | 2 failed) 49ms
+   ✓ promptUtils > formatCustomPrompt > should return empty string for empty or whitespace input 11ms
+   ✓ promptUtils > formatCustomPrompt > should format valid custom prompt correctly 0ms
+   × promptUtils > formatCustomPrompt > should sanitize malicious code in custom prompt 14ms
+     → expected '\nAdditional user instruction: Use a …' to be '\nAdditional user instruction: Use a …' // Object.is equality
+   ✓ promptUtils > buildCoverLetterPrompt > should build a prompt with job description and template 0ms
+   ✓ promptUtils > buildCoverLetterPrompt > should include word count limit when provided 0ms
+   ✓ promptUtils > buildCoverLetterPrompt > should handle missing template correctly 2ms
+   ✓ promptUtils > buildCoverLetterPrompt > should sanitize malicious code in job description and template 9ms
+   ✓ promptUtils > buildCoverLetterPrompt > should handle edge cases like very long strings 0ms
+   × promptUtils > buildCoverLetterPrompt > should handle special characters correctly 11ms
+     → expected '\nYou are an expert career consultant…' to contain '!@#$%^&*()_+{}|:'
+ ✓ src/components/__tests__/CommonButton.test.tsx (4 tests) 174ms
+ ❯ src/components/__tests__/ModelSelector.test.tsx (2 tests | 2 failed) 56ms
+   × ModelSelector > renders the select field with models 46ms
+     → Unable to find a label with the text of: /AI Model/i
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-2 text-xs w-full md:w-auto h-9"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"text-gray-400 pl-1"[39m
+      [36m>[39m
+        [36m<svg[39m
+          [33mfill[39m=[32m"currentColor"[39m
+          [33mheight[39m=[32m"1em"[39m
+          [33mstroke[39m=[32m"currentColor"[39m
+          [33mstroke-width[39m=[32m"0"[39m
+          [33mviewBox[39m=[32m"0 0 640 512"[39m
+          [33mwidth[39m=[32m"1em"[39m
+          [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+        [36m>[39m
+          [36m<path[39m
+            [33md[39m=[32m"M32,224H64V416H32A31.96166,31.96166,0,0,1,0,384V256A31.96166,31.96166,0,0,1,32,224Zm512-48V448a64.06328,64.06328,0,0,1-64,64H160a64.06328,64.06328,0,0,1-64-64V176a79.974,79.974,0,0,1,80-80H288V32a32,32,0,0,1,64,0V96H464A79.974,79.974,0,0,1,544,176ZM264,256a40,40,0,1,0-40,40A39.997,39.997,0,0,0,264,256Zm-8,128H192v32h64Zm96,0H288v32h64ZM456,256a40,40,0,1,0-40,40A39.997,39.997,0,0,0,456,256Zm-8,128H384v32h64ZM640,256V384a31.96166,31.96166,0,0,1-32,32H576V224h32A31.96166,31.96166,0,0,1,640,256Z"[39m
+          [36m/>[39m
+        [36m</svg>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"flex-1"[39m
+      [36m>[39m
+        [36m<span[39m
+          [33mclass[39m=[32m"text-[10px] text-gray-500 block leading-tight"[39m
+        [36m>[39m
+          [0mAI Model[0m
+        [36m</span>[39m
+        [36m<select[39m
+          [33mclass[39m=[32m"bg-transparent font-medium text-gray-700 outline-none w-full cursor-pointer text-xs"[39m
+        [36m>[39m
+          [36m<option[39m
+            [33mvalue[39m=[32m"llama-3.3-70b-versatile"[39m
+          [36m>[39m
+            [0mLlama 3.3 70B (High Quality)[0m
+          [36m</option>[39m
+          [36m<option[39m
+            [33mvalue[39m=[32m"llama-3.1-8b-instant"[39m
+          [36m>[39m
+            [0mLlama 3.1 8B (Fast)[0m
+          [36m</option>[39m
+          [36m<option[39m
+            [33mvalue[39m=[32m"mixtral-8x7b-32768"[39m
+          [36m>[39m
+            [0mMixtral 8x7B[0m
+          [36m</option>[39m
+        [36m</select>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+   × ModelSelector > changes the model in the store when selection changes 8ms
+     → Unable to find a label with the text of: /AI Model/i
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-2 text-xs w-full md:w-auto h-9"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"text-gray-400 pl-1"[39m
+      [36m>[39m
+        [36m<svg[39m
+          [33mfill[39m=[32m"currentColor"[39m
+          [33mheight[39m=[32m"1em"[39m
+          [33mstroke[39m=[32m"currentColor"[39m
+          [33mstroke-width[39m=[32m"0"[39m
+          [33mviewBox[39m=[32m"0 0 640 512"[39m
+          [33mwidth[39m=[32m"1em"[39m
+          [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+        [36m>[39m
+          [36m<path[39m
+            [33md[39m=[32m"M32,224H64V416H32A31.96166,31.96166,0,0,1,0,384V256A31.96166,31.96166,0,0,1,32,224Zm512-48V448a64.06328,64.06328,0,0,1-64,64H160a64.06328,64.06328,0,0,1-64-64V176a79.974,79.974,0,0,1,80-80H288V32a32,32,0,0,1,64,0V96H464A79.974,79.974,0,0,1,544,176ZM264,256a40,40,0,1,0-40,40A39.997,39.997,0,0,0,264,256Zm-8,128H192v32h64Zm96,0H288v32h64ZM456,256a40,40,0,1,0-40,40A39.997,39.997,0,0,0,456,256Zm-8,128H384v32h64ZM640,256V384a31.96166,31.96166,0,0,1-32,32H576V224h32A31.96166,31.96166,0,0,1,640,256Z"[39m
+          [36m/>[39m
+        [36m</svg>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"flex-1"[39m
+      [36m>[39m
+        [36m<span[39m
+          [33mclass[39m=[32m"text-[10px] text-gray-500 block leading-tight"[39m
+        [36m>[39m
+          [0mAI Model[0m
+        [36m</span>[39m
+        [36m<select[39m
+          [33mclass[39m=[32m"bg-transparent font-medium text-gray-700 outline-none w-full cursor-pointer text-xs"[39m
+        [36m>[39m
+          [36m<option[39m
+            [33mvalue[39m=[32m"llama-3.3-70b-versatile"[39m
+          [36m>[39m
+            [0mLlama 3.3 70B (High Quality)[0m
+          [36m</option>[39m
+          [36m<option[39m
+            [33mvalue[39m=[32m"llama-3.1-8b-instant"[39m
+          [36m>[39m
+            [0mLlama 3.1 8B (Fast)[0m
+          [36m</option>[39m
+          [36m<option[39m
+            [33mvalue[39m=[32m"mixtral-8x7b-32768"[39m
+          [36m>[39m
+            [0mMixtral 8x7B[0m
+          [36m</option>[39m
+        [36m</select>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ src/components/__tests__/Modals.test.tsx (4 tests | 2 failed) 81ms
+   × Informational Modals > ApiHelpModal > renders when open 61ms
+     → Unable to find an element with the text: /How to get a Gemini API Key/i. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33maria-modal[39m=[32m"true"[39m
+        [33mclass[39m=[32m"bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden transform transition-all"[39m
+        [33mrole[39m=[32m"dialog"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"flex items-center justify-between p-4 border-b border-gray-100"[39m
+        [36m>[39m
+          [36m<h3[39m
+            [33mclass[39m=[32m"text-lg font-semibold text-gray-800"[39m
+          [36m>[39m
+            [0mHow to get your API Key[0m
+          [36m</h3>[39m
+          [36m<button[39m
+            [33maria-label[39m=[32m"Close modal"[39m
+            [33mclass[39m=[32m"text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-md hover:bg-gray-100"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mfill[39m=[32m"currentColor"[39m
+              [33mheight[39m=[32m"1em"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-width[39m=[32m"0"[39m
+              [33mviewBox[39m=[32m"0 0 352 512"[39m
+              [33mwidth[39m=[32m"1em"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"p-5 text-sm text-gray-600 space-y-4"[39m
+        [36m>[39m
+          [36m<p>[39m
+            [0mTo generate cover letters, you need an API key from [0m
+            [36m<strong />[39m
+            [0m. This project connects directly to their service to process requests.[0m
+          [36m</p>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"bg-blue-50/50 p-4 rounded-lg border border-blue-100"[39m
+          [36m>[39m
+            [36m<h4[39m
+              [33mclass[39m=[32m"font-semibold text-blue-900 mb-2"[39m
+            [36m>[39m
+              [0mSteps to secure your key:[0m
+            [36m</h4>[39m
+            [36m<ol[39m
+              [33mclass[39m=[32m"list-decimal list-inside space-y-2 text-blue-800/80"[39m
+            [36m>[39m
+              [36m<li>[39m
+                [0mVisit the [0m
+                [0m developer console.[0m
+              [36m</li>[39m
+              [36m<li>[39m
+                [0mCreate a free account or sign in.[0m
+              [36m</li>[39m
+              [36m<li>[39m
+                [0mNavigate to the API Keys section.[0m
+              [36m</li>[39m
+              [36m<li>[39m
+                [0mGenerate a new secret key and copy it.[0m
+              [36m</li>[39m
+              [36m<li>[39m
+                [0mPaste the key into the input field here.[0m
+              [36m</li>[39m
+            [36m</ol>[39m
+          [36m</div>[39m
+          [36m<p[39m
+            [33mclass[39m=[32m"text-xs text-gray-500 italic pb-2 border-b border-gray-100"[39m
+          [36m>[39m
+            [0mYour API key is stored locally in your browser and is never sent to our servers.[0m
+          [36m</p>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"pt-2 animate-in fade-in slide-in-from-bottom-2 duration-700 delay-300"[39m
+          [36m>[39m
+            [36m<p[39m
+              [33mclass[39m=[32m"text-[11px] leading-relaxed text-gray-400"[39m
+            [36m>[39m
+              [0mSorry, I'm unable to provide AI models for free right now due to budget constraints. So you have to use your own API key. If you want to contribute to the project then please [0m
+              [36m<a[39m
+                [33mclass[39m=[32m"text-blue-500 hover:text-blue-600 font-semibold underline underline-offset-2 transition-colors"[39m
+                [33mhref[39m=[32m"https://www.linkedin.com/in/raiyadraad"[39m
+                [33mrel[39m=[32m"noopener noreferrer"[39m
+                [33mtarget[39m=[32m"_blank"[39m
+              [36m>[39m
+                [0mcontact me[0m
+              [36m</a>[39m
+              [0m.[0m
+            [36m</p>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"p-4 border-t border-gray-100 bg-gray-50 flex justify-end gap-3"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors shadow-sm"[39m
+          [36m>[39m
+            [0mClose[0m
+          [36m</button>[39m
+          [36m<a[39m
+            [33mclass[39m=[32m"flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors shadow-sm"[39m
+            [33mrel[39m=[32m"noopener noreferrer"[39m
+            [33mtarget[39m=[32m"_blank"[39m
+          [36m>[39m
+            [0mGet [0m
+            [0m Key [0m
+            [36m<svg[39m
+              [33mfill[39m=[32m"currentColor"[39m
+              [33mheight[39m=[32m"12"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-width[39m=[32m"0"[39m
+              [33mviewBox[39m=[32m"0 0 512 512"[39m
+              [33mwidth[39m=[32m"12"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M432,320H400a16,16,0,0,0-16,16V448H64V128H208a16,16,0,0,0,16-16V80a16,16,0,0,0-16-16H48A48,48,0,0,0,0,112V464a48,48,0,0,0,48,48H400a48,48,0,0,0,48-48V336A16,16,0,0,0,432,320ZM488,0h-128c-21.37,0-32.05,25.91-17,41l35.73,35.73L135,320.37a24,24,0,0,0,0,34L157.67,377a24,24,0,0,0,34,0L435.28,133.32,471,169c15,15,41,4.5,41-17V24A24,24,0,0,0,488,0Z"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+          [36m</a>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+   ✓ Informational Modals > ApiHelpModal > does not render when closed 1ms
+   × Informational Modals > PrivacyModal > renders when open 13ms
+     → Unable to find an element with the text: /Privacy & Data Security/i. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33maria-modal[39m=[32m"true"[39m
+        [33mclass[39m=[32m"bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden transform transition-all"[39m
+        [33mrole[39m=[32m"dialog"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"flex items-center justify-between p-4 border-b border-gray-100"[39m
+        [36m>[39m
+          [36m<h3[39m
+            [33mclass[39m=[32m"text-lg font-semibold text-gray-800"[39m
+          [36m>[39m
+            [0mData Privacy[0m
+          [36m</h3>[39m
+          [36m<button[39m
+            [33maria-label[39m=[32m"Close modal"[39m
+            [33mclass[39m=[32m"text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-md hover:bg-gray-100"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mfill[39m=[32m"currentColor"[39m
+              [33mheight[39m=[32m"1em"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-width[39m=[32m"0"[39m
+              [33mviewBox[39m=[32m"0 0 352 512"[39m
+              [33mwidth[39m=[32m"1em"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"p-5 text-sm text-gray-600 space-y-4"[39m
+        [36m>[39m
+          [36m<p>[39m
+            [36m<strong>[39m
+              [0mThis application does not store any of your data.[0m
+            [36m</strong>[39m
+          [36m</p>[39m
+          [36m<p>[39m
+            [0mThere are no backend services or databases connected to this application. All data, including your job descriptions, templates, and generated cover letters, are stored temporarily in your local browser's memory.[0m
+          [36m</p>[39m
+          [36m<p>[39m
+            [0mAny settings you configure are saved exclusively in your browser's local storage and are sent directly where needed. We cannot access them.[0m
+          [36m</p>[39m
+          [36m<p[39m
+            [33mclass[39m=[32m"text-xs text-gray-500 italic mt-4"[39m
+          [36m>[39m
+            [0mYou maintain full control over your data.[0m
+          [36m</p>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"p-4 border-t border-gray-100 bg-gray-50 flex justify-end"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors shadow-sm"[39m
+          [36m>[39m
+            [0mGot it[0m
+          [36m</button>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+   ✓ Informational Modals > PrivacyModal > does not render when closed 3ms
+ ❯ src/components/__tests__/CustomizeModal.test.tsx (5 tests | 3 failed) 237ms
+   ✓ CustomizeModal > renders nothing when isOpen is false 14ms
+   × CustomizeModal > renders the modal when isOpen is true 42ms
+     → Unable to find an element with the text: /Customize Your Generation/i. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33maria-modal[39m=[32m"true"[39m
+        [33mclass[39m=[32m"bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden transform transition-all"[39m
+        [33mrole[39m=[32m"dialog"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"flex items-center justify-between p-4 border-b border-gray-100 bg-gray-50/50"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex items-center gap-2"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"bg-cyan-100 text-cyan-600 p-1.5 rounded-lg"[39m
+            [36m>[39m
+              [36m<svg[39m
+                [33mfill[39m=[32m"currentColor"[39m
+                [33mheight[39m=[32m"14"[39m
+                [33mstroke[39m=[32m"currentColor"[39m
+                [33mstroke-width[39m=[32m"0"[39m
+                [33mviewBox[39m=[32m"0 0 512 512"[39m
+                [33mwidth[39m=[32m"14"[39m
+                [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+              [36m>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M496 384H160v-16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v16H16c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h80v16c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-16h336c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16zm0-160h-80v-16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v16H16c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h336v16c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-16h80c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16zm0-160H288V48c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v16H16C7.2 64 0 71.2 0 80v32c0 8.8 7.2 16 16 16h208v16c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-16h208c8.8 0 16-7.2 16-16V80c0-8.8-7.2-16-16-16z"[39m
+                [36m/>[39m
+              [36m</svg>[39m
+            [36m</div>[39m
+            [36m<h3[39m
+              [33mclass[39m=[32m"text-lg font-semibold text-gray-800"[39m
+            [36m>[39m
+              [0mCover Letter Customization[0m
+            [36m</h3>[39m
+          [36m</div>[39m
+          [36m<button[39m
+            [33maria-label[39m=[32m"Close modal"[39m
+            [33mclass[39m=[32m"text-gray-400 hover:text-gray-600 transition-colors p-1.5 rounded-md hover:bg-gray-100"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mfill[39m=[32m"currentColor"[39m
+              [33mheight[39m=[32m"1em"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-width[39m=[32m"0"[39m
+              [33mviewBox[39m=[32m"0 0 352 512"[39m
+              [33mwidth[39m=[32m"1em"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"p-5 space-y-6"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"space-y-3"[39m
+          [36m>[39m
+            [36m<label[39m
+              [33mclass[39m=[32m"flex items-center gap-3 cursor-pointer group"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"relative flex items-center justify-center"[39m
+              [36m>[39m
+                [36m<input[39m
+                  [33mclass[39m=[32m"peer appearance-none w-5 h-5 border-2 border-gray-300 rounded focus:ring-2 focus:ring-cyan-500/30 checked:bg-cyan-500 checked:border-cyan-500 transition-colors"[39m
+                  [33mtype[39m=[32m"checkbox"[39m
+                [36m/>[39m
+                [36m<svg[39m
+                  [33mclass[39m=[32m"absolute w-3 h-3 text-white opacity-0 peer-checked:opacity-100 pointer-events-none"[39m
+                  [33mfill[39m=[32m"currentColor"[39m
+                  [33mviewBox[39m=[32m"0 0 20 20"[39m
+                [36m>[39m
+                  [36m<path[39m
+                    [33mclip-rule[39m=[32m"evenodd"[39m
+                    [33md[39m=[32m"M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"[39m
+                    [33mfill-rule[39m=[32m"evenodd"[39m
+                  [36m/>[39m
+                [36m</svg>[39m
+              [36m</div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"text-sm font-medium text-gray-700 group-hover:text-gray-900 transition-colors"[39m
+              [36m>[39m
+                [0mLimit words[0m
+              [36m</span>[39m
+            [36m</label>[39m
+          [36m</div>[39m
+          [36m<hr[39m
+            [33mclass[39m=[32m"border-gray-100"[39m
+          [36m/>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex items-center justify-between"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"flex flex-col"[39m
+            [36m>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"text-sm font-medium text-gray-700"[39m
+              [36m>[39m
+                [0mMinimal Changes to template[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"text-xs text-gray-500 mt-0.5"[39m
+              [36m>[39m
+                [0mOnly replace placeholders and minor tweaks.[0m
+              [36m</span>[39m
+            [36m</div>[39m
+            [36m<label[39m
+              [33mclass[39m=[32m"relative inline-flex items-center cursor-pointer"[39m
+            [36m>[39m
+              [36m<input[39m
+                [33mchecked[39m=[32m""[39m
+                [33mclass[39m=[32m"sr-only peer"[39m
+                [33mtype[39m=[32m"checkbox"[39m
+              [36m/>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-cyan-500/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-cyan-500"[39m
+              [36m/>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"ml-3 text-xs font-semibold text-gray-500 w-8"[39m
+              [36m>[39m
+                [0mON[0m
+              [36m</span>[39m
+            [36m</label>[39m
+          [36m</div>[39m
+          [36m<hr[39m
+            [33mclass[39m=[32m"border-gray-100"[39m
+          [36m/>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"space-y-2"[39m
+          [36m>[39m
+            [36m<label[39m
+              [33mclass[39m=[32m"block text-sm font-medium text-gray-700"[39m
+              [33mfor[39m=[32m"custom-prompt"[39m
+            [36m>[39m
+              [0mCustom Prompt[0m
+            [36m</label>[39m
+            [36m<textarea[39m
+              [33mclass[39m=[32m"min-h-28 w-full rounded-lg border border-gray-300 p-3 text-sm text-gray-700 outline-none transition-all placeholder:text-gray-400 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"[39m
+              [33mid[39m=[32m"custom-prompt"[39m
+              [33mplaceholder[39m=[32m"Wanna add or remove anything from your cover letter? Type here in your own words."[39m
+            [36m/>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"p-4 border-t border-gray-100 bg-gray-50 flex justify-end"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"px-5 py-2 text-sm font-medium text-white bg-gray-800 rounded-lg hover:bg-gray-900 transition-colors shadow-sm"[39m
+          [36m>[39m
+            [0mSave Options[0m
+          [36m</button>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+   ✓ CustomizeModal > calls onSave with correct data when Save is clicked 121ms
+   × CustomizeModal > validates word count when limitWords is enabled 52ms
+     → expected "spy" to not be called at all, but actually been called 1 times
+
+Received: 
+
+  1st spy call:
+
+    Array [
+      Object {
+        "customPrompt": "",
+        "options": Object {
+          "limitWords": false,
+          "minimalChanges": true,
+          "wordCount": 400,
+        },
+      },
+    ]
+
+
+Number of calls: 1
+
+   × CustomizeModal > handles malicious custom prompt safely 6ms
+     → Unable to find an element with the placeholder text of: /e.g. Focus more on my leadership experience/i
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33maria-modal[39m=[32m"true"[39m
+        [33mclass[39m=[32m"bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden transform transition-all"[39m
+        [33mrole[39m=[32m"dialog"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"flex items-center justify-between p-4 border-b border-gray-100 bg-gray-50/50"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex items-center gap-2"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"bg-cyan-100 text-cyan-600 p-1.5 rounded-lg"[39m
+            [36m>[39m
+              [36m<svg[39m
+                [33mfill[39m=[32m"currentColor"[39m
+                [33mheight[39m=[32m"14"[39m
+                [33mstroke[39m=[32m"currentColor"[39m
+                [33mstroke-width[39m=[32m"0"[39m
+                [33mviewBox[39m=[32m"0 0 512 512"[39m
+                [33mwidth[39m=[32m"14"[39m
+                [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+              [36m>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M496 384H160v-16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v16H16c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h80v16c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-16h336c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16zm0-160h-80v-16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v16H16c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h336v16c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-16h80c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16zm0-160H288V48c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v16H16C7.2 64 0 71.2 0 80v32c0 8.8 7.2 16 16 16h208v16c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-16h208c8.8 0 16-7.2 16-16V80c0-8.8-7.2-16-16-16z"[39m
+                [36m/>[39m
+              [36m</svg>[39m
+            [36m</div>[39m
+            [36m<h3[39m
+              [33mclass[39m=[32m"text-lg font-semibold text-gray-800"[39m
+            [36m>[39m
+              [0mCover Letter Customization[0m
+            [36m</h3>[39m
+          [36m</div>[39m
+          [36m<button[39m
+            [33maria-label[39m=[32m"Close modal"[39m
+            [33mclass[39m=[32m"text-gray-400 hover:text-gray-600 transition-colors p-1.5 rounded-md hover:bg-gray-100"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mfill[39m=[32m"currentColor"[39m
+              [33mheight[39m=[32m"1em"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-width[39m=[32m"0"[39m
+              [33mviewBox[39m=[32m"0 0 352 512"[39m
+              [33mwidth[39m=[32m"1em"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"p-5 space-y-6"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"space-y-3"[39m
+          [36m>[39m
+            [36m<label[39m
+              [33mclass[39m=[32m"flex items-center gap-3 cursor-pointer group"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"relative flex items-center justify-center"[39m
+              [36m>[39m
+                [36m<input[39m
+                  [33mclass[39m=[32m"peer appearance-none w-5 h-5 border-2 border-gray-300 rounded focus:ring-2 focus:ring-cyan-500/30 checked:bg-cyan-500 checked:border-cyan-500 transition-colors"[39m
+                  [33mtype[39m=[32m"checkbox"[39m
+                [36m/>[39m
+                [36m<svg[39m
+                  [33mclass[39m=[32m"absolute w-3 h-3 text-white opacity-0 peer-checked:opacity-100 pointer-events-none"[39m
+                  [33mfill[39m=[32m"currentColor"[39m
+                  [33mviewBox[39m=[32m"0 0 20 20"[39m
+                [36m>[39m
+                  [36m<path[39m
+                    [33mclip-rule[39m=[32m"evenodd"[39m
+                    [33md[39m=[32m"M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"[39m
+                    [33mfill-rule[39m=[32m"evenodd"[39m
+                  [36m/>[39m
+                [36m</svg>[39m
+              [36m</div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"text-sm font-medium text-gray-700 group-hover:text-gray-900 transition-colors"[39m
+              [36m>[39m
+                [0mLimit words[0m
+              [36m</span>[39m
+            [36m</label>[39m
+          [36m</div>[39m
+          [36m<hr[39m
+            [33mclass[39m=[32m"border-gray-100"[39m
+          [36m/>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex items-center justify-between"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"flex flex-col"[39m
+            [36m>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"text-sm font-medium text-gray-700"[39m
+              [36m>[39m
+                [0mMinimal Changes to template[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"text-xs text-gray-500 mt-0.5"[39m
+              [36m>[39m
+                [0mOnly replace placeholders and minor tweaks.[0m
+              [36m</span>[39m
+            [36m</div>[39m
+            [36m<label[39m
+              [33mclass[39m=[32m"relative inline-flex items-center cursor-pointer"[39m
+            [36m>[39m
+              [36m<input[39m
+                [33mchecked[39m=[32m""[39m
+                [33mclass[39m=[32m"sr-only peer"[39m
+                [33mtype[39m=[32m"checkbox"[39m
+              [36m/>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-cyan-500/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-cyan-500"[39m
+              [36m/>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"ml-3 text-xs font-semibold text-gray-500 w-8"[39m
+              [36m>[39m
+                [0mON[0m
+              [36m</span>[39m
+            [36m</label>[39m
+          [36m</div>[39m
+          [36m<hr[39m
+            [33mclass[39m=[32m"border-gray-100"[39m
+          [36m/>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"space-y-2"[39m
+          [36m>[39m
+            [36m<label[39m
+              [33mclass[39m=[32m"block text-sm font-medium text-gray-700"[39m
+              [33mfor[39m=[32m"custom-prompt"[39m
+            [36m>[39m
+              [0mCustom Prompt[0m
+            [36m</label>[39m
+            [36m<textarea[39m
+              [33mclass[39m=[32m"min-h-28 w-full rounded-lg border border-gray-300 p-3 text-sm text-gray-700 outline-none transition-all placeholder:text-gray-400 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"[39m
+              [33mid[39m=[32m"custom-prompt"[39m
+              [33mplaceholder[39m=[32m"Wanna add or remove anything from your cover letter? Type here in your own words."[39m
+            [36m/>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"p-4 border-t border-gray-100 bg-gray-50 flex justify-end"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"px-5 py-2 text-sm font-medium text-white bg-gray-800 rounded-lg hover:bg-gray-900 transition-colors shadow-sm"[39m
+          [36m>[39m
+            [0mSave Options[0m
+          [36m</button>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ✓ src/components/__tests__/ResultDisplay.test.tsx (3 tests) 250ms
+ ❯ src/components/__tests__/GeneratorControls.test.tsx (3 tests | 1 failed) 466ms
+   × GeneratorControls > renders sub-components correctly 77ms
+     → Unable to find an element with the placeholder text of: /Enter your Gemini API Key/i
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"bg-white rounded-xl shadow-sm border border-gray-200 p-3 flex flex-col items-start gap-2"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"flex flex-col md:flex-row w-full gap-3 items-center justify-between"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"flex-1 w-full md:w-auto flex items-center gap-2 animate-in flex-in slide-in-from-left-2 duration-300"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"relative flex-1 group"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors group-focus-within:text-blue-500"[39m
+            [36m>[39m
+              [36m<svg[39m
+                [33mclass[39m=[32m"text-gray-400 group-focus-within:text-blue-500 transition-colors"[39m
+                [33mfill[39m=[32m"currentColor"[39m
+                [33mheight[39m=[32m"12"[39m
+                [33mstroke[39m=[32m"currentColor"[39m
+                [33mstroke-width[39m=[32m"0"[39m
+                [33mviewBox[39m=[32m"0 0 512 512"[39m
+                [33mwidth[39m=[32m"12"[39m
+                [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+              [36m>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M512 176.001C512 273.203 433.202 352 336 352c-11.22 0-22.19-1.062-32.827-3.069l-24.012 27.014A23.999 23.999 0 0 1 261.223 384H224v40c0 13.255-10.745 24-24 24h-40v40c0 13.255-10.745 24-24 24H24c-13.255 0-24-10.745-24-24v-78.059c0-6.365 2.529-12.47 7.029-16.971l161.802-161.802C163.108 213.814 160 195.271 160 176 160 78.798 238.797.001 335.999 0 433.488-.001 512 78.511 512 176.001zM336 128c0 26.51 21.49 48 48 48s48-21.49 48-48-21.49-48-48-48-48 21.49-48 48z"[39m
+                [36m/>[39m
+              [36m</svg>[39m
+            [36m</div>[39m
+            [36m<input[39m
+              [33mclass[39m=[32m"pl-9 w-full h-9 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-sm bg-gray-50/50 focus:bg-white transition-all placeholder:text-gray-400 font-mono"[39m
+              [33mplaceholder[39m=[32m"Enter Groq API Key"[39m
+              [33mtype[39m=[32m"password"[39m
+              [33mvalue[39m=[32m""[39m
+            [36m/>[39m
+          [36m</div>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"relative flex items-center justify-center gap-2 rounded-lg transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 overflow-hidden text-gray-400 hover:text-blue-500 hover:bg-blue-50 h-auto p-1.5 text-[10px] uppercase tracking-wider font-bold shadow-none"[39m
+            [33mtitle[39m=[32m"Help with API Key"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mfill[39m=[32m"currentColor"[39m
+              [33mheight[39m=[32m"14"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-width[39m=[32m"0"[39m
+              [33mviewBox[39m=[32m"0 0 512 512"[39m
+              [33mwidth[39m=[32m"14"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M504 256c0 136.997-111.043 248-248 248S8 392.997 8 256C8 119.083 119.043 8 256 8s248 111.083 248 248zM262.655 90c-54.497 0-89.255 22.957-116.549 63.758-3.536 5.286-2.353 12.415 2.715 16.258l34.699 26.31c5.205 3.947 12.621 3.008 16.665-2.122 17.864-22.658 30.113-35.797 57.303-35.797 20.429 0 45.698 13.148 45.698 32.958 0 14.976-12.363 22.667-32.534 33.976C247.128 238.528 216 254.941 216 296v4c0 6.627 5.373 12 12 12h56c6.627 0 12-5.373 12-12v-1.333c0-28.462 83.186-29.647 83.186-106.667 0-58.002-60.165-102-116.531-102zM256 338c-25.365 0-46 20.635-46 46 0 25.364 20.635 46 46 46s46-20.636 46-46c0-25.365-20.635-46-46-46z"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"relative z-10"[39m
+            [36m>[39m
+              [0mHelp[0m
+            [36m</span>[39m
+          [36m</button>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"relative flex items-center justify-center gap-2 rounded-lg transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 overflow-hidden shadow-sm bg-gray-800 text-white hover:bg-black h-9 px-3 text-xs font-bold"[39m
+            [33mdisabled[39m=[32m""[39m
+          [36m>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"relative z-10"[39m
+            [36m>[39m
+              [0mDone[0m
+            [36m</span>[39m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"w-full md:w-auto flex flex-wrap items-center justify-end gap-2"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex items-center gap-1.5 px-2.5 h-9 text-xs font-semibold transition-colors cursor-default text-rose-600"[39m
+            [33mtitle[39m=[32m"Click Customize More to change settings."[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"w-2 h-2 rounded-full bg-rose-500"[39m
+            [36m/>[39m
+            [36m<span>[39m
+              [0mCustom Filter is [0m
+              [0mOFF[0m
+            [36m</span>[39m
+            [36m<svg[39m
+              [33mclass[39m=[32m"opacity-70"[39m
+              [33mfill[39m=[32m"currentColor"[39m
+              [33mheight[39m=[32m"10"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-width[39m=[32m"0"[39m
+              [33mviewBox[39m=[32m"0 0 448 512"[39m
+              [33mwidth[39m=[32m"10"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M190.5 66.9l22.2-22.2c9.4-9.4 24.6-9.4 33.9 0L441 239c9.4 9.4 9.4 24.6 0 33.9L246.6 467.3c-9.4 9.4-24.6 9.4-33.9 0l-22.2-22.2c-9.5-9.5-9.3-25 .4-34.3L311.4 296H24c-13.3 0-24-10.7-24-24v-32c0-13.3 10.7-24 24-24h287.4L190.9 101.2c-9.8-9.3-10-24.8-.4-34.3z"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+          [36m</div>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"relative flex items-center justify-center gap-2 rounded-lg font-semibold transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 overflow-hidden shadow-sm bg-cyan-50 border border-cyan-200 text-cyan-700 hover:bg-cyan-100 h-9 px-3 text-xs"[39m
+            [33mtitle[39m=[32m"Customize as you needed."[39m
+          [36m>[39m
+            [36m<di...
+   ✓ GeneratorControls > disables the generate button if job description is missing 223ms
+   ✓ GeneratorControls > enables the generate button if job description and API key are present 164ms
+(node:84719) ExperimentalWarning: CommonJS module /Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/@asamuzakjp/css-color/dist/cjs/index.cjs is loading ES Module /Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/@csstools/css-calc/dist/index.mjs using require().
+Support for loading ES Module in require() is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:84720) ExperimentalWarning: CommonJS module /Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/@asamuzakjp/css-color/dist/cjs/index.cjs is loading ES Module /Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/@csstools/css-calc/dist/index.mjs using require().
+Support for loading ES Module in require() is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:84721) ExperimentalWarning: CommonJS module /Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/@asamuzakjp/css-color/dist/cjs/index.cjs is loading ES Module /Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/@csstools/css-calc/dist/index.mjs using require().
+Support for loading ES Module in require() is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:84723) ExperimentalWarning: CommonJS module /Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/@asamuzakjp/css-color/dist/cjs/index.cjs is loading ES Module /Users/raiyadraad/Xtra/Projects/cover-letter-creator/node_modules/@csstools/css-calc/dist/index.mjs using require().
+Support for loading ES Module in require() is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ src/components/__tests__/MainHeader.test.tsx (2 tests) 44ms
+ ✓ src/components/__tests__/CollapsibleTextArea.test.tsx (4 tests) 54ms
+ ✓ src/components/__tests__/JobDescriptionInput.test.tsx (3 tests) 60ms
+ ✓ src/components/__tests__/TemplateInput.test.tsx (3 tests) 47ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 10 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/components/__tests__/CustomizeModal.test.tsx > CustomizeModal > renders the modal when isOpen is true
+TestingLibraryElementError: Unable to find an element with the text: /Customize Your Generation/i. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33maria-modal[39m=[32m"true"[39m
+        [33mclass[39m=[32m"bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden transform transition-all"[39m
+        [33mrole[39m=[32m"dialog"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"flex items-center justify-between p-4 border-b border-gray-100 bg-gray-50/50"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex items-center gap-2"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"bg-cyan-100 text-cyan-600 p-1.5 rounded-lg"[39m
+            [36m>[39m
+              [36m<svg[39m
+                [33mfill[39m=[32m"currentColor"[39m
+                [33mheight[39m=[32m"14"[39m
+                [33mstroke[39m=[32m"currentColor"[39m
+                [33mstroke-width[39m=[32m"0"[39m
+                [33mviewBox[39m=[32m"0 0 512 512"[39m
+                [33mwidth[39m=[32m"14"[39m
+                [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+              [36m>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M496 384H160v-16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v16H16c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h80v16c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-16h336c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16zm0-160h-80v-16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v16H16c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h336v16c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-16h80c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16zm0-160H288V48c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v16H16C7.2 64 0 71.2 0 80v32c0 8.8 7.2 16 16 16h208v16c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-16h208c8.8 0 16-7.2 16-16V80c0-8.8-7.2-16-16-16z"[39m
+                [36m/>[39m
+              [36m</svg>[39m
+            [36m</div>[39m
+            [36m<h3[39m
+              [33mclass[39m=[32m"text-lg font-semibold text-gray-800"[39m
+            [36m>[39m
+              [0mCover Letter Customization[0m
+            [36m</h3>[39m
+          [36m</div>[39m
+          [36m<button[39m
+            [33maria-label[39m=[32m"Close modal"[39m
+            [33mclass[39m=[32m"text-gray-400 hover:text-gray-600 transition-colors p-1.5 rounded-md hover:bg-gray-100"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mfill[39m=[32m"currentColor"[39m
+              [33mheight[39m=[32m"1em"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-width[39m=[32m"0"[39m
+              [33mviewBox[39m=[32m"0 0 352 512"[39m
+              [33mwidth[39m=[32m"1em"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"p-5 space-y-6"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"space-y-3"[39m
+          [36m>[39m
+            [36m<label[39m
+              [33mclass[39m=[32m"flex items-center gap-3 cursor-pointer group"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"relative flex items-center justify-center"[39m
+              [36m>[39m
+                [36m<input[39m
+                  [33mclass[39m=[32m"peer appearance-none w-5 h-5 border-2 border-gray-300 rounded focus:ring-2 focus:ring-cyan-500/30 checked:bg-cyan-500 checked:border-cyan-500 transition-colors"[39m
+                  [33mtype[39m=[32m"checkbox"[39m
+                [36m/>[39m
+                [36m<svg[39m
+                  [33mclass[39m=[32m"absolute w-3 h-3 text-white opacity-0 peer-checked:opacity-100 pointer-events-none"[39m
+                  [33mfill[39m=[32m"currentColor"[39m
+                  [33mviewBox[39m=[32m"0 0 20 20"[39m
+                [36m>[39m
+                  [36m<path[39m
+                    [33mclip-rule[39m=[32m"evenodd"[39m
+                    [33md[39m=[32m"M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"[39m
+                    [33mfill-rule[39m=[32m"evenodd"[39m
+                  [36m/>[39m
+                [36m</svg>[39m
+              [36m</div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"text-sm font-medium text-gray-700 group-hover:text-gray-900 transition-colors"[39m
+              [36m>[39m
+                [0mLimit words[0m
+              [36m</span>[39m
+            [36m</label>[39m
+          [36m</div>[39m
+          [36m<hr[39m
+            [33mclass[39m=[32m"border-gray-100"[39m
+          [36m/>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex items-center justify-between"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"flex flex-col"[39m
+            [36m>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"text-sm font-medium text-gray-700"[39m
+              [36m>[39m
+                [0mMinimal Changes to template[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"text-xs text-gray-500 mt-0.5"[39m
+              [36m>[39m
+                [0mOnly replace placeholders and minor tweaks.[0m
+              [36m</span>[39m
+            [36m</div>[39m
+            [36m<label[39m
+              [33mclass[39m=[32m"relative inline-flex items-center cursor-pointer"[39m
+            [36m>[39m
+              [36m<input[39m
+                [33mchecked[39m=[32m""[39m
+                [33mclass[39m=[32m"sr-only peer"[39m
+                [33mtype[39m=[32m"checkbox"[39m
+              [36m/>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-cyan-500/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-cyan-500"[39m
+              [36m/>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"ml-3 text-xs font-semibold text-gray-500 w-8"[39m
+              [36m>[39m
+                [0mON[0m
+              [36m</span>[39m
+            [36m</label>[39m
+          [36m</div>[39m
+          [36m<hr[39m
+            [33mclass[39m=[32m"border-gray-100"[39m
+          [36m/>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"space-y-2"[39m
+          [36m>[39m
+            [36m<label[39m
+              [33mclass[39m=[32m"block text-sm font-medium text-gray-700"[39m
+              [33mfor[39m=[32m"custom-prompt"[39m
+            [36m>[39m
+              [0mCustom Prompt[0m
+            [36m</label>[39m
+            [36m<textarea[39m
+              [33mclass[39m=[32m"min-h-28 w-full rounded-lg border border-gray-300 p-3 text-sm text-gray-700 outline-none transition-all placeholder:text-gray-400 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"[39m
+              [33mid[39m=[32m"custom-prompt"[39m
+              [33mplaceholder[39m=[32m"Wanna add or remove anything from your cover letter? Type here in your own words."[39m
+            [36m/>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"p-4 border-t border-gray-100 bg-gray-50 flex justify-end"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"px-5 py-2 text-sm font-medium text-white bg-gray-800 rounded-lg hover:bg-gray-900 transition-colors shadow-sm"[39m
+          [36m>[39m
+            [0mSave Options[0m
+          [36m</button>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/components/__tests__/CustomizeModal.test.tsx:37:23
+     35|             />
+     36|         );
+     37|         expect(screen.getByText(/Customize Your Generation/i)).toBeInT…
+       |                       ^
+     38|         expect(screen.getByText(/Limit Word Count/i)).toBeInTheDocumen…
+     39|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/10]⎯
+
+ FAIL  src/components/__tests__/CustomizeModal.test.tsx > CustomizeModal > validates word count when limitWords is enabled
+AssertionError: expected "spy" to not be called at all, but actually been called 1 times
+
+Received: 
+
+  1st spy call:
+
+    Array [
+      Object {
+        "customPrompt": "",
+        "options": Object {
+          "limitWords": false,
+          "minimalChanges": true,
+          "wordCount": 400,
+        },
+      },
+    ]
+
+
+Number of calls: 1
+
+ ❯ src/components/__tests__/CustomizeModal.test.tsx:76:28
+     74|         
+     75|         expect(screen.getByText(/Numbers should be between 50 - 1000/i…
+     76|         expect(onSave).not.toHaveBeenCalled();
+       |                            ^
+     77|     });
+     78| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/10]⎯
+
+ FAIL  src/components/__tests__/CustomizeModal.test.tsx > CustomizeModal > handles malicious custom prompt safely
+TestingLibraryElementError: Unable to find an element with the placeholder text of: /e.g. Focus more on my leadership experience/i
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33maria-modal[39m=[32m"true"[39m
+        [33mclass[39m=[32m"bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden transform transition-all"[39m
+        [33mrole[39m=[32m"dialog"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"flex items-center justify-between p-4 border-b border-gray-100 bg-gray-50/50"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex items-center gap-2"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"bg-cyan-100 text-cyan-600 p-1.5 rounded-lg"[39m
+            [36m>[39m
+              [36m<svg[39m
+                [33mfill[39m=[32m"currentColor"[39m
+                [33mheight[39m=[32m"14"[39m
+                [33mstroke[39m=[32m"currentColor"[39m
+                [33mstroke-width[39m=[32m"0"[39m
+                [33mviewBox[39m=[32m"0 0 512 512"[39m
+                [33mwidth[39m=[32m"14"[39m
+                [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+              [36m>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M496 384H160v-16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v16H16c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h80v16c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-16h336c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16zm0-160h-80v-16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v16H16c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h336v16c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-16h80c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16zm0-160H288V48c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v16H16C7.2 64 0 71.2 0 80v32c0 8.8 7.2 16 16 16h208v16c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-16h208c8.8 0 16-7.2 16-16V80c0-8.8-7.2-16-16-16z"[39m
+                [36m/>[39m
+              [36m</svg>[39m
+            [36m</div>[39m
+            [36m<h3[39m
+              [33mclass[39m=[32m"text-lg font-semibold text-gray-800"[39m
+            [36m>[39m
+              [0mCover Letter Customization[0m
+            [36m</h3>[39m
+          [36m</div>[39m
+          [36m<button[39m
+            [33maria-label[39m=[32m"Close modal"[39m
+            [33mclass[39m=[32m"text-gray-400 hover:text-gray-600 transition-colors p-1.5 rounded-md hover:bg-gray-100"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mfill[39m=[32m"currentColor"[39m
+              [33mheight[39m=[32m"1em"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-width[39m=[32m"0"[39m
+              [33mviewBox[39m=[32m"0 0 352 512"[39m
+              [33mwidth[39m=[32m"1em"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"p-5 space-y-6"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"space-y-3"[39m
+          [36m>[39m
+            [36m<label[39m
+              [33mclass[39m=[32m"flex items-center gap-3 cursor-pointer group"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"relative flex items-center justify-center"[39m
+              [36m>[39m
+                [36m<input[39m
+                  [33mclass[39m=[32m"peer appearance-none w-5 h-5 border-2 border-gray-300 rounded focus:ring-2 focus:ring-cyan-500/30 checked:bg-cyan-500 checked:border-cyan-500 transition-colors"[39m
+                  [33mtype[39m=[32m"checkbox"[39m
+                [36m/>[39m
+                [36m<svg[39m
+                  [33mclass[39m=[32m"absolute w-3 h-3 text-white opacity-0 peer-checked:opacity-100 pointer-events-none"[39m
+                  [33mfill[39m=[32m"currentColor"[39m
+                  [33mviewBox[39m=[32m"0 0 20 20"[39m
+                [36m>[39m
+                  [36m<path[39m
+                    [33mclip-rule[39m=[32m"evenodd"[39m
+                    [33md[39m=[32m"M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"[39m
+                    [33mfill-rule[39m=[32m"evenodd"[39m
+                  [36m/>[39m
+                [36m</svg>[39m
+              [36m</div>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"text-sm font-medium text-gray-700 group-hover:text-gray-900 transition-colors"[39m
+              [36m>[39m
+                [0mLimit words[0m
+              [36m</span>[39m
+            [36m</label>[39m
+          [36m</div>[39m
+          [36m<hr[39m
+            [33mclass[39m=[32m"border-gray-100"[39m
+          [36m/>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex items-center justify-between"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"flex flex-col"[39m
+            [36m>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"text-sm font-medium text-gray-700"[39m
+              [36m>[39m
+                [0mMinimal Changes to template[0m
+              [36m</span>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"text-xs text-gray-500 mt-0.5"[39m
+              [36m>[39m
+                [0mOnly replace placeholders and minor tweaks.[0m
+              [36m</span>[39m
+            [36m</div>[39m
+            [36m<label[39m
+              [33mclass[39m=[32m"relative inline-flex items-center cursor-pointer"[39m
+            [36m>[39m
+              [36m<input[39m
+                [33mchecked[39m=[32m""[39m
+                [33mclass[39m=[32m"sr-only peer"[39m
+                [33mtype[39m=[32m"checkbox"[39m
+              [36m/>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-cyan-500/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-cyan-500"[39m
+              [36m/>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"ml-3 text-xs font-semibold text-gray-500 w-8"[39m
+              [36m>[39m
+                [0mON[0m
+              [36m</span>[39m
+            [36m</label>[39m
+          [36m</div>[39m
+          [36m<hr[39m
+            [33mclass[39m=[32m"border-gray-100"[39m
+          [36m/>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"space-y-2"[39m
+          [36m>[39m
+            [36m<label[39m
+              [33mclass[39m=[32m"block text-sm font-medium text-gray-700"[39m
+              [33mfor[39m=[32m"custom-prompt"[39m
+            [36m>[39m
+              [0mCustom Prompt[0m
+            [36m</label>[39m
+            [36m<textarea[39m
+              [33mclass[39m=[32m"min-h-28 w-full rounded-lg border border-gray-300 p-3 text-sm text-gray-700 outline-none transition-all placeholder:text-gray-400 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"[39m
+              [33mid[39m=[32m"custom-prompt"[39m
+              [33mplaceholder[39m=[32m"Wanna add or remove anything from your cover letter? Type here in your own words."[39m
+            [36m/>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"p-4 border-t border-gray-100 bg-gray-50 flex justify-end"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"px-5 py-2 text-sm font-medium text-white bg-gray-800 rounded-lg hover:bg-gray-900 transition-colors shadow-sm"[39m
+          [36m>[39m
+            [0mSave Options[0m
+          [36m</button>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/components/__tests__/CustomizeModal.test.tsx:90:30
+     88|         );
+     89|         
+     90|         const input = screen.getByPlaceholderText(/e.g. Focus more on …
+       |                              ^
+     91|         const maliciousPayload = '<script>alert(1)</script>';
+     92|         fireEvent.change(input, { target: { value: maliciousPayload } …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/10]⎯
+
+ FAIL  src/components/__tests__/GeneratorControls.test.tsx > GeneratorControls > renders sub-components correctly
+TestingLibraryElementError: Unable to find an element with the placeholder text of: /Enter your Gemini API Key/i
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"bg-white rounded-xl shadow-sm border border-gray-200 p-3 flex flex-col items-start gap-2"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"flex flex-col md:flex-row w-full gap-3 items-center justify-between"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"flex-1 w-full md:w-auto flex items-center gap-2 animate-in flex-in slide-in-from-left-2 duration-300"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"relative flex-1 group"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors group-focus-within:text-blue-500"[39m
+            [36m>[39m
+              [36m<svg[39m
+                [33mclass[39m=[32m"text-gray-400 group-focus-within:text-blue-500 transition-colors"[39m
+                [33mfill[39m=[32m"currentColor"[39m
+                [33mheight[39m=[32m"12"[39m
+                [33mstroke[39m=[32m"currentColor"[39m
+                [33mstroke-width[39m=[32m"0"[39m
+                [33mviewBox[39m=[32m"0 0 512 512"[39m
+                [33mwidth[39m=[32m"12"[39m
+                [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+              [36m>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M512 176.001C512 273.203 433.202 352 336 352c-11.22 0-22.19-1.062-32.827-3.069l-24.012 27.014A23.999 23.999 0 0 1 261.223 384H224v40c0 13.255-10.745 24-24 24h-40v40c0 13.255-10.745 24-24 24H24c-13.255 0-24-10.745-24-24v-78.059c0-6.365 2.529-12.47 7.029-16.971l161.802-161.802C163.108 213.814 160 195.271 160 176 160 78.798 238.797.001 335.999 0 433.488-.001 512 78.511 512 176.001zM336 128c0 26.51 21.49 48 48 48s48-21.49 48-48-21.49-48-48-48-48 21.49-48 48z"[39m
+                [36m/>[39m
+              [36m</svg>[39m
+            [36m</div>[39m
+            [36m<input[39m
+              [33mclass[39m=[32m"pl-9 w-full h-9 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-sm bg-gray-50/50 focus:bg-white transition-all placeholder:text-gray-400 font-mono"[39m
+              [33mplaceholder[39m=[32m"Enter Groq API Key"[39m
+              [33mtype[39m=[32m"password"[39m
+              [33mvalue[39m=[32m""[39m
+            [36m/>[39m
+          [36m</div>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"relative flex items-center justify-center gap-2 rounded-lg transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 overflow-hidden text-gray-400 hover:text-blue-500 hover:bg-blue-50 h-auto p-1.5 text-[10px] uppercase tracking-wider font-bold shadow-none"[39m
+            [33mtitle[39m=[32m"Help with API Key"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mfill[39m=[32m"currentColor"[39m
+              [33mheight[39m=[32m"14"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-width[39m=[32m"0"[39m
+              [33mviewBox[39m=[32m"0 0 512 512"[39m
+              [33mwidth[39m=[32m"14"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M504 256c0 136.997-111.043 248-248 248S8 392.997 8 256C8 119.083 119.043 8 256 8s248 111.083 248 248zM262.655 90c-54.497 0-89.255 22.957-116.549 63.758-3.536 5.286-2.353 12.415 2.715 16.258l34.699 26.31c5.205 3.947 12.621 3.008 16.665-2.122 17.864-22.658 30.113-35.797 57.303-35.797 20.429 0 45.698 13.148 45.698 32.958 0 14.976-12.363 22.667-32.534 33.976C247.128 238.528 216 254.941 216 296v4c0 6.627 5.373 12 12 12h56c6.627 0 12-5.373 12-12v-1.333c0-28.462 83.186-29.647 83.186-106.667 0-58.002-60.165-102-116.531-102zM256 338c-25.365 0-46 20.635-46 46 0 25.364 20.635 46 46 46s46-20.636 46-46c0-25.365-20.635-46-46-46z"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"relative z-10"[39m
+            [36m>[39m
+              [0mHelp[0m
+            [36m</span>[39m
+          [36m</button>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"relative flex items-center justify-center gap-2 rounded-lg transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 overflow-hidden shadow-sm bg-gray-800 text-white hover:bg-black h-9 px-3 text-xs font-bold"[39m
+            [33mdisabled[39m=[32m""[39m
+          [36m>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"relative z-10"[39m
+            [36m>[39m
+              [0mDone[0m
+            [36m</span>[39m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"w-full md:w-auto flex flex-wrap items-center justify-end gap-2"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex items-center gap-1.5 px-2.5 h-9 text-xs font-semibold transition-colors cursor-default text-rose-600"[39m
+            [33mtitle[39m=[32m"Click Customize More to change settings."[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"w-2 h-2 rounded-full bg-rose-500"[39m
+            [36m/>[39m
+            [36m<span>[39m
+              [0mCustom Filter is [0m
+              [0mOFF[0m
+            [36m</span>[39m
+            [36m<svg[39m
+              [33mclass[39m=[32m"opacity-70"[39m
+              [33mfill[39m=[32m"currentColor"[39m
+              [33mheight[39m=[32m"10"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-width[39m=[32m"0"[39m
+              [33mviewBox[39m=[32m"0 0 448 512"[39m
+              [33mwidth[39m=[32m"10"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M190.5 66.9l22.2-22.2c9.4-9.4 24.6-9.4 33.9 0L441 239c9.4 9.4 9.4 24.6 0 33.9L246.6 467.3c-9.4 9.4-24.6 9.4-33.9 0l-22.2-22.2c-9.5-9.5-9.3-25 .4-34.3L311.4 296H24c-13.3 0-24-10.7-24-24v-32c0-13.3 10.7-24 24-24h287.4L190.9 101.2c-9.8-9.3-10-24.8-.4-34.3z"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+          [36m</div>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"relative flex items-center justify-center gap-2 rounded-lg font-semibold transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 overflow-hidden shadow-sm bg-cyan-50 border border-cyan-200 text-cyan-700 hover:bg-cyan-100 h-9 px-3 text-xs"[39m
+            [33mtitle[39m=[32m"Customize as you needed."[39m
+          [36m>[39m
+            [36m<di...
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/components/__tests__/GeneratorControls.test.tsx:8:23
+      6|     it('renders sub-components correctly', () => {
+      7|         renderWithProviders(<GeneratorControls />);
+      8|         expect(screen.getByPlaceholderText(/Enter your Gemini API Key/…
+       |                       ^
+      9|         expect(screen.getByRole('button', { name: /Generate Cover Lett…
+     10|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/10]⎯
+
+ FAIL  src/components/__tests__/Modals.test.tsx > Informational Modals > ApiHelpModal > renders when open
+TestingLibraryElementError: Unable to find an element with the text: /How to get a Gemini API Key/i. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33maria-modal[39m=[32m"true"[39m
+        [33mclass[39m=[32m"bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden transform transition-all"[39m
+        [33mrole[39m=[32m"dialog"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"flex items-center justify-between p-4 border-b border-gray-100"[39m
+        [36m>[39m
+          [36m<h3[39m
+            [33mclass[39m=[32m"text-lg font-semibold text-gray-800"[39m
+          [36m>[39m
+            [0mHow to get your API Key[0m
+          [36m</h3>[39m
+          [36m<button[39m
+            [33maria-label[39m=[32m"Close modal"[39m
+            [33mclass[39m=[32m"text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-md hover:bg-gray-100"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mfill[39m=[32m"currentColor"[39m
+              [33mheight[39m=[32m"1em"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-width[39m=[32m"0"[39m
+              [33mviewBox[39m=[32m"0 0 352 512"[39m
+              [33mwidth[39m=[32m"1em"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"p-5 text-sm text-gray-600 space-y-4"[39m
+        [36m>[39m
+          [36m<p>[39m
+            [0mTo generate cover letters, you need an API key from [0m
+            [36m<strong />[39m
+            [0m. This project connects directly to their service to process requests.[0m
+          [36m</p>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"bg-blue-50/50 p-4 rounded-lg border border-blue-100"[39m
+          [36m>[39m
+            [36m<h4[39m
+              [33mclass[39m=[32m"font-semibold text-blue-900 mb-2"[39m
+            [36m>[39m
+              [0mSteps to secure your key:[0m
+            [36m</h4>[39m
+            [36m<ol[39m
+              [33mclass[39m=[32m"list-decimal list-inside space-y-2 text-blue-800/80"[39m
+            [36m>[39m
+              [36m<li>[39m
+                [0mVisit the [0m
+                [0m developer console.[0m
+              [36m</li>[39m
+              [36m<li>[39m
+                [0mCreate a free account or sign in.[0m
+              [36m</li>[39m
+              [36m<li>[39m
+                [0mNavigate to the API Keys section.[0m
+              [36m</li>[39m
+              [36m<li>[39m
+                [0mGenerate a new secret key and copy it.[0m
+              [36m</li>[39m
+              [36m<li>[39m
+                [0mPaste the key into the input field here.[0m
+              [36m</li>[39m
+            [36m</ol>[39m
+          [36m</div>[39m
+          [36m<p[39m
+            [33mclass[39m=[32m"text-xs text-gray-500 italic pb-2 border-b border-gray-100"[39m
+          [36m>[39m
+            [0mYour API key is stored locally in your browser and is never sent to our servers.[0m
+          [36m</p>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"pt-2 animate-in fade-in slide-in-from-bottom-2 duration-700 delay-300"[39m
+          [36m>[39m
+            [36m<p[39m
+              [33mclass[39m=[32m"text-[11px] leading-relaxed text-gray-400"[39m
+            [36m>[39m
+              [0mSorry, I'm unable to provide AI models for free right now due to budget constraints. So you have to use your own API key. If you want to contribute to the project then please [0m
+              [36m<a[39m
+                [33mclass[39m=[32m"text-blue-500 hover:text-blue-600 font-semibold underline underline-offset-2 transition-colors"[39m
+                [33mhref[39m=[32m"https://www.linkedin.com/in/raiyadraad"[39m
+                [33mrel[39m=[32m"noopener noreferrer"[39m
+                [33mtarget[39m=[32m"_blank"[39m
+              [36m>[39m
+                [0mcontact me[0m
+              [36m</a>[39m
+              [0m.[0m
+            [36m</p>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"p-4 border-t border-gray-100 bg-gray-50 flex justify-end gap-3"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors shadow-sm"[39m
+          [36m>[39m
+            [0mClose[0m
+          [36m</button>[39m
+          [36m<a[39m
+            [33mclass[39m=[32m"flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors shadow-sm"[39m
+            [33mrel[39m=[32m"noopener noreferrer"[39m
+            [33mtarget[39m=[32m"_blank"[39m
+          [36m>[39m
+            [0mGet [0m
+            [0m Key [0m
+            [36m<svg[39m
+              [33mfill[39m=[32m"currentColor"[39m
+              [33mheight[39m=[32m"12"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-width[39m=[32m"0"[39m
+              [33mviewBox[39m=[32m"0 0 512 512"[39m
+              [33mwidth[39m=[32m"12"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M432,320H400a16,16,0,0,0-16,16V448H64V128H208a16,16,0,0,0,16-16V80a16,16,0,0,0-16-16H48A48,48,0,0,0,0,112V464a48,48,0,0,0,48,48H400a48,48,0,0,0,48-48V336A16,16,0,0,0,432,320ZM488,0h-128c-21.37,0-32.05,25.91-17,41l35.73,35.73L135,320.37a24,24,0,0,0,0,34L157.67,377a24,24,0,0,0,34,0L435.28,133.32,471,169c15,15,41,4.5,41-17V24A24,24,0,0,0,488,0Z"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+          [36m</a>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/components/__tests__/Modals.test.tsx:10:27
+      8|         it('renders when open', () => {
+      9|             render(<ApiHelpModal isOpen={true} onClose={vi.fn()} />);
+     10|             expect(screen.getByText(/How to get a Gemini API Key/i)).t…
+       |                           ^
+     11|         });
+     12| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/10]⎯
+
+ FAIL  src/components/__tests__/Modals.test.tsx > Informational Modals > PrivacyModal > renders when open
+TestingLibraryElementError: Unable to find an element with the text: /Privacy & Data Security/i. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33maria-modal[39m=[32m"true"[39m
+        [33mclass[39m=[32m"bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden transform transition-all"[39m
+        [33mrole[39m=[32m"dialog"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"flex items-center justify-between p-4 border-b border-gray-100"[39m
+        [36m>[39m
+          [36m<h3[39m
+            [33mclass[39m=[32m"text-lg font-semibold text-gray-800"[39m
+          [36m>[39m
+            [0mData Privacy[0m
+          [36m</h3>[39m
+          [36m<button[39m
+            [33maria-label[39m=[32m"Close modal"[39m
+            [33mclass[39m=[32m"text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-md hover:bg-gray-100"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mfill[39m=[32m"currentColor"[39m
+              [33mheight[39m=[32m"1em"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-width[39m=[32m"0"[39m
+              [33mviewBox[39m=[32m"0 0 352 512"[39m
+              [33mwidth[39m=[32m"1em"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"p-5 text-sm text-gray-600 space-y-4"[39m
+        [36m>[39m
+          [36m<p>[39m
+            [36m<strong>[39m
+              [0mThis application does not store any of your data.[0m
+            [36m</strong>[39m
+          [36m</p>[39m
+          [36m<p>[39m
+            [0mThere are no backend services or databases connected to this application. All data, including your job descriptions, templates, and generated cover letters, are stored temporarily in your local browser's memory.[0m
+          [36m</p>[39m
+          [36m<p>[39m
+            [0mAny settings you configure are saved exclusively in your browser's local storage and are sent directly where needed. We cannot access them.[0m
+          [36m</p>[39m
+          [36m<p[39m
+            [33mclass[39m=[32m"text-xs text-gray-500 italic mt-4"[39m
+          [36m>[39m
+            [0mYou maintain full control over your data.[0m
+          [36m</p>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"p-4 border-t border-gray-100 bg-gray-50 flex justify-end"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors shadow-sm"[39m
+          [36m>[39m
+            [0mGot it[0m
+          [36m</button>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/components/__tests__/Modals.test.tsx:22:27
+     20|         it('renders when open', () => {
+     21|             render(<PrivacyModal isOpen={true} onClose={vi.fn()} />);
+     22|             expect(screen.getByText(/Privacy & Data Security/i)).toBeI…
+       |                           ^
+     23|         });
+     24| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/10]⎯
+
+ FAIL  src/components/__tests__/ModelSelector.test.tsx > ModelSelector > renders the select field with models
+TestingLibraryElementError: Unable to find a label with the text of: /AI Model/i
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-2 text-xs w-full md:w-auto h-9"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"text-gray-400 pl-1"[39m
+      [36m>[39m
+        [36m<svg[39m
+          [33mfill[39m=[32m"currentColor"[39m
+          [33mheight[39m=[32m"1em"[39m
+          [33mstroke[39m=[32m"currentColor"[39m
+          [33mstroke-width[39m=[32m"0"[39m
+          [33mviewBox[39m=[32m"0 0 640 512"[39m
+          [33mwidth[39m=[32m"1em"[39m
+          [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+        [36m>[39m
+          [36m<path[39m
+            [33md[39m=[32m"M32,224H64V416H32A31.96166,31.96166,0,0,1,0,384V256A31.96166,31.96166,0,0,1,32,224Zm512-48V448a64.06328,64.06328,0,0,1-64,64H160a64.06328,64.06328,0,0,1-64-64V176a79.974,79.974,0,0,1,80-80H288V32a32,32,0,0,1,64,0V96H464A79.974,79.974,0,0,1,544,176ZM264,256a40,40,0,1,0-40,40A39.997,39.997,0,0,0,264,256Zm-8,128H192v32h64Zm96,0H288v32h64ZM456,256a40,40,0,1,0-40,40A39.997,39.997,0,0,0,456,256Zm-8,128H384v32h64ZM640,256V384a31.96166,31.96166,0,0,1-32,32H576V224h32A31.96166,31.96166,0,0,1,640,256Z"[39m
+          [36m/>[39m
+        [36m</svg>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"flex-1"[39m
+      [36m>[39m
+        [36m<span[39m
+          [33mclass[39m=[32m"text-[10px] text-gray-500 block leading-tight"[39m
+        [36m>[39m
+          [0mAI Model[0m
+        [36m</span>[39m
+        [36m<select[39m
+          [33mclass[39m=[32m"bg-transparent font-medium text-gray-700 outline-none w-full cursor-pointer text-xs"[39m
+        [36m>[39m
+          [36m<option[39m
+            [33mvalue[39m=[32m"llama-3.3-70b-versatile"[39m
+          [36m>[39m
+            [0mLlama 3.3 70B (High Quality)[0m
+          [36m</option>[39m
+          [36m<option[39m
+            [33mvalue[39m=[32m"llama-3.1-8b-instant"[39m
+          [36m>[39m
+            [0mLlama 3.1 8B (Fast)[0m
+          [36m</option>[39m
+          [36m<option[39m
+            [33mvalue[39m=[32m"mixtral-8x7b-32768"[39m
+          [36m>[39m
+            [0mMixtral 8x7B[0m
+          [36m</option>[39m
+        [36m</select>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ getAllByLabelText node_modules/@testing-library/dom/dist/queries/label-text.js:111:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/components/__tests__/ModelSelector.test.tsx:8:23
+      6|     it('renders the select field with models', () => {
+      7|         renderWithProviders(<ModelSelector />);
+      8|         expect(screen.getByLabelText(/AI Model/i)).toBeInTheDocument();
+       |                       ^
+      9|         // Assuming Gemini 1.5 Flash is the default or at least in the…
+     10|         expect(screen.getByText(/Gemini 1.5 Flash/i)).toBeInTheDocumen…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/10]⎯
+
+ FAIL  src/components/__tests__/ModelSelector.test.tsx > ModelSelector > changes the model in the store when selection changes
+TestingLibraryElementError: Unable to find a label with the text of: /AI Model/i
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-2 text-xs w-full md:w-auto h-9"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"text-gray-400 pl-1"[39m
+      [36m>[39m
+        [36m<svg[39m
+          [33mfill[39m=[32m"currentColor"[39m
+          [33mheight[39m=[32m"1em"[39m
+          [33mstroke[39m=[32m"currentColor"[39m
+          [33mstroke-width[39m=[32m"0"[39m
+          [33mviewBox[39m=[32m"0 0 640 512"[39m
+          [33mwidth[39m=[32m"1em"[39m
+          [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+        [36m>[39m
+          [36m<path[39m
+            [33md[39m=[32m"M32,224H64V416H32A31.96166,31.96166,0,0,1,0,384V256A31.96166,31.96166,0,0,1,32,224Zm512-48V448a64.06328,64.06328,0,0,1-64,64H160a64.06328,64.06328,0,0,1-64-64V176a79.974,79.974,0,0,1,80-80H288V32a32,32,0,0,1,64,0V96H464A79.974,79.974,0,0,1,544,176ZM264,256a40,40,0,1,0-40,40A39.997,39.997,0,0,0,264,256Zm-8,128H192v32h64Zm96,0H288v32h64ZM456,256a40,40,0,1,0-40,40A39.997,39.997,0,0,0,456,256Zm-8,128H384v32h64ZM640,256V384a31.96166,31.96166,0,0,1-32,32H576V224h32A31.96166,31.96166,0,0,1,640,256Z"[39m
+          [36m/>[39m
+        [36m</svg>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"flex-1"[39m
+      [36m>[39m
+        [36m<span[39m
+          [33mclass[39m=[32m"text-[10px] text-gray-500 block leading-tight"[39m
+        [36m>[39m
+          [0mAI Model[0m
+        [36m</span>[39m
+        [36m<select[39m
+          [33mclass[39m=[32m"bg-transparent font-medium text-gray-700 outline-none w-full cursor-pointer text-xs"[39m
+        [36m>[39m
+          [36m<option[39m
+            [33mvalue[39m=[32m"llama-3.3-70b-versatile"[39m
+          [36m>[39m
+            [0mLlama 3.3 70B (High Quality)[0m
+          [36m</option>[39m
+          [36m<option[39m
+            [33mvalue[39m=[32m"llama-3.1-8b-instant"[39m
+          [36m>[39m
+            [0mLlama 3.1 8B (Fast)[0m
+          [36m</option>[39m
+          [36m<option[39m
+            [33mvalue[39m=[32m"mixtral-8x7b-32768"[39m
+          [36m>[39m
+            [0mMixtral 8x7B[0m
+          [36m</option>[39m
+        [36m</select>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ getAllByLabelText node_modules/@testing-library/dom/dist/queries/label-text.js:111:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/components/__tests__/ModelSelector.test.tsx:15:31
+     13|     it('changes the model in the store when selection changes', () => {
+     14|         const { store } = renderWithProviders(<ModelSelector />);
+     15|         const select = screen.getByLabelText(/AI Model/i);
+       |                               ^
+     16|         
+     17|         fireEvent.change(select, { target: { value: 'gemini-1.5-pro-la…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/10]⎯
+
+ FAIL  src/utils/__tests__/promptUtils.test.ts > promptUtils > formatCustomPrompt > should sanitize malicious code in custom prompt
+AssertionError: expected '\nAdditional user instruction: Use a …' to be '\nAdditional user instruction: Use a …' // Object.is equality
+
+- Expected
++ Received
+
+
+- Additional user instruction: Use a confident tone 
++ Additional user instruction: Use a confident tone
+
+ ❯ src/utils/__tests__/promptUtils.test.ts:22:28
+     20|             expect(result).not.toContain('<script>');
+     21|             expect(result).not.toContain('alert');
+     22|             expect(result).toBe('\nAdditional user instruction: Use a …
+       |                            ^
+     23|         });
+     24|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/10]⎯
+
+ FAIL  src/utils/__tests__/promptUtils.test.ts > promptUtils > buildCoverLetterPrompt > should handle special characters correctly
+AssertionError: expected '\nYou are an expert career consultant…' to contain '!@#$%^&*()_+{}|:'
+
+- Expected
++ Received
+
+- !@#$%^&*()_+{}|:
++
++ You are an expert career consultant.
++ Task: Write a professional cover letter.
++ Context:
++ - Job Description:
++ !@#$%^&amp;*()_+{}|:"&lt;&gt;?~`-=[]\;',./
++
++ - User's Background/Style (Adapt this): 
++ I am a developer.
++
++ Rules:
++ 1. Keep it concise (under 400 words).
++ 2. Only change Position Name, Company name and related skills.
++ 3. If you see "[One line about product or company value that matches with me]", replace it with a line about product or company value that matches with the job description.
++ 4. Leave the rest of the template as it is.
++ 5. Output strictly the cover letter text. No preamble.
++         
+
+ ❯ src/utils/__tests__/promptUtils.test.ts:68:28
+     66|             const result = buildCoverLetterPrompt(specialChars, templa…
+     67|             // Most special characters are preserved, but <> might be …
+     68|             expect(result).toContain('!@#$%^&*()_+{}|:');
+       |                            ^
+     69|         });
+     70|     });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/10]⎯
+
+
+ Test Files  5 failed | 6 passed (11)
+      Tests  10 failed | 32 passed (42)
+   Start at  20:54:51
+   Duration  3.03s (transform 808ms, setup 2.86s, collect 2.28s, tests 1.52s, environment 7.50s, prepare 995ms)
+

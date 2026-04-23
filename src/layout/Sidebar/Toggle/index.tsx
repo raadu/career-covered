@@ -1,3 +1,5 @@
+import { HiChevronRight, HiChevronLeft } from 'react-icons/hi';
+
 interface SidebarToggleProps {
   isExpanded: boolean;
   onToggle: () => void;
@@ -7,12 +9,13 @@ const SidebarToggle = ({ isExpanded, onToggle }: SidebarToggleProps) => {
   return (
     <button 
         onClick={onToggle}
-        className="h-10 w-full text-blue-300 hover:text-cyan-600 border-t border-gray-100 flex items-center justify-center hover:bg-cyan-50 transition-colors"
+        className="h-12 w-full text-gray-400 hover:text-blue-600 border-t border-gray-100 flex items-center justify-center hover:bg-blue-50 transition-all duration-300 group"
+        title={isExpanded ? "Collapse Sidebar" : "Expand Sidebar"}
     >
         {isExpanded ? (
-            <span className="text-xs font-bold">«</span>
+            <HiChevronLeft size={24} className="group-hover:-translate-x-0.5 transition-transform" />
         ) : (
-            <span className="text-xs font-bold">»</span>
+            <HiChevronRight size={24} className="group-hover:translate-x-0.5 transition-transform" />
         )}
     </button>
   );

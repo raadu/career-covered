@@ -15,7 +15,9 @@ const Sidebar = ({ isExpanded, onToggle }: SidebarProps) => {
       } bg-white border-r border-gray-200 hidden md:flex flex-col transition-all duration-300 ease-in-out relative`}
     >
       <SidebarHeader isExpanded={isExpanded} />
-      <SidebarNavigation isExpanded={isExpanded} />
+      <SidebarNavigation 
+        isExpanded={isExpanded} 
+      />
       <SidebarToggle isExpanded={isExpanded} onToggle={onToggle} />
     </aside>
   );
