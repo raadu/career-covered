@@ -18,9 +18,9 @@ const ResultHeader = ({
   copied,
 }: ResultHeaderProps) => {
   return (
-    <div className="bg-gradient-to-r from-blue-50/50 to-indigo-50/50 p-4 border-b border-blue-100 flex flex-col md:flex-row items-center justify-between gap-4">
-      <h3 className="font-bold text-blue-900 tracking-tight">Generated Cover Letter</h3>
-      <div className="flex flex-wrap items-center justify-center gap-2">
+    <div className="bg-gradient-to-r from-blue-50/50 to-indigo-50/50 p-3 md:p-5 border-b border-blue-100 flex flex-col lg:flex-row items-center justify-between gap-4">
+      <h3 className="font-bold text-blue-900 tracking-tight text-sm md:text-base">Generated Cover Letter</h3>
+      <div className="flex flex-wrap items-center justify-center lg:justify-end gap-2 w-full lg:w-auto">
         <CommonButton
           variant="outline"
           onClick={handleDownloadPDF}

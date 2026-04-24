@@ -16,7 +16,7 @@ const ControlActions = ({
   setShowCustomizeModal,
 }: ControlActionsProps) => {
   return (
-    <div className="w-full md:w-auto flex flex-wrap items-center justify-end gap-2">
+    <div className="w-full lg:w-auto flex flex-wrap items-center justify-between lg:justify-end gap-2">
       <div
         title="Click Customize More to change settings."
         className={`flex items-center gap-1.5 px-2.5 h-9 text-xs font-semibold transition-colors cursor-default ${

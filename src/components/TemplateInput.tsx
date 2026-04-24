@@ -9,7 +9,7 @@ const TemplateInput = () => {
 
     return (
         <CollapsibleTextArea
-            label="Your Cover Letter Template"
+            label="Your Cover Letter Template (Optional)"
             value={template}
             onChange={(val) => dispatch(setTemplate(val))}
             isExpanded={isTemplateExpanded}

@@ -19,7 +19,7 @@ const GenerateAction = ({
   error,
 }: GenerateActionProps) => {
   return (
-    <div className="w-full md:w-auto flex flex-col items-end">
+    <div className="w-full lg:w-auto flex flex-col items-stretch lg:items-end p-1 lg:p-0">
       <CommonButton
         variant="gradient"
         onClick={onGenerate}
