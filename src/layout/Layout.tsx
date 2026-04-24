@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { type RootState } from 'store';
 import Sidebar from 'layout/Sidebar';
+import Footer from 'layout/Footer';
 import OnboardingModal from 'components/Modals/OnboardingModal';
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(() => {
@@ -33,14 +34,17 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   }
 
   return (
-    <div className="flex h-screen bg-gray-50 font-sans text-gray-900 overflow-hidden">
+    <div className="flex flex-col lg:flex-row h-screen bg-gray-50 font-sans text-gray-900 overflow-hidden">
       <Sidebar 
         isExpanded={isSidebarExpanded} 
         onToggle={handleToggle} 
       />
-      <main className="flex-1 flex flex-col min-w-0 h-full">
-        <div className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
-          {children}
+      <main className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
+        <div className="flex-1 overflow-y-auto p-2 md:p-6 lg:p-8 flex flex-col">
+          <div className="max-w-5xl mx-auto w-full flex-1">
+            {children}
+          </div>
+          <Footer />
         </div>
       </main>
 

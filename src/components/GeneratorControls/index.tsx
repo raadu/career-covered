@@ -69,7 +69,7 @@ const GeneratorControls = () => {
     return (
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-3 flex flex-col items-start gap-2">
             
-            <div className="flex flex-col md:flex-row w-full gap-3 items-center justify-between">
+            <div className="flex flex-col lg:flex-row w-full gap-3 lg:items-center justify-between">
                 <ApiKeySection 
                     apiKey={apiKey}
                     setApiKey={(val) => dispatch(setApiKey(val))}

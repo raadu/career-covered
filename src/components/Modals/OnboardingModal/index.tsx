@@ -68,7 +68,7 @@ const OnboardingModal = ({ isOpen, onComplete, onClose }: OnboardingModalProps) 
                 <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center text-[11px] font-bold mt-0.5">2</span>
                 <div className="flex-1">
                   Login with your google account.
-                  <p className="text-[11px] text-gray-400 mt-0.5">You can also use other methods.</p>
+                  <p className="text-[11px] text-gray-400 mt-0.5">You can also use other login methods.</p>
                 </div>
               </li>
               <li className="flex gap-4 items-start">

@@ -30,6 +30,8 @@ type TestStore = ReturnType<typeof createTestStore>;
  * Custom render function that wraps the component with a Redux Provider.
  * Uses a real store instance configured for testing.
  */
+import { MemoryRouter } from 'react-router-dom';
+
 function renderWithProviders(
     ui: ReactElement,
     {
@@ -42,7 +44,11 @@ function renderWithProviders(
     } & Omit<RenderOptions, 'queries'> = {}
 ) {
     function Wrapper({ children }: { children: React.ReactNode }): ReactElement {
-        return <Provider store={store}>{children}</Provider>;
+        return (
+            <Provider store={store}>
+                <MemoryRouter>{children}</MemoryRouter>
+            </Provider>
+        );
     }
 
     return { store, ...render(ui, { wrapper: Wrapper, ...renderOptions }) };

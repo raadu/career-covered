@@ -22,7 +22,7 @@ const TextAreaHeader = ({
 }: TextAreaHeaderProps) => {
   return (
     <div
-      className="py-2.5 px-4 flex items-center justify-between cursor-pointer bg-gray-50/80 backdrop-blur-sm border-b border-gray-100 hover:bg-gray-100/50 transition-all duration-200 group"
+      className="py-2 px-3 md:py-2.5 md:px-4 flex items-center justify-between cursor-pointer bg-gray-50/80 backdrop-blur-sm border-b border-gray-100 hover:bg-gray-100/50 transition-all duration-200 group"
       onClick={onToggleExpand}
     >
       <label className="font-semibold text-gray-700 flex items-center gap-2 cursor-pointer select-none text-sm tracking-tight">

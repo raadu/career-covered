@@ -20,7 +20,7 @@ const TextAreaBody = ({
       }`}
     >
       <textarea
-        className={`w-full p-4 focus:outline-none focus:ring-0 focus:bg-blue-50/10 resize-none text-gray-700 text-sm leading-relaxed h-full block transition-colors ${
+        className={`w-full p-3 md:p-4 focus:outline-none focus:ring-0 focus:bg-blue-50/10 resize-none text-gray-700 text-xs md:text-sm leading-relaxed h-full block transition-colors ${
           !isExpanded ? "cursor-pointer" : ""
         }`}
         value={value}

@@ -70,4 +70,20 @@ describe('CustomizeModal', () => {
 
         expect(onSave).toHaveBeenCalledWith({ options: initialOptions, customPrompt: maliciousPayload });
     });
+
+    it('resets options when Reset button is clicked', () => {
+        render(<CustomizeModal isOpen={true} onClose={onClose} initialOptions={initialOptions} onSave={onSave} hasTemplate={true} />);
+        
+        // Change some value
+        const checkbox = screen.getByLabelText(/Limit words/i);
+        fireEvent.click(checkbox);
+        expect(checkbox).toBeChecked();
+
+        // Click Reset
+        const resetBtn = screen.getByRole('button', { name: /Reset/i });
+        fireEvent.click(resetBtn);
+
+        // Verify it's back to initial (limitWords: false)
+        expect(checkbox).not.toBeChecked();
+    });
 });

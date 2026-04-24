@@ -19,7 +19,7 @@ const ApiKeySection = ({
 }: ApiKeySectionProps) => {
   if (showKeyInput) {
     return (
-      <div className="flex-1 w-full md:w-auto flex items-center gap-2 animate-in flex-in slide-in-from-left-2 duration-300">
+      <div className="flex-1 w-full lg:w-auto flex items-center gap-2 animate-in flex-in slide-in-from-left-2 duration-300">
         <div className="relative flex-1 group">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors group-focus-within:text-blue-500">
             <FaKey
@@ -62,7 +62,7 @@ const ApiKeySection = ({
   }
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-3 w-full lg:w-auto">
       <CommonButton
         variant="outline"
         onClick={() => setShowKeyInput(true)}
