@@ -3,9 +3,8 @@
   "compatibility_date": "2026-04-26",
   "assets": {
     "directory": "./dist"
-  }
+  },
   "$schema": "node_modules/wrangler/config-schema.json",
-  "compatibility_date": "2026-04-26",
   "observability": {
     "enabled": true
   },
