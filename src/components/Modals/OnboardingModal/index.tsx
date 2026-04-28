@@ -73,6 +73,7 @@ const OnboardingModal = ({ isOpen, onComplete, onClose }: OnboardingModalProps) 
                 type="password"
                 value={tempKey}
                 onChange={(e) => setTempKey(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleStart()}
                 placeholder={`Enter your ${PROVIDER_NAME} API Key here`}
                 className="pl-11 w-full h-11 border border-gray-100 rounded-md focus:ring-4 focus:ring-blue-500/5 focus:border-blue-400 outline-none text-sm bg-gray-50/50 focus:bg-white transition-all placeholder:text-gray-400 font-mono"
               />
