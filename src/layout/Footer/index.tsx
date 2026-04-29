@@ -5,22 +5,20 @@ const Footer = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <footer className="w-full py-2 mt-4 text-xs text-gray-500 flex flex-col md:flex-row items-center justify-between px-4 bg-gradient-to-r from-cyan-50/50 to-blue-50/50">
-      <div className="flex items-center mb-1 md:mb-0">
-        <button 
-          onClick={() => setIsModalOpen(true)}
-          className="hover:text-blue-600 underline decoration-blue-200 underline-offset-2 transition-colors focus:outline-none"
-        >
-          We don't store your data.
-        </button>
-      </div>
+    <footer className="h-12 w-full text-xs text-gray-400 border-t border-gray-100 hidden lg:flex items-center justify-between px-6 bg-white shrink-0">
+      <button 
+        onClick={() => setIsModalOpen(true)}
+        className="hover:text-blue-600 underline decoration-gray-300 underline-offset-2 transition-colors focus:outline-none"
+      >
+        We don't store your data.
+      </button>
       <div>
-        Made with <span className="text-red-500">❤️</span> by{' '}
+        Made with <span className="text-red-400">❤️</span> by{' '}
         <a 
           href="https://raadu.github.io" 
           target="_blank" 
           rel="noopener noreferrer"
-          className="font-medium text-gray-600 hover:text-blue-600 transition-colors"
+          className="font-medium text-gray-500 hover:text-blue-600 transition-colors"
         >
           Raad
         </a>.
