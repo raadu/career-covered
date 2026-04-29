@@ -3,12 +3,14 @@ import Header from './Header';
 import WordLimitSection from './WordLimitSection';
 import MinimalChangesSection from './MinimalChangesSection';
 import CustomPromptSection from './CustomPromptSection';
+import SameLanguageSection from './SameLanguageSection';
 import Footer from './Footer';
 
 export interface CustomizationOptions {
   limitWords: boolean;
   wordCount: number;
   minimalChanges: boolean;
+  sameLanguage: boolean;
 }
 
 export interface CustomizeModalSavePayload {
@@ -28,6 +30,7 @@ const CustomizeModal = ({ isOpen, onClose, initialOptions, onSave, hasTemplate }
   const [limitWords, setLimitWords] = useState<boolean>(initialOptions.limitWords);
   const [wordCountStr, setWordCountStr] = useState<string>(String(initialOptions.wordCount));
   const [minimalChanges, setMinimalChanges] = useState<boolean>(initialOptions.minimalChanges);
+  const [sameLanguage, setSameLanguage] = useState<boolean>(initialOptions.sameLanguage);
   const [customPrompt, setCustomPrompt] = useState<string>('');
   const [error, setError] = useState<string>('');
 
@@ -41,6 +44,7 @@ const CustomizeModal = ({ isOpen, onClose, initialOptions, onSave, hasTemplate }
     setLimitWords(false);
     setWordCountStr('400');
     setMinimalChanges(false);
+    setSameLanguage(false);
     setCustomPrompt('');
     setError('');
   };
@@ -58,7 +62,8 @@ const CustomizeModal = ({ isOpen, onClose, initialOptions, onSave, hasTemplate }
         options: {
           limitWords,
           wordCount: finalWordCount,
-          minimalChanges
+          minimalChanges,
+          sameLanguage
         },
         customPrompt: trimmedCustomPrompt
       });
@@ -68,7 +73,8 @@ const CustomizeModal = ({ isOpen, onClose, initialOptions, onSave, hasTemplate }
         options: {
           limitWords,
           wordCount: parseInt(wordCountStr, 10) || 400,
-          minimalChanges
+          minimalChanges,
+          sameLanguage
         },
         customPrompt: trimmedCustomPrompt
       });
@@ -103,6 +109,11 @@ const CustomizeModal = ({ isOpen, onClose, initialOptions, onSave, hasTemplate }
             hasTemplate={hasTemplate}
             minimalChanges={minimalChanges}
             onToggle={() => setMinimalChanges(!minimalChanges)}
+          />
+
+          <SameLanguageSection
+            sameLanguage={sameLanguage}
+            onToggle={() => setSameLanguage(!sameLanguage)}
           />
 
           <CustomPromptSection 

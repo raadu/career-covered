@@ -30,7 +30,7 @@ const GeneratorControls = () => {
       if (apiKey) setIsEditing(false);
     }
 
-    const isFilterOn = !!(customization?.limitWords || customization?.minimalChanges);
+    const isFilterOn = !!(customization?.limitWords || customization?.minimalChanges || customization?.sameLanguage);
 
     const handleGenerate = async (optionsOverride?: CustomizationOptions, customPrompt?: string) => {
         if (!apiKey) {
@@ -48,6 +48,7 @@ const GeneratorControls = () => {
             template,
             wordCountLimit,
             activeCustomization?.minimalChanges,
+            activeCustomization?.sameLanguage,
             customPrompt
         );
 

@@ -5,7 +5,8 @@ import CustomizeModal from '../Modals/CustomizeModal';
 const initialOptions = {
     limitWords: false,
     wordCount: 400,
-    minimalChanges: true
+    minimalChanges: true,
+    sameLanguage: false
 };
 
 describe('CustomizeModal', () => {

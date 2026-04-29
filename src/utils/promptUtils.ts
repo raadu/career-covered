@@ -15,6 +15,7 @@ export const buildCoverLetterPrompt = (
     template: string,
     wordCountLimit: number | null = null,
     minimalChanges: boolean = true,
+    sameLanguage: boolean = false,
     customPrompt?: string
 ): string => {
     const sanitizedJD = sanitize(jobDescription);
@@ -27,6 +28,10 @@ export const buildCoverLetterPrompt = (
     const changesRule = minimalChanges
         ? `2. Only change Position Name, Company name and related skills.`
         : `2. You can use professional tone to change the related skills and motivation.`;
+
+    const languageRule = sameLanguage
+        ? `\n6. Create the cover letter in the same language of the job description. Use correct grammar and easy words.`
+        : '';
 
     return `
 You are an expert career consultant.
@@ -42,6 +47,6 @@ ${wordRule}
 ${changesRule}
 3. If you see "[One line about product or company value that matches with me]", replace it with a line about product or company value that matches with the job description.
 4. Leave the rest of the template as it is.
-5. Output strictly the cover letter text. No preamble.${formatCustomPrompt(customPrompt)}
+5. Output strictly the cover letter text. No preamble.${languageRule}${formatCustomPrompt(customPrompt)}
         `;
 };
