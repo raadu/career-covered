@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import { Helmet } from 'react-helmet-async';
 import Layout from 'layout/Layout';
 import MainHeader from 'components/MainHeader';
 import TemplateInput from 'components/TemplateInput';
@@ -11,6 +12,11 @@ import SupportView from 'views/SupportView';
 const App = () => {
   return (
     <Layout>
+      <Helmet>
+        <title>Create free cover letters in 2 seconds</title>
+        <meta name="description" content="100% free cover letters. No payments needed. Create cover letters in 2 seconds. Cover letters based on job description and your template." />
+        <link rel="canonical" href="https://careercovered.com/" />
+      </Helmet>
       <Toaster position="bottom-right" />
       <Routes>
         <Route path="/support" element={<SupportView />} />

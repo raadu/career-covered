@@ -1,8 +1,8 @@
 import { FaLinkedin, FaGoogle } from 'react-icons/fa';
 
 const SupportView = () => {
-  const linkedinUrl = import.meta.env.VITE_LINKEDIN_URL;
-  const formUrl = import.meta.env.VITE_SUPPORT_FORM_URL;
+  const linkedinUrl = import.meta.env.VITE_LINKEDIN_URL || 'https://www.linkedin.com/in/raiyadraad';
+  const formUrl = import.meta.env.VITE_SUPPORT_FORM_URL || 'https://forms.gle/jC1UexnKXfP7yHVy9';
 
   return (
     <div className="max-w-3xl mx-auto py-12 px-6">

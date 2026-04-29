@@ -1,12 +1,40 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { VitePWA } from 'vite-plugin-pwa'
 import { fileURLToPath, URL } from 'url'
 
 import { cloudflare } from "@cloudflare/vite-plugin";
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), cloudflare()],
+  plugins: [
+    react(), 
+    cloudflare(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      includeAssets: ['favicon.svg', 'robots.txt', 'sitemap.xml'],
+      manifest: {
+        name: 'Career Covered - Create Free Cover Letters',
+        short_name: 'CareerCovered',
+        description: '100% free AI cover letter generator. Create professional cover letters in 2 seconds.',
+        theme_color: '#2563eb',
+        background_color: '#f8fafc',
+        display: 'standalone',
+        icons: [
+          {
+            src: 'favicon.svg',
+            sizes: '192x192',
+            type: 'image/svg+xml'
+          },
+          {
+            src: 'favicon.svg',
+            sizes: '512x512',
+            type: 'image/svg+xml'
+          }
+        ]
+      }
+    })
+  ],
   resolve: {
     alias: {
       'assets': fileURLToPath(new URL('./src/assets', import.meta.url)),
@@ -17,6 +45,5 @@ export default defineConfig({
       'utils': fileURLToPath(new URL('./src/utils', import.meta.url)),
       'views': fileURLToPath(new URL('./src/views', import.meta.url))
     }
-
   }
 })

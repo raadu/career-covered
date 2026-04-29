@@ -13,6 +13,7 @@ interface CoverLetterState {
     limitWords: boolean;
     wordCount: number;
     minimalChanges: boolean;
+    sameLanguage: boolean;
   };
 }
 
@@ -34,6 +35,7 @@ const initialState: CoverLetterState = {
     limitWords: localStorage.getItem('cl_limitWords') === 'true',
     wordCount: parseInt(localStorage.getItem('cl_wordCount') || '400', 10),
     minimalChanges: localStorage.getItem('cl_minimalChanges') === 'true',
+    sameLanguage: localStorage.getItem('cl_sameLanguage') === 'true',
   },
 };
 
@@ -77,6 +79,7 @@ export const coverLetterSlice = createSlice({
       localStorage.setItem('cl_limitWords', String(action.payload.limitWords));
       localStorage.setItem('cl_wordCount', String(action.payload.wordCount));
       localStorage.setItem('cl_minimalChanges', String(action.payload.minimalChanges));
+      localStorage.setItem('cl_sameLanguage', String(action.payload.sameLanguage));
     }
   },
 });

@@ -44,8 +44,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           <div className="max-w-5xl mx-auto w-full flex-1">
             {children}
           </div>
-          <Footer />
         </div>
+        <Footer />
       </main>
 
       <OnboardingModal 
