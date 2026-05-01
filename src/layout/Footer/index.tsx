@@ -5,7 +5,7 @@ const Footer = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <footer className="h-12 w-full text-xs text-gray-400 border-t border-gray-100 hidden lg:flex items-center justify-between px-6 bg-white shrink-0">
+    <footer className="h-12 w-full text-[10px] sm:text-xs text-gray-400 border-t border-gray-100 flex items-center justify-between px-4 sm:px-6 bg-white shrink-0">
       <button 
         onClick={() => setIsModalOpen(true)}
         className="hover:text-blue-600 underline decoration-gray-300 underline-offset-2 transition-colors focus:outline-none"

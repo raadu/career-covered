@@ -1,5 +1,6 @@
 import { PROVIDER_URL } from 'utils/AIModelUtils';
-import { FaExternalLinkAlt } from 'react-icons/fa';
+import { FaExternalLinkAlt, FaLifeRing } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 interface PrimaryOnboardingUIProps {
   onShowDetailed: () => void;
@@ -79,6 +80,16 @@ const PrimaryOnboardingUI = ({ onShowDetailed, isSettingsMode }: PrimaryOnboardi
         >
           Still stuck? Click here for more information.
         </button>
+
+        <div className="pt-4 border-t border-gray-50 mt-4 flex justify-center">
+          <Link 
+            to="/support"
+            className="flex items-center gap-2 text-[11px] text-gray-400 hover:text-blue-500 transition-colors font-bold uppercase tracking-widest"
+          >
+            <FaLifeRing size={12} />
+            Contact Support
+          </Link>
+        </div>
       </div>
     </>
   );
