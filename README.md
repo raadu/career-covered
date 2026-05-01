@@ -1,78 +1,82 @@
-# Career Covered - Cover Letter Creator
+# Career Covered - AI-Powered Cover Letter Generator
 
-Career Covered is a smart, fast, and automated cover letter generator built with React, Vite, Tailwind CSS, and powered by Groq's high-performance LLM APIs. 
+Career Covered is a high-performance, privacy-centric automated cover letter generator. Built with React, Vite, and Tailwind CSS, it leverages the Groq Cloud API to deliver tailored professional documents in seconds.
 
-It takes your existing cover letter template and a job description, then intelligently tailors the cover letter specifically for that role. It strictly preserves your tone, style, and structure while updating the targeted skills, company values, and position details.
+The application intelligently adapts your existing cover letter templates to specific job descriptions, maintaining your unique professional voice while optimizing for role-specific keywords and requirements.
 
-## 🌟 Features
-- 🚀 **Lightning Fast:** Generates tailored cover letters in seconds.
-- 🎨 **Sleek UI:** Modern, responsive design with glassmorphism and subtle animations.
-- 🤖 **Multiple AI Models:** Choose between LLama 3.3 70B, Llama 3.1 8B, and Mixtral 8x7B.
-- 🛠️ **Deep Customization:** 
-    - **Limit Words**: Set strict word counts (50-1000 words).
-    - **Minimal Changes**: Toggle between "Strictly template-based" or "Creative professional" tone.
-    - **Custom Prompt**: Add your own specific instructions for each generation.
-- 🎓 **Smart Onboarding**: A dual-view onboarding flow that guides new users through setting up their API keys, with a "Detailed Guide" for those who need extra help.
-- 📂 **Export Options**: Download as professionally formatted PDF or Word (.docx) files.
+## Features
 
-## 🔒 Data Privacy & Security
-- **Client-Side Only**: Your data never touches our servers. There is no backend or database.
-- **API Keys**: Stored securely in your browser's local storage and sent directly to Groq.
-- **Input Data**: Job descriptions and custom prompts are in-memory only and lost on page refresh.
+- **High-Performance AI:** Powered by Groq's high-throughput LLM APIs, supporting Llama 3.3 70B, Llama 3.1 8B, and Mixtral 8x7B.
+- **Privacy First:** Client-side architecture ensures your data never touches a backend. API keys and templates are stored locally in your browser.
+- **Intelligent Tailoring:** Preserves original tone and structure while dynamically updating skills, company values, and role details.
+- **Advanced Customization:**
+    - **Word Count Management:** Precise control over output length (50-1000 words).
+    - **Tone Control:** Toggle between "Strictly template-based" and "Creative professional" modes.
+    - **Custom Prompting:** Direct instruction injection for specific generation requirements.
+- **Professional Export:** Instant downloads available in professionally formatted PDF and Word (.docx) formats.
+- **Guided Onboarding:** Streamlined setup flow for API keys, including a detailed technical guide for all users.
+- **Social Integration:** Fully optimized for professional sharing with Open Graph and Twitter metadata.
 
-## 🚀 Getting Started
+## Technology Stack
+
+- **Frontend:** React 19, TypeScript
+- **State Management:** Redux Toolkit
+- **Routing:** HashRouter for robust environment-agnostic navigation
+- **Styling:** Tailwind CSS
+- **Performance:** Vite
+- **AI Integration:** Groq Cloud API
+
+## Getting Started
 
 ### Prerequisites
-- [Docker](https://www.docker.com/) (Recommended)
-- OR [Node.js](https://nodejs.org/) (v20 or higher)
+- Node.js (v20 or higher)
+- Docker (optional, for containerized deployment)
 
-### Run with Docker (Fastest)
-The project is fully dockerized for easy setup.
+### Local Development
 1. **Clone the repository:**
    ```bash
    git clone https://github.com/raadu/career-covered.git
    cd career-covered
    ```
-2. **Start the app:**
-   ```bash
-   docker compose up --build
-   ```
-3. **Open your browser:** Navigate to `http://localhost:8080`.
-
-### Run Locally
-1. **Install dependencies:**
+2. **Install dependencies:**
    ```bash
    npm install
    ```
-2. **Start development server:**
+3. **Start the development server:**
    ```bash
    npm run dev
    ```
 
-## 🧪 Testing & Quality
-We maintain high standards through comprehensive testing:
+### Docker Deployment
+1. **Build and start containers:**
+   ```bash
+   docker compose up --build
+   ```
+2. **Access the application:** Navigate to `http://localhost:8080`.
 
-- **Unit & Component Tests**: Powered by **Vitest** and **React Testing Library**.
+## Testing and Quality Assurance
+
+We utilize a comprehensive testing suite to ensure application stability:
+
+- **Unit & Component Testing:** Vitest and React Testing Library
   ```bash
   npm run test
   ```
-- **End-to-End (E2E) Tests**: Powered by **Playwright**.
+- **End-to-End Testing:** Playwright
   ```bash
-  npx playwright install # First time only
   npm run test:e2e
   ```
-- **Linting & Type Checking**:
+- **Static Analysis:** ESLint and TypeScript build checks
   ```bash
   npm run lint
-  npm run build # Performs full TypeScript check
+  npm run build
   ```
 
-## 🛠️ Project Structure
-This project follows a modular, scalable architecture:
-- **`src/components/Modals`**: Centralized, view-based modal components.
-- **`src/store`**: Redux Toolkit for state management (API keys, generator settings).
-- **`src/hooks`**: Custom React hooks for business logic and clipboard actions.
-- **`src/utils`**: Specialized utilities for AI prompting, file generation, and model configurations.
+## Security and Privacy
+
+- **No Backend:** This is a purely static frontend application.
+- **Local Storage:** Sensitive information (API keys) remains in your browser's local storage.
+- **Zero Data Retention:** Input data (job descriptions) is processed in-memory and never persisted.
 
 ---
-Built with ❤️ for career seekers.
+Built for professionals seeking an edge in their career journey.
