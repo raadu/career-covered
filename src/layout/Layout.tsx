@@ -22,9 +22,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
   const isSupportPage = location.pathname.includes('/support');
 
-  // The modal should show if:
-  // 1. There is no API key
-  // 2. AND we are on the base route (not the support page)
   const shouldShowOnboarding = !apiKey && !isSupportPage;
 
   return (
@@ -34,20 +31,22 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         onToggle={handleToggle} 
       />
       <main className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
-        <div className="flex-1 overflow-y-auto p-2 md:p-6 lg:p-8 flex flex-col">
-          <div className="max-w-5xl mx-auto w-full flex-1">
-            {children}
+        {/* Scrollable Container */}
+        <div className="flex-1 overflow-y-auto flex flex-col">
+          {/* Main Content Area with Padding */}
+          <div className="flex-1 p-2 md:p-6 lg:p-8">
+            <div className="max-w-5xl mx-auto w-full">
+              {children}
+            </div>
           </div>
+          {/* Footer */}
+          <Footer />
         </div>
-        <Footer />
       </main>
 
       <OnboardingModal 
         isOpen={shouldShowOnboarding} 
-        onComplete={() => {
-          // This will be handled by the fact that apiKey will be updated in Redux,
-          // causing a re-render and shouldShowOnboarding to become false.
-        }} 
+        onComplete={() => {}} 
       />
     </div>
   );
