@@ -65,7 +65,7 @@ const DetailedOnboardingUI = ({ onBack }: DetailedOnboardingUIProps) => {
                 </strong>
                 Login using your Google account. It's a one-click process and
                 completely free for personal use. You can also login using
-                Gothub or email.
+                GitHub or email.
               </div>
             </div>
 
@@ -77,9 +77,7 @@ const DetailedOnboardingUI = ({ onBack }: DetailedOnboardingUIProps) => {
                 <strong className="text-gray-800 block mb-0">
                   Locate API Keys
                 </strong>
-                On the dashboard, find the <strong>"API Keys"</strong> tab on
-                the top right corner. This is where your secret keys are
-                managed.
+                On the dashboard, find the <strong>"API Keys"</strong> tab. On mobile, you may need to open the <strong>top-left hamburger menu</strong> first to see the sidebar options.
               </div>
             </div>
 

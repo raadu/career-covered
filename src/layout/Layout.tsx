@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import { type RootState } from 'store';
 import Sidebar from 'layout/Sidebar';
 import Footer from 'layout/Footer';
 import OnboardingModal from 'components/Modals/OnboardingModal';
+
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(() => {
     const saved = localStorage.getItem('cl_sidebar_expanded');
@@ -17,21 +19,13 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   };
 
   const apiKey = useSelector((state: RootState) => state.coverLetter.apiKey);
+  const location = useLocation();
+  const isSupportPage = location.pathname.includes('/support');
 
-  const [showOnboarding, setShowOnboarding] = useState(() => {
-    const visitedBefore = localStorage.getItem('cl_visited_before');
-    // If we haven't visited or don't have an API key, start with onboarding open
-    return !visitedBefore || !localStorage.getItem('cl_apiKey'); 
-  });
-
-  // If apiKey disappears later, ensure onboarding shows up
-  const [prevApiKey, setPrevApiKey] = useState(apiKey);
-  if (!apiKey && prevApiKey && !showOnboarding) {
-    setPrevApiKey(apiKey);
-    setShowOnboarding(true);
-  } else if (apiKey !== prevApiKey) {
-    setPrevApiKey(apiKey);
-  }
+  // The modal should show if:
+  // 1. There is no API key
+  // 2. AND we are on the base route (not the support page)
+  const shouldShowOnboarding = !apiKey && !isSupportPage;
 
   return (
     <div className="flex flex-col lg:flex-row h-screen bg-gray-50 font-sans text-gray-900 overflow-hidden">
@@ -49,8 +43,11 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       </main>
 
       <OnboardingModal 
-        isOpen={showOnboarding} 
-        onComplete={() => setShowOnboarding(false)} 
+        isOpen={shouldShowOnboarding} 
+        onComplete={() => {
+          // This will be handled by the fact that apiKey will be updated in Redux,
+          // causing a re-render and shouldShowOnboarding to become false.
+        }} 
       />
     </div>
   );
