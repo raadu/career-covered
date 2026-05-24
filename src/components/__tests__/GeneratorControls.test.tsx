@@ -5,8 +5,7 @@ import GeneratorControls from '../GeneratorControls';
 describe('GeneratorControls', () => {
     it('renders sub-components correctly', () => {
         renderWithProviders(<GeneratorControls />);
-        // Updated to use Groq placeholder
-        expect(screen.getByPlaceholderText(/Enter Groq API Key/i)).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /Add Custom API Key/i })).toBeInTheDocument();
         expect(screen.getByRole('button', { name: /Generate Cover Letter/i })).toBeInTheDocument();
     });
 
@@ -29,6 +28,20 @@ describe('GeneratorControls', () => {
                 coverLetter: {
                     jobDescription: 'Software Engineer',
                     apiKey: 'valid-key'
+                }
+            }
+        });
+        const button = screen.getByRole('button', { name: /Generate Cover Letter/i });
+        expect(button).toBeEnabled();
+    });
+
+    it('enables the generate button if job description is present and using free generations (no key)', () => {
+        renderWithProviders(<GeneratorControls />, {
+            preloadedState: {
+                coverLetter: {
+                    jobDescription: 'Software Engineer',
+                    apiKey: '',
+                    generationCount: 1
                 }
             }
         });

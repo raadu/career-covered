@@ -69,7 +69,7 @@ const ApiKeySection = ({
         icon={<FaKey size={10} className="group-hover:rotate-12 transition-transform" />}
         className="group"
       >
-        Update API Key
+        {apiKey ? "Update API Key" : "Add Custom API Key"}
       </CommonButton>
       <CommonButton
         variant="ghost"

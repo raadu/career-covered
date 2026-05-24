@@ -3,8 +3,9 @@ import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 import { buildCoverLetterPrompt } from 'utils/promptUtils';
 import { DEFAULT_MODEL } from 'utils/AIModelUtils';
+import { OWNER_GROQ_API_KEY } from 'utils/apiConfigUtils';
 import type { RootState } from 'store';
-import { setApiKey, setGeneratedLetter, setAllCollapsed, setModel, setCustomization } from 'store/coverLetterSlice';
+import { setApiKey, setGeneratedLetter, setAllCollapsed, setModel, setCustomization, incrementGenerationCount } from 'store/coverLetterSlice';
 import { useGenerateCoverLetterMutation } from 'store/apiSlice';
 import OnboardingModal from 'components/Modals/OnboardingModal';
 import CustomizeModal, { type CustomizationOptions, type CustomizeModalSavePayload } from 'components/Modals/CustomizeModal';
@@ -14,14 +15,14 @@ import GenerateAction from './GenerateAction';
 
 const GeneratorControls = () => {
     const dispatch = useDispatch();
-    const { apiKey, jobDescription, template, model, generatedLetter, customization } = useSelector((state: RootState) => state.coverLetter);
+    const { apiKey, jobDescription, template, model, generatedLetter, customization, generationCount } = useSelector((state: RootState) => state.coverLetter);
     const [generate, { isLoading, error }] = useGenerateCoverLetterMutation();
     const [isEditing, setIsEditing] = useState(false);
     const [showHelpModal, setShowHelpModal] = useState(false);
     const [showCustomizeModal, setShowCustomizeModal] = useState(false);
 
-    // Derived state: show input if key is missing OR user clicked "Update"
-    const showKeyInput = !apiKey || isEditing;
+    // Derived state: show input if user explicitly clicked "Update" OR if they exhausted free generations and don't have a key
+    const showKeyInput = isEditing || (generationCount > 4 && !apiKey);
 
     // Reset editing state during render if apiKey becomes available (e.g. from onboarding)
     const [prevApiKey, setPrevApiKey] = useState(apiKey);
@@ -33,8 +34,15 @@ const GeneratorControls = () => {
     const isFilterOn = !!(customization?.limitWords || customization?.minimalChanges || customization?.sameLanguage);
 
     const handleGenerate = async (optionsOverride?: CustomizationOptions, customPrompt?: string) => {
-        if (!apiKey) {
+        // If they have created more than 4 cover letters and don't have their own key, they are blocked
+        if (generationCount > 4 && !apiKey) {
             setIsEditing(true);
+            return;
+        }
+
+        const activeApiKey = apiKey || OWNER_GROQ_API_KEY;
+        if (!activeApiKey) {
+            toast.error("No API key available. Please enter your Groq API Key.");
             return;
         }
         if (!jobDescription) return;
@@ -55,11 +63,12 @@ const GeneratorControls = () => {
         try {
             dispatch(setAllCollapsed()); // Collapse inputs for better view
             const result = await generate({ 
-                apiKey, 
+                apiKey: activeApiKey, 
                 prompt, 
                 model: model || DEFAULT_MODEL 
             }).unwrap();
             dispatch(setGeneratedLetter(result));
+            dispatch(incrementGenerationCount());
             toast.success("Cover letter generated successfully!");
         } catch (err) {
             console.error('Generation failed', err);
