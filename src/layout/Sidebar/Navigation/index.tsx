@@ -41,8 +41,8 @@ const SidebarNavigation = ({ isExpanded }: SidebarNavigationProps) => {
               "p-2 lg:p-2.5 mx-1 rounded-xl lg:rounded-2xl whitespace-nowrap",
               isExpanded ? "lg:rounded-xl lg:gap-3 gap-2" : "lg:justify-center gap-2",
               isActive 
-                ? "bg-blue-50/80 text-blue-600 shadow-sm shadow-blue-500/5" 
-                : "text-gray-400 hover:bg-gray-50 hover:text-gray-600"
+                ? "bg-blue-50/80 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 shadow-sm shadow-blue-500/5" 
+                : "text-gray-400 dark:text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-600 dark:hover:text-gray-300"
             )}
             title={item.title}
           >

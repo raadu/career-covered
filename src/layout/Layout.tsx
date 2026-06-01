@@ -25,7 +25,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const shouldShowOnboarding = !apiKey && generationCount > 4 && !isSupportPage;
 
   return (
-    <div className="flex flex-col lg:flex-row h-screen bg-gray-50 font-sans text-gray-900 overflow-hidden">
+    <div className="flex flex-col lg:flex-row h-screen bg-gray-50 dark:bg-gray-950 font-sans text-gray-900 dark:text-gray-100 overflow-hidden">
       <Sidebar 
         isExpanded={isSidebarExpanded} 
         onToggle={handleToggle} 

@@ -6,12 +6,12 @@ const SupportView = () => {
 
   return (
     <div className="max-w-3xl mx-auto py-12 px-6">
-      <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 md:p-12 text-center space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 p-8 md:p-12 text-center space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
         <div className="space-y-4">
-          <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">
+          <h1 className="text-3xl md:text-4xl font-black text-gray-900 dark:text-gray-100 tracking-tight">
             I'm always here to help you!
           </h1>
-          <p className="text-gray-500 text-lg leading-relaxed max-w-xl mx-auto">
+          <p className="text-gray-500 dark:text-gray-400 text-lg leading-relaxed max-w-xl mx-auto">
             If you experience any issues with the application, you can always contact me on my LinkedIn.
           </p>
         </div>
@@ -32,15 +32,15 @@ const SupportView = () => {
 
         <div className="relative">
           <div className="absolute inset-0 flex items-center" aria-hidden="true">
-            <div className="w-full border-t border-gray-100"></div>
+            <div className="w-full border-t border-gray-100 dark:border-gray-700"></div>
           </div>
           <div className="relative flex justify-center">
-            <span className="bg-white px-4 text-sm text-gray-300 font-medium italic">or help me improve</span>
+            <span className="bg-white dark:bg-gray-800 px-4 text-sm text-gray-300 dark:text-gray-500 font-medium italic">or help me improve</span>
           </div>
         </div>
 
         <div className="space-y-8">
-          <p className="text-gray-600 font-medium">
+          <p className="text-gray-600 dark:text-gray-300 font-medium">
             You can also suggest new features and report bugs anonymously.
           </p>
           
@@ -48,12 +48,12 @@ const SupportView = () => {
             href={formUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="group inline-flex flex-col items-center gap-3 p-6 rounded-3xl hover:bg-orange-50 transition-all duration-300"
+            className="group inline-flex flex-col items-center gap-3 p-6 rounded-3xl hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-all duration-300"
           >
             <div className="w-16 h-16 bg-white border-2 border-orange-100 group-hover:border-orange-500 text-orange-500 rounded-full flex items-center justify-center transition-all duration-300 group-hover:rotate-12 shadow-sm group-hover:shadow-md">
               <FaGoogle size={28} />
             </div>
-            <span className="text-sm font-black uppercase tracking-widest text-gray-400 group-hover:text-orange-600 transition-colors">Feedback Form</span>
+            <span className="text-sm font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">Feedback Form</span>
           </a>
         </div>
       </div>
