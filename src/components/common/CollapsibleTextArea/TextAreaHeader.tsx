@@ -22,10 +22,10 @@ const TextAreaHeader = ({
 }: TextAreaHeaderProps) => {
   return (
     <div
-      className="py-2 px-3 md:py-2.5 md:px-4 flex items-center justify-between cursor-pointer bg-gray-50/80 backdrop-blur-sm border-b border-gray-100 hover:bg-gray-100/50 transition-all duration-200 group"
+      className="py-2 px-3 md:py-2.5 md:px-4 flex items-center justify-between cursor-pointer bg-gray-50/80 dark:bg-gray-700/80 backdrop-blur-sm border-b border-gray-100 dark:border-gray-600 hover:bg-gray-100/50 dark:hover:bg-gray-600/50 transition-all duration-200 group"
       onClick={onToggleExpand}
     >
-      <label className="font-semibold text-gray-700 flex items-center gap-2 cursor-pointer select-none text-sm tracking-tight">
+      <label className="font-semibold text-gray-700 dark:text-gray-200 flex items-center gap-2 cursor-pointer select-none text-sm tracking-tight">
         {label}
         {required && <span className="text-red-500 text-xs">*</span>}
       </label>
@@ -33,7 +33,7 @@ const TextAreaHeader = ({
         {value && (
           <div className="flex items-center gap-1.5 mr-1">
             <button
-              className="flex items-center gap-1.5 text-[10px] bg-white text-gray-600 py-1 px-2.5 rounded-md border border-gray-200 uppercase font-bold tracking-wider transition-all duration-200 hover:bg-white hover:border-blue-300 hover:text-blue-600 shadow-sm active:scale-95 group/btn"
+              className="flex items-center gap-1.5 text-[10px] bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 py-1 px-2.5 rounded-md border border-gray-200 dark:border-gray-600 uppercase font-bold tracking-wider transition-all duration-200 hover:bg-white dark:hover:bg-gray-600 hover:border-blue-300 hover:text-blue-600 dark:hover:text-blue-400 shadow-sm active:scale-95 group/btn"
               onClick={handleCopy}
               title={`Copy ${label}`}
             >
@@ -45,7 +45,7 @@ const TextAreaHeader = ({
             </button>
             {onClear && (
               <button
-                className="flex items-center gap-1.5 text-[10px] bg-gray-900 text-white py-1 px-2.5 rounded-md uppercase font-bold tracking-wider transition-all duration-200 border border-gray-900 hover:bg-gray-700 hover:border-gray-700 hover:shadow-md active:scale-95 group/btn"
+                className="flex items-center gap-1.5 text-[10px] bg-gray-900 dark:bg-gray-600 text-white py-1 px-2.5 rounded-md uppercase font-bold tracking-wider transition-all duration-200 border border-gray-900 dark:border-gray-600 hover:bg-gray-700 dark:hover:bg-gray-500 hover:border-gray-700 hover:shadow-md active:scale-95 group/btn"
                 onClick={(e) => {
                   e.stopPropagation();
                   onClear();
@@ -57,7 +57,7 @@ const TextAreaHeader = ({
             )}
           </div>
         )}
-        <button className="text-gray-400 group-hover:text-blue-500 transition-colors p-1" aria-label={isExpanded ? "Collapse" : "Expand"}>
+        <button className="text-gray-400 dark:text-gray-500 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors p-1" aria-label={isExpanded ? "Collapse" : "Expand"}>
           {isExpanded ? <LuChevronUp size={14} /> : <LuChevronDown size={14} />}
         </button>
       </div>

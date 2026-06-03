@@ -1,6 +1,6 @@
 const Content = () => {
   return (
-    <div className="p-5 text-sm text-gray-600 space-y-4">
+    <div className="p-5 text-sm text-gray-600 dark:text-gray-300 space-y-4">
       <p>
         <strong>This application does not store any of your data.</strong>
       </p>
@@ -10,7 +10,7 @@ const Content = () => {
       <p>
         Any settings you configure are saved exclusively in your browser's local storage and are sent directly where needed. We cannot access them.
       </p>
-      <p className="text-xs text-gray-500 italic mt-4">
+      <p className="text-xs text-gray-500 dark:text-gray-400 italic mt-4">
         You maintain full control over your data.
       </p>
     </div>

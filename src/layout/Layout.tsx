@@ -18,14 +18,14 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     localStorage.setItem('cl_sidebar_expanded', JSON.stringify(newState));
   };
 
-  const apiKey = useSelector((state: RootState) => state.coverLetter.apiKey);
+  const { apiKey, generationCount } = useSelector((state: RootState) => state.coverLetter);
   const location = useLocation();
-  const isSupportPage = location.pathname.includes('/support');
+  const isPublicPage = location.pathname.includes('/support') || location.pathname.includes('/faq');
 
-  const shouldShowOnboarding = !apiKey && !isSupportPage;
+  const shouldShowOnboarding = !apiKey && generationCount > 4 && !isPublicPage;
 
   return (
-    <div className="flex flex-col lg:flex-row h-screen bg-gray-50 font-sans text-gray-900 overflow-hidden">
+    <div className="flex flex-col lg:flex-row h-screen bg-gray-50 dark:bg-gray-950 font-sans text-gray-900 dark:text-gray-100 overflow-hidden">
       <Sidebar 
         isExpanded={isSidebarExpanded} 
         onToggle={handleToggle} 

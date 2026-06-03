@@ -1,6 +1,7 @@
 import SidebarHeader from 'layout/Sidebar/Header';
 import SidebarNavigation from 'layout/Sidebar/Navigation';
 import SidebarToggle from 'layout/Sidebar/Toggle';
+import DarkModeToggle from 'layout/Sidebar/DarkModeToggle';
 import { clsx } from 'clsx';
 
 interface SidebarProps {
@@ -12,7 +13,7 @@ const Sidebar = ({ isExpanded, onToggle }: SidebarProps) => {
   return (
     <aside 
       className={clsx(
-        "bg-white border-b lg:border-b-0 lg:border-r border-gray-200 flex flex-row lg:flex-col items-center lg:items-stretch transition-all duration-300 ease-in-out relative shrink-0 z-10 w-full lg:w-auto h-auto lg:h-full",
+        "bg-white dark:bg-gray-900 border-b lg:border-b-0 lg:border-r border-gray-200 dark:border-gray-800 flex flex-row lg:flex-col items-center lg:items-stretch transition-all duration-300 ease-in-out relative shrink-0 z-10 w-full lg:w-auto h-auto lg:h-full",
         isExpanded ? 'lg:w-56' : 'lg:w-16'
       )}
     >
@@ -20,7 +21,10 @@ const Sidebar = ({ isExpanded, onToggle }: SidebarProps) => {
       <SidebarNavigation 
         isExpanded={isExpanded} 
       />
-      <SidebarToggle isExpanded={isExpanded} onToggle={onToggle} />
+      <div className="mt-auto flex flex-col lg:flex-col w-full">
+        <DarkModeToggle isExpanded={isExpanded} />
+        <SidebarToggle isExpanded={isExpanded} onToggle={onToggle} />
+      </div>
     </aside>
   );
 };

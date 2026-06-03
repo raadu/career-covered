@@ -8,6 +8,7 @@ import JobDescriptionInput from 'components/JobDescriptionInput';
 import GeneratorControls from 'components/GeneratorControls';
 import ResultDisplay from 'components/ResultDisplay';
 import SupportView from 'views/SupportView';
+import FaqView from 'views/FaqView';
 import ogImage from 'assets/og-image.png';
 
 const App = () => {
@@ -34,6 +35,7 @@ const App = () => {
       </Helmet>
       <Toaster position="bottom-right" />
       <Routes>
+        <Route path="/faq" element={<FaqView />} />
         <Route path="/support" element={<SupportView />} />
         <Route path="/" element={
           <div className="space-y-2 pb-2">

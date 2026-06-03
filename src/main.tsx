@@ -7,6 +7,11 @@ import App from './App'
 import './index.css'
 import { store } from 'store'
 
+const storedDark = localStorage.getItem('cl_darkMode');
+if (storedDark === 'true') {
+  document.documentElement.classList.add('dark');
+}
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <Provider store={store}>

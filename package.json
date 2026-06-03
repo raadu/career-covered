@@ -7,13 +7,13 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "npm run build && wrangler dev",
+    "preview": "npm run build && wrangler dev --config dist/career_covered/wrangler.json",
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:e2e": "playwright test",
     "docker:up": "docker compose up --build",
     "docker:down": "docker compose down",
-    "deploy": "npm run build && wrangler deploy"
+    "deploy": "npm run build && wrangler deploy --config dist/career_covered/wrangler.json"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.11.2",

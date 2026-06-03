@@ -10,9 +10,9 @@ interface GroqResponse {
 }
 
 interface GenerateRequest {
-  apiKey: string;
   prompt: string;
   model: string;
+  userApiKey?: string;
 }
 
 export const apiSlice = createApi({
@@ -27,15 +27,12 @@ export const apiSlice = createApi({
   tagTypes: ['CoverLetter'],
   endpoints: (builder) => ({
     /**
-     * Generates a cover letter using the Groq API.
+     * Generates a cover letter via the Cloudflare Worker proxy.
      */
     generateCoverLetter: builder.mutation<string, GenerateRequest>({
-      query: ({ apiKey, prompt, model }) => ({
+      query: ({ prompt, model, userApiKey }) => ({
         url: API_ENDPOINTS.CHAT_COMPLETIONS,
         method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${apiKey}`,
-        },
         body: {
           model: model,
           messages: [
@@ -44,7 +41,8 @@ export const apiSlice = createApi({
                content: prompt
             }
           ],
-          temperature: 0.7
+          temperature: 0.7,
+          ...(userApiKey && { userApiKey }),
         },
       }),
       transformResponse: (response: GroqResponse) => {

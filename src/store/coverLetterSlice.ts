@@ -15,11 +15,13 @@ interface CoverLetterState {
     minimalChanges: boolean;
     sameLanguage: boolean;
   };
+  generationCount: number;
 }
 
 const savedTemplate = localStorage.getItem('cl_template') || '';
 const savedApiKey = localStorage.getItem('cl_apiKey') || '';
 const savedModel = localStorage.getItem('cl_model') || 'llama-3.3-70b-versatile';
+const fallbackCount = parseInt(localStorage.getItem('cl_generation_count') || '0', 10);
 
 
 const initialState: CoverLetterState = {
@@ -37,6 +39,7 @@ const initialState: CoverLetterState = {
     minimalChanges: localStorage.getItem('cl_minimalChanges') === 'true',
     sameLanguage: localStorage.getItem('cl_sameLanguage') === 'true',
   },
+  generationCount: fallbackCount,
 };
 
 export const coverLetterSlice = createSlice({
@@ -80,6 +83,12 @@ export const coverLetterSlice = createSlice({
       localStorage.setItem('cl_wordCount', String(action.payload.wordCount));
       localStorage.setItem('cl_minimalChanges', String(action.payload.minimalChanges));
       localStorage.setItem('cl_sameLanguage', String(action.payload.sameLanguage));
+    },
+    incrementGenerationCount: (state) => {
+      const fallbackCount = parseInt(localStorage.getItem('cl_generation_count') || '0', 10);
+      const newFallbackCount = fallbackCount + 1;
+      localStorage.setItem('cl_generation_count', String(newFallbackCount));
+      state.generationCount = newFallbackCount;
     }
   },
 });
@@ -95,7 +104,8 @@ export const {
   setAllCollapsed,
   setIsGenerating,
   clearGeneratedLetter,
-  setCustomization
+  setCustomization,
+  incrementGenerationCount
 } = coverLetterSlice.actions;
 
 export default coverLetterSlice.reducer;

@@ -89,7 +89,7 @@ const CustomizeModal = ({ isOpen, onClose, initialOptions, onSave, hasTemplate }
       onClick={onClose}
     >
       <div 
-        className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-300 border border-white/20"
+        className="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-300 border border-white/20"
         role="dialog"
         aria-modal="true"
         onClick={(e) => e.stopPropagation()}

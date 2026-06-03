@@ -16,7 +16,7 @@ const PrivacyModal = ({ isOpen, onClose }: PrivacyModalProps) => {
       onClick={onClose}
     >
       <div 
-        className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden transform transition-all"
+        className="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-md overflow-hidden transform transition-all"
         role="dialog"
         aria-modal="true"
         onClick={(e) => e.stopPropagation()}

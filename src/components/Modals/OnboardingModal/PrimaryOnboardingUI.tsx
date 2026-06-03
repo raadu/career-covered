@@ -11,10 +11,10 @@ const PrimaryOnboardingUI = ({ onShowDetailed, isSettingsMode }: PrimaryOnboardi
   return (
     <>
       <div className="space-y-1.5">
-        <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900 tracking-tight">
+        <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-gray-100 tracking-tight">
           {isSettingsMode ? "How to get your API Key" : "It’s so easy to start!"}
         </h1>
-        <p className="text-gray-500 text-[15px] max-w-md mx-auto leading-relaxed">
+        <p className="text-gray-500 dark:text-gray-400 text-[15px] max-w-md mx-auto leading-relaxed">
           {isSettingsMode ? (
             "You need an API key. It’s easy to get one for free. Just follow the steps."
           ) : (
@@ -28,9 +28,9 @@ const PrimaryOnboardingUI = ({ onShowDetailed, isSettingsMode }: PrimaryOnboardi
       </div>
 
       <div className="text-left">
-        <ol className="space-y-4 text-[14px] text-gray-600">
+        <ol className="space-y-4 text-[14px] text-gray-600 dark:text-gray-300">
           <li className="flex gap-4 items-start">
-            <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center text-[11px] font-bold mt-0.5">
+            <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-50 dark:bg-blue-900/50 text-blue-500 dark:text-blue-400 flex items-center justify-center text-[11px] font-bold mt-0.5">
               1
             </span>
             <div className="flex-1">
@@ -47,7 +47,7 @@ const PrimaryOnboardingUI = ({ onShowDetailed, isSettingsMode }: PrimaryOnboardi
             </div>
           </li>
           <li className="flex gap-4 items-start">
-            <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center text-[11px] font-bold mt-0.5">
+            <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-50 dark:bg-blue-900/50 text-blue-500 dark:text-blue-400 flex items-center justify-center text-[11px] font-bold mt-0.5">
               2
             </span>
             <div className="flex-1">
@@ -55,18 +55,18 @@ const PrimaryOnboardingUI = ({ onShowDetailed, isSettingsMode }: PrimaryOnboardi
             </div>
           </li>
           <li className="flex gap-4 items-start">
-            <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center text-[11px] mt-0.5">
+            <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-50 dark:bg-blue-900/50 text-blue-500 dark:text-blue-400 flex items-center justify-center text-[11px] mt-0.5">
               3
             </span>
-            <div className="flex-1 font-normal text-gray-700">
+            <div className="flex-1 font-normal text-gray-700 dark:text-gray-300">
               Then create a new API key. Copy the key and come back here.
             </div>
           </li>
           <li className="flex gap-4 items-start">
-            <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center text-[11px] mt-0.5">
+            <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-50 dark:bg-blue-900/50 text-blue-500 dark:text-blue-400 flex items-center justify-center text-[11px] mt-0.5">
               4
             </span>
-            <div className="flex-1 font-normal text-gray-700">
+            <div className="flex-1 font-normal text-gray-700 dark:text-gray-300">
               Put the copied API key in the box below. Press Start.
             </div>
           </li>
@@ -81,10 +81,10 @@ const PrimaryOnboardingUI = ({ onShowDetailed, isSettingsMode }: PrimaryOnboardi
           Still stuck? Click here for more information.
         </button>
 
-        <div className="pt-4 border-t border-gray-50 mt-4 flex justify-center">
+        <div className="pt-4 border-t border-gray-50 dark:border-gray-700 mt-4 flex justify-center">
           <Link 
             to="/support"
-            className="flex items-center gap-2 text-[11px] text-gray-400 hover:text-blue-500 transition-colors font-bold uppercase tracking-widest"
+            className="flex items-center gap-2 text-[11px] text-gray-400 dark:text-gray-500 hover:text-blue-500 dark:hover:text-blue-400 transition-colors font-bold uppercase tracking-widest"
           >
             <FaLifeRing size={12} />
             Contact Support

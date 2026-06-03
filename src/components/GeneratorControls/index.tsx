@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { buildCoverLetterPrompt } from 'utils/promptUtils';
 import { DEFAULT_MODEL } from 'utils/AIModelUtils';
 import type { RootState } from 'store';
-import { setApiKey, setGeneratedLetter, setAllCollapsed, setModel, setCustomization } from 'store/coverLetterSlice';
+import { setApiKey, setGeneratedLetter, setAllCollapsed, setModel, setCustomization, incrementGenerationCount } from 'store/coverLetterSlice';
 import { useGenerateCoverLetterMutation } from 'store/apiSlice';
 import OnboardingModal from 'components/Modals/OnboardingModal';
 import CustomizeModal, { type CustomizationOptions, type CustomizeModalSavePayload } from 'components/Modals/CustomizeModal';
@@ -14,14 +14,14 @@ import GenerateAction from './GenerateAction';
 
 const GeneratorControls = () => {
     const dispatch = useDispatch();
-    const { apiKey, jobDescription, template, model, generatedLetter, customization } = useSelector((state: RootState) => state.coverLetter);
+    const { apiKey, jobDescription, template, model, generatedLetter, customization, generationCount } = useSelector((state: RootState) => state.coverLetter);
     const [generate, { isLoading, error }] = useGenerateCoverLetterMutation();
     const [isEditing, setIsEditing] = useState(false);
     const [showHelpModal, setShowHelpModal] = useState(false);
     const [showCustomizeModal, setShowCustomizeModal] = useState(false);
 
-    // Derived state: show input if key is missing OR user clicked "Update"
-    const showKeyInput = !apiKey || isEditing;
+    // Derived state: show input if user explicitly clicked "Update" OR if they exhausted free generations and don't have a key
+    const showKeyInput = isEditing || (generationCount > 4 && !apiKey);
 
     // Reset editing state during render if apiKey becomes available (e.g. from onboarding)
     const [prevApiKey, setPrevApiKey] = useState(apiKey);
@@ -33,10 +33,12 @@ const GeneratorControls = () => {
     const isFilterOn = !!(customization?.limitWords || customization?.minimalChanges || customization?.sameLanguage);
 
     const handleGenerate = async (optionsOverride?: CustomizationOptions, customPrompt?: string) => {
-        if (!apiKey) {
+        // If they have created more than 4 cover letters and don't have their own key, they are blocked
+        if (generationCount > 4 && !apiKey) {
             setIsEditing(true);
             return;
         }
+
         if (!jobDescription) return;
 
         const activeCustomization = optionsOverride || customization;
@@ -55,11 +57,12 @@ const GeneratorControls = () => {
         try {
             dispatch(setAllCollapsed()); // Collapse inputs for better view
             const result = await generate({ 
-                apiKey, 
                 prompt, 
-                model: model || DEFAULT_MODEL 
+                model: model || DEFAULT_MODEL,
+                ...(apiKey && { userApiKey: apiKey }),
             }).unwrap();
             dispatch(setGeneratedLetter(result));
+            dispatch(incrementGenerationCount());
             toast.success("Cover letter generated successfully!");
         } catch (err) {
             console.error('Generation failed', err);
@@ -68,7 +71,7 @@ const GeneratorControls = () => {
     };
 
     return (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-3 flex flex-col items-start gap-2">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-3 flex flex-col items-start gap-2">
             
             <div className="flex flex-col lg:flex-row w-full gap-3 lg:items-center justify-between">
                 <ApiKeySection 

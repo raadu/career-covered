@@ -28,7 +28,7 @@ const CollapsibleTextArea = ({
   const { handleClear } = useClear();
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-md hover:border-blue-100/50">
+    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-300 hover:shadow-md hover:border-blue-100/50 dark:hover:border-blue-800/50">
       <TextAreaHeader
         label={label}
         value={value}

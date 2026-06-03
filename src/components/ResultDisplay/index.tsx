@@ -40,9 +40,9 @@ const ResultDisplay = () => {
             ${template}`;
 
             const result = await generate({ 
-                apiKey, 
                 prompt, 
-                model: model || DEFAULT_MODEL 
+                model: model || DEFAULT_MODEL,
+                ...(apiKey && { userApiKey: apiKey }),
             }).unwrap();
             
             const name = result?.trim();
@@ -139,7 +139,7 @@ const ResultDisplay = () => {
     if (!generatedLetter) return null;
 
     return (
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden animate-fade-in mb-8">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 overflow-hidden animate-fade-in mb-8">
             <ResultHeader 
                 isDownloading={isDownloading}
                 handleDownloadPDF={handleDownloadPDF}

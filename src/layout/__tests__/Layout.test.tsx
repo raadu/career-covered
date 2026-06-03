@@ -30,7 +30,7 @@ describe('Layout Component', () => {
         expect(screen.getByRole('main')).toBeInTheDocument();
     });
 
-    it('shows onboarding modal if no API key is present', () => {
+    it('shows onboarding modal if no API key is present and generationCount is greater than 4', () => {
         renderWithProviders(
             <Layout>
                 <div>Content</div>
@@ -38,13 +38,31 @@ describe('Layout Component', () => {
             {
                 preloadedState: {
                     coverLetter: {
-                        apiKey: ''
+                        apiKey: '',
+                        generationCount: 5
                     }
                 }
             }
         );
         // Heading in OnboardingModal
         expect(screen.getByText(/It’s so easy to start!/i)).toBeInTheDocument();
+    });
+
+    it('does not show onboarding modal if no API key is present but generationCount is 4 or less', () => {
+        renderWithProviders(
+            <Layout>
+                <div>Content</div>
+            </Layout>,
+            {
+                preloadedState: {
+                    coverLetter: {
+                        apiKey: '',
+                        generationCount: 4
+                    }
+                }
+            }
+        );
+        expect(screen.queryByText(/It’s so easy to start!/i)).not.toBeInTheDocument();
     });
 
     it('initializes sidebar state from localStorage', () => {
