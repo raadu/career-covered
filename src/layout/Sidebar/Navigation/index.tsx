@@ -1,4 +1,4 @@
-import { FaFileAlt, FaLifeRing } from 'react-icons/fa';
+import { FaFileAlt, FaLifeRing, FaQuestionCircle } from 'react-icons/fa';
 import { clsx } from 'clsx';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -17,6 +17,12 @@ const SidebarNavigation = ({ isExpanded }: SidebarNavigationProps) => {
       label: 'Cover Letter', 
       icon: FaFileAlt,
       title: 'Cover Letter Generator'
+    },
+    { 
+      path: '/faq', 
+      label: 'FAQ', 
+      icon: FaQuestionCircle,
+      title: 'Frequently Asked Questions'
     },
     { 
       path: '/support', 

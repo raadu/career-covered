@@ -20,9 +20,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
   const { apiKey, generationCount } = useSelector((state: RootState) => state.coverLetter);
   const location = useLocation();
-  const isSupportPage = location.pathname.includes('/support');
+  const isPublicPage = location.pathname.includes('/support') || location.pathname.includes('/faq');
 
-  const shouldShowOnboarding = !apiKey && generationCount > 4 && !isSupportPage;
+  const shouldShowOnboarding = !apiKey && generationCount > 4 && !isPublicPage;
 
   return (
     <div className="flex flex-col lg:flex-row h-screen bg-gray-50 dark:bg-gray-950 font-sans text-gray-900 dark:text-gray-100 overflow-hidden">
