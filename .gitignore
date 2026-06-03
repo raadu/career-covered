@@ -46,3 +46,6 @@ junit.xml
 .wrangler
 .dev.vars*
 !.dev.vars.example
+
+# OpenCode config
+opencode.json

@@ -40,9 +40,9 @@ const ResultDisplay = () => {
             ${template}`;
 
             const result = await generate({ 
-                apiKey, 
                 prompt, 
-                model: model || DEFAULT_MODEL 
+                model: model || DEFAULT_MODEL,
+                ...(apiKey && { userApiKey: apiKey }),
             }).unwrap();
             
             const name = result?.trim();

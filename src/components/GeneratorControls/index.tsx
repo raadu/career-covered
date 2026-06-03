@@ -3,7 +3,6 @@ import toast from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 import { buildCoverLetterPrompt } from 'utils/promptUtils';
 import { DEFAULT_MODEL } from 'utils/AIModelUtils';
-import { OWNER_GROQ_API_KEY } from 'utils/apiConfigUtils';
 import type { RootState } from 'store';
 import { setApiKey, setGeneratedLetter, setAllCollapsed, setModel, setCustomization, incrementGenerationCount } from 'store/coverLetterSlice';
 import { useGenerateCoverLetterMutation } from 'store/apiSlice';
@@ -40,11 +39,6 @@ const GeneratorControls = () => {
             return;
         }
 
-        const activeApiKey = apiKey || OWNER_GROQ_API_KEY;
-        if (!activeApiKey) {
-            toast.error("No API key available. Please enter your Groq API Key.");
-            return;
-        }
         if (!jobDescription) return;
 
         const activeCustomization = optionsOverride || customization;
@@ -63,9 +57,9 @@ const GeneratorControls = () => {
         try {
             dispatch(setAllCollapsed()); // Collapse inputs for better view
             const result = await generate({ 
-                apiKey: activeApiKey, 
                 prompt, 
-                model: model || DEFAULT_MODEL 
+                model: model || DEFAULT_MODEL,
+                ...(apiKey && { userApiKey: apiKey }),
             }).unwrap();
             dispatch(setGeneratedLetter(result));
             dispatch(incrementGenerationCount());
