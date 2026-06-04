@@ -13,10 +13,10 @@ const DarkModeToggle = ({ isExpanded }: DarkModeToggleProps) => {
     <button
       onClick={toggleDark}
       className={clsx(
-        "h-12 w-full text-gray-400 hover:text-amber-500 dark:hover:text-amber-400 border-t border-gray-100 dark:border-gray-700 flex items-center transition-all duration-300 group shrink-0",
+        "h-12 w-full text-gray-400 hover:text-amber-500 dark:hover:text-amber-400 lg:border-t border-gray-100 dark:border-gray-700 flex items-center transition-all duration-300 group shrink-0",
         isExpanded
-          ? "gap-3 px-4 hover:bg-gray-50 dark:hover:bg-gray-700"
-          : "justify-center hover:bg-gray-50 dark:hover:bg-gray-700"
+          ? "gap-3 px-4 lg:hover:bg-gray-50 lg:dark:hover:bg-gray-700"
+          : "justify-center lg:hover:bg-gray-50 lg:dark:hover:bg-gray-700"
       )}
       title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
     >
@@ -26,7 +26,7 @@ const DarkModeToggle = ({ isExpanded }: DarkModeToggleProps) => {
         <FaMoon size={18} className="group-hover:scale-110 group-hover:text-blue-500 transition-all shrink-0" />
       )}
       {isExpanded && (
-        <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 whitespace-nowrap">
+        <span className="hidden lg:block text-xs font-semibold text-gray-500 dark:text-gray-400 whitespace-nowrap">
           {isDark ? "Light Mode" : "Dark Mode"}
         </span>
       )}

@@ -53,7 +53,7 @@ const TemplateBox = ({
   return (
     <div
       onClick={!editing ? onSelect : undefined}
-      className={`group relative flex items-center gap-2 px-3 py-1.5 rounded-xl cursor-pointer transition-all duration-200 border text-sm min-w-0 ${
+      className={`group relative flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 rounded-xl cursor-pointer transition-all duration-200 border text-xs sm:text-sm min-w-0 ${
         isActive
           ? 'bg-blue-50/80 dark:bg-blue-900/30 border-blue-300 dark:border-blue-600 shadow-sm'
           : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-blue-200 dark:hover:border-blue-700 hover:shadow-sm'
@@ -93,7 +93,7 @@ const TemplateBox = ({
               setEditValue(template.name);
               setEditing(true);
             }}
-            className="p-0.5 text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 opacity-0 group-hover:opacity-100 transition-all duration-200"
+            className="p-0.5 text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 sm:opacity-0 sm:group-hover:opacity-100 transition-all duration-200"
             title="Rename Template"
           >
             <LuPencil size={12} />
@@ -105,7 +105,7 @@ const TemplateBox = ({
             e.stopPropagation();
             onRemove();
           }}
-          className="p-0.5 text-gray-400 hover:text-red-500 dark:hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all duration-200"
+          className="p-0.5 text-gray-400 hover:text-red-500 dark:hover:text-red-400 sm:opacity-0 sm:group-hover:opacity-100 transition-all duration-200"
           title="Delete Template"
         >
           <LuX size={12} />
@@ -125,7 +125,7 @@ const TemplateSelector = ({
   if (templates.length === 0) return null;
 
   return (
-    <div className="flex flex-wrap gap-2 mb-2">
+    <div className="flex sm:flex-wrap gap-1.5 sm:gap-2 mb-2 overflow-x-auto no-scrollbar">
       {templates.map((tpl) => (
         <TemplateBox
           key={tpl.id}
