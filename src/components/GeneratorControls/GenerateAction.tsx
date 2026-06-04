@@ -19,13 +19,15 @@ const GenerateAction = ({
   error,
 }: GenerateActionProps) => {
   return (
-    <div className="w-full lg:w-auto flex flex-col items-stretch lg:items-end p-1 lg:p-0">
+    <div className="flex justify-center p-1 lg:p-0">
       <CommonButton
-        variant="gradient"
+        variant="primary"
         onClick={onGenerate}
         isLoading={isLoading}
         disabled={isLoading || !hasJobDescription}
         icon={!isLoading && <FaBolt />}
+        fullWidth={true}
+        className="bg-black hover:bg-gray-900 dark:bg-cyan-400 dark:hover:bg-cyan-500 text-white dark:text-black border-0 sm:w-auto"
       >
         {hasGeneratedLetter ? "Generate Another One" : "Generate Cover Letter"}
       </CommonButton>

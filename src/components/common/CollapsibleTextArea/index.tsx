@@ -12,6 +12,7 @@ interface CollapsibleTextAreaProps {
   placeholder?: string;
   required?: boolean;
   onClear?: () => void;
+  onAddTemplate?: () => void;
 }
 
 const CollapsibleTextArea = ({
@@ -23,6 +24,7 @@ const CollapsibleTextArea = ({
   placeholder,
   required,
   onClear,
+  onAddTemplate,
 }: CollapsibleTextAreaProps) => {
   const { handleCopy } = useCopy();
   const { handleClear } = useClear();
@@ -37,6 +39,7 @@ const CollapsibleTextArea = ({
         onToggleExpand={onToggleExpand}
         handleCopy={(e) => handleCopy(value, label, e)}
         onClear={onClear ? () => handleClear(onClear) : undefined}
+        onAddTemplate={onAddTemplate}
       />
       <TextAreaBody
         value={value}

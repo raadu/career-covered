@@ -62,13 +62,14 @@ const SidebarNavigation = ({ isExpanded }: SidebarNavigationProps) => {
             <span className={clsx(
                 "text-[12px] lg:text-[13px] font-bold tracking-tight transition-all truncate",
                 isActive ? "opacity-100" : "opacity-80",
-                !isExpanded ? "lg:hidden block" : "block"
+                !isExpanded ? "lg:hidden block" : "block",
+                "hidden sm:block"
               )}>
                 {item.label}
             </span>
 
             {isActive && (
-              <div className="absolute bottom-0 lg:bottom-auto left-auto lg:left-0 w-8 lg:w-1 h-1 lg:h-4 bg-blue-500 rounded-full" />
+              <div className="absolute bottom-0 lg:bottom-auto left-auto lg:left-0 w-5 lg:w-1 h-1 lg:h-4 bg-blue-500 rounded-full" />
             )}
           </div>
         );

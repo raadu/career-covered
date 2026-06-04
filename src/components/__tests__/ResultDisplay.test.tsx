@@ -24,8 +24,8 @@ describe('ResultDisplay', () => {
             }
         });
         expect(screen.getByText(/Dear Hiring Manager/i)).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: /Download PDF/i })).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: /Download Word/i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /PDF/i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /Word/i })).toBeInTheDocument();
     });
 
     it('handles malicious content in the generated letter safely (it uses a textarea)', () => {

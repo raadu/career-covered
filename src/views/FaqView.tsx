@@ -79,13 +79,13 @@ const FaqView = () => {
         />
       </Helmet>
 
-      <div className="max-w-3xl mx-auto py-12 px-6">
-        <div className="bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 p-8 md:p-12 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="max-w-3xl mx-auto py-6 md:py-12 px-4 sm:px-6">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 p-5 sm:p-8 md:p-12 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
           <div className="space-y-4 text-center">
-            <h1 className="text-3xl md:text-4xl font-black text-gray-900 dark:text-gray-100 tracking-tight">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-gray-900 dark:text-gray-100 tracking-tight">
               Frequently Asked Questions
             </h1>
-            <p className="text-gray-500 dark:text-gray-400 text-lg leading-relaxed max-w-xl mx-auto">
+            <p className="text-gray-500 dark:text-gray-400 text-sm sm:text-lg leading-relaxed max-w-xl mx-auto">
               Everything you need to know about Career Covered. Can't find what you're looking for?{' '}
               <Link
                 to="/support"
@@ -143,7 +143,7 @@ const FaqView = () => {
                     <div className="overflow-hidden min-h-0">
                       <p
                         itemProp="text"
-                        className="text-gray-600 dark:text-gray-300 leading-relaxed text-[15px] pb-4 pr-8"
+                        className="text-gray-600 dark:text-gray-300 leading-relaxed text-[15px] pb-4 pr-0 sm:pr-8"
                       >
                         {item.answer}
                       </p>

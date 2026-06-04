@@ -1,6 +1,12 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
-interface CoverLetterState {
+export interface SavedTemplate {
+  id: string;
+  name: string;
+  content: string;
+}
+
+export interface CoverLetterState {
   template: string;
   jobDescription: string;
   generatedLetter: string;
@@ -16,21 +22,29 @@ interface CoverLetterState {
     sameLanguage: boolean;
   };
   generationCount: number;
+  savedTemplates: SavedTemplate[];
+  activeTemplateId: string | null;
 }
 
 const savedTemplate = localStorage.getItem('cl_template') || '';
 const savedApiKey = localStorage.getItem('cl_apiKey') || '';
 const savedModel = localStorage.getItem('cl_model') || 'llama-3.3-70b-versatile';
 const fallbackCount = parseInt(localStorage.getItem('cl_generation_count') || '0', 10);
-
+const savedTemplatesRaw = localStorage.getItem('cl_saved_templates');
+const savedTemplates: SavedTemplate[] = savedTemplatesRaw ? JSON.parse(savedTemplatesRaw) : [];
+const savedActiveId = localStorage.getItem('cl_active_template_id');
+const initialActiveId = savedTemplates.find((t) => t.id === savedActiveId)?.id
+  ?? (savedTemplates.length > 0 ? savedTemplates[0].id : null);
 
 const initialState: CoverLetterState = {
-  template: savedTemplate,
+  template: initialActiveId
+    ? savedTemplates.find((t) => t.id === initialActiveId)!.content
+    : savedTemplate,
   jobDescription: '',
   generatedLetter: '',
   apiKey: savedApiKey,
   model: savedModel,
-  isTemplateExpanded: !savedTemplate, // Auto-collapse if saved
+  isTemplateExpanded: !savedTemplate && savedTemplates.length === 0,
   isJobDescExpanded: true,
   isGenerating: false,
   customization: {
@@ -40,6 +54,8 @@ const initialState: CoverLetterState = {
     sameLanguage: localStorage.getItem('cl_sameLanguage') === 'true',
   },
   generationCount: fallbackCount,
+  savedTemplates,
+  activeTemplateId: initialActiveId,
 };
 
 export const coverLetterSlice = createSlice({
@@ -89,7 +105,54 @@ export const coverLetterSlice = createSlice({
       const newFallbackCount = fallbackCount + 1;
       localStorage.setItem('cl_generation_count', String(newFallbackCount));
       state.generationCount = newFallbackCount;
-    }
+    },
+    addTemplate: (state) => {
+      const content = state.template.trim();
+      if (!content) return;
+
+      let updated = [...state.savedTemplates];
+      if (updated.length >= 3) {
+        updated = updated.slice(1);
+      }
+      const newTemplate: SavedTemplate = {
+        id: crypto.randomUUID(),
+        name: `Template ${updated.length + 1}`,
+        content,
+      };
+      updated.push(newTemplate);
+      state.savedTemplates = updated;
+      state.activeTemplateId = newTemplate.id;
+      localStorage.setItem('cl_active_template_id', newTemplate.id);
+    },
+    removeTemplate: (state, action: PayloadAction<string>) => {
+      const id = action.payload;
+      state.savedTemplates = state.savedTemplates.filter((t) => t.id !== id);
+      if (state.activeTemplateId === id) {
+        state.activeTemplateId = state.savedTemplates.length > 0 ? state.savedTemplates[0].id : null;
+        state.template = state.activeTemplateId
+          ? state.savedTemplates.find((t) => t.id === state.activeTemplateId)!.content
+          : '';
+        if (state.activeTemplateId) {
+          localStorage.setItem('cl_active_template_id', state.activeTemplateId);
+        } else {
+          localStorage.removeItem('cl_active_template_id');
+        }
+      }
+    },
+    renameTemplate: (state, action: PayloadAction<{ id: string; name: string }>) => {
+      const tpl = state.savedTemplates.find((t) => t.id === action.payload.id);
+      if (tpl) tpl.name = action.payload.name;
+    },
+    selectTemplate: (state, action: PayloadAction<string>) => {
+      const id = action.payload;
+      const tpl = state.savedTemplates.find((t) => t.id === id);
+      if (tpl) {
+        state.activeTemplateId = id;
+        state.template = tpl.content;
+        state.isTemplateExpanded = true;
+        localStorage.setItem('cl_active_template_id', id);
+      }
+    },
   },
 });
 
@@ -105,7 +168,11 @@ export const {
   setIsGenerating,
   clearGeneratedLetter,
   setCustomization,
-  incrementGenerationCount
+  incrementGenerationCount,
+  addTemplate,
+  removeTemplate,
+  renameTemplate,
+  selectTemplate,
 } = coverLetterSlice.actions;
 
 export default coverLetterSlice.reducer;
