@@ -10,13 +10,21 @@ const persistenceMiddleware: Middleware = (store) => (next) => (action) => {
   if (
     typeof action === 'object' && 
     action !== null && 
-    'type' in action &&
-    ((action as { type: string }).type.startsWith('coverLetter/setTemplate') ||
-     (action as { type: string }).type.startsWith('coverLetter/setApiKey'))
+    'type' in action
   ) {
-    localStorage.setItem('cl_template', state.coverLetter.template);
-    localStorage.setItem('cl_apiKey', state.coverLetter.apiKey);
-    localStorage.setItem('cl_model', state.coverLetter.model);
+    const type = (action as { type: string }).type;
+    if (type.startsWith('coverLetter/setTemplate') || type.startsWith('coverLetter/setApiKey')) {
+      localStorage.setItem('cl_template', state.coverLetter.template);
+      localStorage.setItem('cl_apiKey', state.coverLetter.apiKey);
+      localStorage.setItem('cl_model', state.coverLetter.model);
+    }
+    if (
+      type.startsWith('coverLetter/addTemplate') ||
+      type.startsWith('coverLetter/removeTemplate') ||
+      type.startsWith('coverLetter/renameTemplate')
+    ) {
+      localStorage.setItem('cl_saved_templates', JSON.stringify(state.coverLetter.savedTemplates));
+    }
   }
   
   return result;

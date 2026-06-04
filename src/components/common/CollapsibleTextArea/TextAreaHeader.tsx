@@ -1,5 +1,5 @@
 import { type MouseEvent } from "react";
-import { LuChevronDown, LuChevronUp, LuCopy, LuEraser } from "react-icons/lu";
+import { LuChevronDown, LuChevronUp, LuCopy, LuEraser, LuPlus } from "react-icons/lu";
 
 interface TextAreaHeaderProps {
   label: string;
@@ -9,6 +9,7 @@ interface TextAreaHeaderProps {
   onToggleExpand: () => void;
   handleCopy: (e: MouseEvent) => void;
   onClear?: () => void;
+  onAddTemplate?: () => void;
 }
 
 const TextAreaHeader = ({
@@ -19,6 +20,7 @@ const TextAreaHeader = ({
   onToggleExpand,
   handleCopy,
   onClear,
+  onAddTemplate,
 }: TextAreaHeaderProps) => {
   return (
     <div
@@ -32,6 +34,25 @@ const TextAreaHeader = ({
       <div className="flex items-center gap-2">
         {value && (
           <div className="flex items-center gap-1.5 mr-1">
+            {onAddTemplate && (
+              <button
+                className={`flex items-center gap-1.5 text-[10px] bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 py-1 px-2.5 rounded-md border border-gray-200 dark:border-gray-600 uppercase font-bold tracking-wider transition-all duration-200 hover:bg-white dark:hover:bg-gray-600 hover:border-blue-300 hover:text-blue-600 dark:hover:text-blue-400 shadow-sm active:scale-95 group/btn ${
+                  !value.trim() ? 'opacity-40 cursor-not-allowed' : ''
+                }`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (value.trim() && onAddTemplate) onAddTemplate();
+                }}
+                title="Save as a template"
+                disabled={!value.trim()}
+              >
+                <LuPlus
+                  size={12}
+                  className="group-hover/btn:scale-110 transition-transform"
+                />
+                Save as Template
+              </button>
+            )}
             <button
               className="flex items-center gap-1.5 text-[10px] bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 py-1 px-2.5 rounded-md border border-gray-200 dark:border-gray-600 uppercase font-bold tracking-wider transition-all duration-200 hover:bg-white dark:hover:bg-gray-600 hover:border-blue-300 hover:text-blue-600 dark:hover:text-blue-400 shadow-sm active:scale-95 group/btn"
               onClick={handleCopy}
@@ -50,6 +71,7 @@ const TextAreaHeader = ({
                   e.stopPropagation();
                   onClear();
                 }}
+                title={`Remove all the text`}
               >
                 <LuEraser size={12} />
                 Clear
