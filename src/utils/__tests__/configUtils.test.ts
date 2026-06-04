@@ -18,12 +18,12 @@ describe('Config Utilities', () => {
   });
 
   describe('apiConfigUtils', () => {
-    it('should have a valid base URL', () => {
-      expect(GROQ_BASE_URL).toContain('https://api.groq.com');
+    it('should use proxy base URL', () => {
+      expect(GROQ_BASE_URL).toBe('/api');
     });
 
-    it('should have correct endpoints', () => {
-      expect(API_ENDPOINTS.CHAT_COMPLETIONS).toBe('/chat/completions');
+    it('should have correct proxy endpoint', () => {
+      expect(API_ENDPOINTS.CHAT_COMPLETIONS).toBe('/generate');
     });
   });
 
