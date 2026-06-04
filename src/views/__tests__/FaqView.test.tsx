@@ -1,4 +1,4 @@
-import { renderWithProviders, screen, fireEvent, within } from '../../../tests/test-utils';
+import { renderWithProviders, screen, fireEvent } from '../../../tests/test-utils';
 import { describe, it, expect } from 'vitest';
 import FaqView from 'views/FaqView';
 

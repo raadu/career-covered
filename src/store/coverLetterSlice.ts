@@ -6,7 +6,7 @@ export interface SavedTemplate {
   content: string;
 }
 
-interface CoverLetterState {
+export interface CoverLetterState {
   template: string;
   jobDescription: string;
   generatedLetter: string;
