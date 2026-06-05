@@ -1,30 +1,39 @@
 # Career Covered - AI-Powered Cover Letter Generator
 
-Career Covered is a high-performance, privacy-centric automated cover letter generator. Built with React, Vite, and Tailwind CSS, it leverages the Groq Cloud API to deliver tailored professional documents in seconds.
+Career Covered is a high-performance, privacy-centric automated cover letter generator. Built with React, Vite, and Tailwind CSS. It leverages the Groq Cloud API to deliver tailored professional documents in seconds.
 
 The application intelligently adapts your existing cover letter templates to specific job descriptions, maintaining your unique professional voice while optimizing for role-specific keywords and requirements.
 
 ## Features
 
 - **High-Performance AI:** Powered by Groq's high-throughput LLM APIs, supporting Llama 3.3 70B, Llama 3.1 8B, and Mixtral 8x7B.
-- **Privacy First:** Client-side architecture ensures your data never touches a backend. API keys and templates are stored locally in your browser.
+- **Privacy First:** Client-side architecture with a Cloudflare Worker proxy — your API key never reaches the frontend. Templates and preferences are stored locally in your browser.
 - **Intelligent Tailoring:** Preserves original tone and structure while dynamically updating skills, company values, and role details.
+- **Multi-Template System:** Save up to 3 cover letter templates with inline rename and delete. First-in-first-out replacement when adding a 4th. Templates persist across sessions via localStorage.
 - **Advanced Customization:**
     - **Word Count Management:** Precise control over output length (50-1000 words).
-    - **Tone Control:** Toggle between "Strictly template-based" and "Creative professional" modes.
+    - **Minimal Changes:** The structure of the cover letter stays the same as the provided template. Only minor tweaks based on the job description.
+    - **Same-Language Mode:** Forces the AI to match the language of your template.
     - **Custom Prompting:** Direct instruction injection for specific generation requirements.
+- **Dark Mode:** Full dark theme with sidebar toggle and localStorage persistence.
 - **Professional Export:** Instant downloads available in professionally formatted PDF and Word (.docx) formats.
+- **FAQ Page:** Accordion-style FAQ with Schema.org FAQPage structured data, SEO meta tags, and first 5 questions expanded by default.
+- **Responsive Mobile UI:** Single-row action buttons, icon-only navigation bar, full-width generate button, and horizontal template scrolling.
+- **PWA Support:** Installable as a progressive web app with service worker and manifest.
+- **SEO Optimized:** Comprehensive meta tags, Open Graph / Twitter Card images, sitemap, JSON-LD structured data, and canonical URLs.
 - **Guided Onboarding:** Streamlined setup flow for API keys, including a detailed technical guide for all users.
-- **Social Integration:** Fully optimized for professional sharing with Open Graph and Twitter metadata.
+- **Comprehensive Testing:** 176 unit and component tests across 24 test files covering reducers, UI components, and views.
 
 ## Technology Stack
 
 - **Frontend:** React 19, TypeScript
 - **State Management:** Redux Toolkit
 - **Routing:** HashRouter for robust environment-agnostic navigation
-- **Styling:** Tailwind CSS
+- **Styling:** Tailwind CSS with dark mode
 - **Performance:** Vite
-- **AI Integration:** Groq Cloud API
+- **AI Integration:** Groq Cloud API via Cloudflare Worker proxy
+- **Testing:** Vitest, React Testing Library, Playwright
+- **Deployment:** Cloudflare Workers + Pages
 
 ## Getting Started
 
