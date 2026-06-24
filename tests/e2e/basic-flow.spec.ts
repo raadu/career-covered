@@ -35,7 +35,7 @@ test.describe('Cover Letter Creator - Basic Flow', () => {
         // Playwright handles this via the config projects, 
         // but we can also test specific layout changes here if needed.
         await page.setViewportSize({ width: 375, height: 667 }); // iPhone SE
-        const header = page.getByRole('heading', { name: /Create Cover Letter/i });
+        const header = page.getByRole('heading', { name: /Create Free Cover Letters/i });
         await expect(header).toBeVisible();
     });
 });
