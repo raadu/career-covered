@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux';
-import toast from 'react-hot-toast';
+import { showToast } from 'components/common/Toast';
 import { jsPDF } from 'jspdf';
 import { Document, Packer, Paragraph, TextRun } from 'docx';
 import { saveAs } from 'file-saver';
@@ -54,7 +54,7 @@ const ResultDisplay = () => {
             }
         } catch (err) {
             console.error('Name extraction error:', err);
-            toast.error("Couldn't identify your name in the template. Using default filename.");
+            showToast("Couldn't identify your name in the template. Using default filename.", { type: 'error', duration: 5000});
         }
         
         return 'Cover_Letter';
@@ -92,7 +92,7 @@ const ResultDisplay = () => {
             doc.save(`${fileName}.pdf`);
         } catch (err) {
             console.error('PDF generation failed', err);
-            toast.error("Failed to generate PDF. Please try again.");
+            showToast("Failed to generate PDF. Please try again.", { type: 'error' });
         } finally {
             setIsDownloading(null);
         }
@@ -130,7 +130,7 @@ const ResultDisplay = () => {
             saveAs(blob, `${fileName}.docx`);
         } catch (err) {
             console.error('Word generation failed', err);
-            toast.error("Failed to generate Word document.");
+            showToast("Failed to generate Word document.", { type: 'error' });
         } finally {
             setIsDownloading(null);
         }

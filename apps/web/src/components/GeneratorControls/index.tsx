@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import toast from 'react-hot-toast';
+import { showToast } from 'components/common/Toast';
 import { useDispatch, useSelector } from 'react-redux';
 import { buildCoverLetterPrompt } from 'utils/promptUtils';
 import { DEFAULT_MODEL } from 'utils/AIModelUtils';
@@ -63,10 +63,10 @@ const GeneratorControls = () => {
             }).unwrap();
             dispatch(setGeneratedLetter(result));
             dispatch(incrementGenerationCount());
-            toast.success("Cover letter generated successfully!");
+            showToast("Cover letter generated successfully!", { type: 'success' });
         } catch (err) {
             console.error('Generation failed', err);
-            toast.error("Failed to generate cover letter. Please try again.");
+            showToast("Failed to generate cover letter. Please try again.", { type: 'error' });
         }
     };
 

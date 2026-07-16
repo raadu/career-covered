@@ -1,9 +1,12 @@
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { type RootState } from 'store';
 import { setAuthModalOpen, logoutUser } from 'store/authSlice';
 import { FaSignInAlt, FaSignOutAlt } from 'react-icons/fa';
 import { clsx } from 'clsx';
-import { toast } from 'react-hot-toast';
+import { showToast } from 'components/common/Toast';
+import { EMOJI_CRY } from 'utils/emojiUtils';
+import ConfirmModal from 'components/common/ConfirmModal';
 
 interface ProfileSectionProps {
   isExpanded: boolean;
@@ -12,13 +15,19 @@ interface ProfileSectionProps {
 const ProfileSection = ({ isExpanded }: ProfileSectionProps) => {
   const dispatch = useDispatch<any>();
   const { user, isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  const handleLogout = () => {
+    dispatch(logoutUser())
+      .unwrap()
+      .then(() => showToast(`You're logged out. We're gonna miss you ${EMOJI_CRY}`, { type: 'info' }))
+      .catch(() => showToast('Sign out failed', { type: 'error' }));
+    setShowConfirm(false);
+  };
 
   const handleAuthAction = () => {
     if (isAuthenticated) {
-      dispatch(logoutUser())
-        .unwrap()
-        .then(() => toast.success('Signed out'))
-        .catch(() => toast.error('Sign out failed'));
+      setShowConfirm(true);
     } else {
       dispatch(setAuthModalOpen(true));
     }
@@ -29,22 +38,25 @@ const ProfileSection = ({ isExpanded }: ProfileSectionProps) => {
   return (
     <div className="flex flex-col shrink-0">
       {isAuthenticated && user ? (
-        <div className={clsx(
-          "flex items-center gap-2.5 h-12 w-full px-3 transition-all shrink-0",
+          <div className={clsx(
+          "flex items-center gap-2.5 h-12 lg:h-12 px-3 transition-all shrink-0",
           isExpanded
-            ? "hover:bg-gray-50 dark:hover:bg-gray-800/50"
-            : "justify-center"
+            ? "lg:hover:bg-gray-50 lg:dark:hover:bg-gray-800/50 w-full lg:w-full"
+            : "justify-center lg:justify-center w-auto lg:w-full"
         )}>
-          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-[11px] shrink-0 shadow-sm">
+          <button
+            onClick={handleAuthAction}
+            className="w-5 h-5 lg:w-7 lg:h-7 rounded-full lg:rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-[9px] lg:text-[11px] shrink-0 shadow-sm cursor-pointer"
+          >
             {user.avatarUrl ? (
-              <img src={user.avatarUrl} alt={user.name} className="w-full h-full object-cover rounded-lg" />
+              <img src={user.avatarUrl} alt={user.name} className="w-full h-full object-cover rounded-full lg:rounded-lg" />
             ) : (
               initial
             )}
-          </div>
+          </button>
 
           {isExpanded && (
-            <>
+            <span className="hidden lg:contents">
               <div className="flex-1 min-w-0">
                 <p className="text-[12px] font-semibold text-gray-700 dark:text-gray-200 truncate leading-tight">
                   {user.name}
@@ -60,17 +72,15 @@ const ProfileSection = ({ isExpanded }: ProfileSectionProps) => {
               >
                 <FaSignOutAlt className="w-3 h-3" />
               </button>
-            </>
+            </span>
           )}
         </div>
       ) : (
         <button
           onClick={handleAuthAction}
           className={clsx(
-            "h-12 w-full text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 lg:border-t border-gray-100 dark:border-gray-700 flex items-center transition-all duration-300 group shrink-0",
-            isExpanded
-              ? "gap-3 px-4 lg:hover:bg-gray-50 lg:dark:hover:bg-gray-700"
-              : "justify-center lg:hover:bg-gray-50 lg:dark:hover:bg-gray-700"
+            "h-12 flex items-center transition-all duration-300 group shrink-0 text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 justify-center w-auto lg:w-full lg:border-t border-gray-100 dark:border-gray-700 lg:hover:bg-gray-50 lg:dark:hover:bg-gray-700",
+            isExpanded && "lg:gap-3 lg:px-4"
           )}
           title="Sign In"
         >
@@ -85,6 +95,16 @@ const ProfileSection = ({ isExpanded }: ProfileSectionProps) => {
           )}
         </button>
       )}
+
+      <ConfirmModal
+        isOpen={showConfirm}
+        title="Sign out"
+        message="Are you sure you want to sign out?"
+        confirmLabel="Sure!"
+        cancelLabel="Nope"
+        onConfirm={handleLogout}
+        onCancel={() => setShowConfirm(false)}
+      />
     </div>
   );
 };

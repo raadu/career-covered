@@ -134,6 +134,6 @@ export class AuthController {
     res.cookie(SESSION_COOKIE, token, COOKIE_OPTIONS);
 
     const webUrl = process.env.WEB_URL ?? 'http://localhost:5173';
-    res.redirect(`${webUrl}/dashboard`);
+    res.redirect(`${webUrl}/`);
   }
 }

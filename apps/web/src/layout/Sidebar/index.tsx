@@ -22,7 +22,7 @@ const Sidebar = ({ isExpanded, onToggle }: SidebarProps) => {
       <SidebarNavigation 
         isExpanded={isExpanded} 
       />
-      <div className="mt-auto flex flex-col lg:flex-col lg:w-full">
+      <div className="flex lg:flex-col ml-auto lg:ml-0 lg:mt-auto items-center lg:items-stretch lg:w-full gap-4 lg:gap-0 pr-3 lg:pr-0">
         <ProfileSection isExpanded={isExpanded} />
         <DarkModeToggle isExpanded={isExpanded} />
         <SidebarToggle isExpanded={isExpanded} onToggle={onToggle} />

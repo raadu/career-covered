@@ -3,6 +3,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { type RootState } from 'store';
 import { fetchCurrentUser } from 'store/authSlice';
+import { showToast } from 'components/common/Toast';
+import { EMOJI_SERIOUS } from 'utils/emojiUtils';
 import Sidebar from 'layout/Sidebar';
 import Footer from 'layout/Footer';
 import OnboardingModal from 'components/Modals/OnboardingModal';
@@ -16,7 +18,17 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   });
   
   useEffect(() => {
-    dispatch(fetchCurrentUser());
+    dispatch(fetchCurrentUser())
+      .unwrap()
+      .then(() => {
+        if (sessionStorage.getItem('google_oauth_redirect')) {
+          sessionStorage.removeItem('google_oauth_redirect');
+          showToast(`Welcome! Let's be serious about your job hunt ${EMOJI_SERIOUS}`, {
+            type: 'success',
+            duration: 4000,
+          });
+        }
+      });
   }, [dispatch]);
 
   const handleToggle = () => {

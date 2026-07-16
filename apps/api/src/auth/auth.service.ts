@@ -2,6 +2,7 @@ import {
   Injectable,
   UnauthorizedException,
   ConflictException,
+  NotFoundException,
   Logger,
   OnModuleInit,
 } from '@nestjs/common';
@@ -67,8 +68,11 @@ export class AuthService implements OnModuleInit {
 
   async login(email: string, password: string): Promise<db.User> {
     const user = await this.prisma.user.findUnique({ where: { email } });
-    if (!user || !user.passwordHash) {
-      throw new UnauthorizedException('Invalid email or password');
+    if (!user) {
+      throw new NotFoundException('Email not registered');
+    }
+    if (!user.passwordHash) {
+      throw new UnauthorizedException('You forgot. You were using Google Login for this email. Please continue with Google.');
     }
 
     const valid = await bcrypt.compare(password, user.passwordHash);

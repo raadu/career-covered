@@ -1,19 +1,15 @@
 import { renderHook, act } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { useCopy } from '../useCopy';
-import toast from 'react-hot-toast';
 
-vi.mock('react-hot-toast', () => ({
-  default: {
-    success: vi.fn(),
-    error: vi.fn(),
-  },
+const mockShowToast = vi.hoisted(() => vi.fn());
+vi.mock('components/common/Toast', () => ({
+  showToast: mockShowToast,
 }));
 
 describe('useCopy hook', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    // Mock navigator.clipboard
     Object.defineProperty(navigator, 'clipboard', {
       value: {
         writeText: vi.fn().mockResolvedValue(undefined),
@@ -37,9 +33,9 @@ describe('useCopy hook', () => {
 
     expect(navigator.clipboard.writeText).toHaveBeenCalledWith('Hello, world!');
     expect(result.current.copied).toBe(true);
-    expect(toast.success).toHaveBeenCalledWith(
+    expect(mockShowToast).toHaveBeenCalledWith(
       'Test Text copied!',
-      expect.any(Object)
+      { type: 'success', duration: undefined }
     );
   });
 
@@ -52,9 +48,9 @@ describe('useCopy hook', () => {
 
     expect(navigator.clipboard.writeText).not.toHaveBeenCalled();
     expect(result.current.copied).toBe(false);
-    expect(toast.error).toHaveBeenCalledWith(
+    expect(mockShowToast).toHaveBeenCalledWith(
       'Nothing to copy!',
-      expect.any(Object)
+      { type: 'error' }
     );
   });
 

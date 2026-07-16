@@ -1,10 +1,15 @@
 import { useState, type FormEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { type RootState } from 'store';
 import { setAuthModalOpen, setUser } from 'store/authSlice';
 import { FaEnvelope, FaLock, FaUser, FaTimes } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
-import { toast } from 'react-hot-toast';
+import { showToast } from 'components/common/Toast';
+import { EMOJI_SERIOUS } from 'utils/emojiUtils';
+
+const PASSWORD_RULES = /^(?=.*[A-Z])(?=.*\d).{6,}$/;
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 interface FormErrors {
   name?: string;
@@ -12,8 +17,6 @@ interface FormErrors {
   password?: string;
   general?: string;
 }
-
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const AuthModal = () => {
   const dispatch = useDispatch();
@@ -48,8 +51,8 @@ const AuthModal = () => {
     }
     if (!password) {
       errs.password = 'Password is required';
-    } else if (isRegister && password.length < 8) {
-      errs.password = 'Must be at least 8 characters';
+    } else if (isRegister && !PASSWORD_RULES.test(password)) {
+      errs.password = 'Password should have minimum 6 characters, 1 capital letter and 1 number.';
     }
     setErrors(errs);
     return Object.keys(errs).length === 0;
@@ -61,6 +64,18 @@ const AuthModal = () => {
     setPassword('');
     setName('');
     setErrors({});
+  };
+
+  const switchToLogin = () => {
+    setIsRegister(false);
+    setErrors({});
+    setPassword('');
+  };
+
+  const switchToRegister = () => {
+    setIsRegister(true);
+    setErrors({});
+    setPassword('');
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -84,14 +99,25 @@ const AuthModal = () => {
 
       if (!response.ok) {
         if (response.status === 409) {
-          setErrors({ email: 'A user with this email already exists' });
-        } else {
-          setErrors({ general: data.message || 'Authentication failed' });
+          showToast("Your email already exists. Let's log into your account!", { type: 'info' });
+          switchToLogin();
+          return;
         }
+        if (response.status === 404) {
+          showToast("You're not registered yet. Let's get you onboarded!", { type: 'info', duration: 5000 });
+          switchToRegister();
+          return;
+        }
+        setErrors({ general: data.message || 'Authentication failed' });
         return;
       }
 
-      toast.success(isRegister ? 'Registered!' : 'Signed in!');
+      showToast(
+        isRegister
+          ? "Awesome! You're now registered."
+          : `Welcome! Let's be serious about your job hunt ${EMOJI_SERIOUS}`,
+        { type: 'success', duration: 3000 },
+      );
       dispatch(setUser(data));
       handleClose();
     } catch {
@@ -102,6 +128,7 @@ const AuthModal = () => {
   };
 
   const handleGoogleSignIn = () => {
+    sessionStorage.setItem('google_oauth_redirect', 'true');
     window.location.href = '/auth/google';
   };
 
@@ -129,8 +156,8 @@ const AuthModal = () => {
           </h2>
           <p className="text-gray-400 dark:text-gray-500 text-[12px] mt-0.5">
             {isRegister
-              ? 'Sync templates across your devices'
-              : 'Access your templates and history'}
+              ? 'Get access to hidden features'
+              : 'Sign in to get more features'}
           </p>
         </div>
 
@@ -200,6 +227,18 @@ const AuthModal = () => {
             {errors.password && <p className="mt-1 text-[11px] text-red-500 font-medium">{errors.password}</p>}
           </div>
 
+          {!isRegister && (
+            <div className="text-center">
+              <Link
+                to="/support"
+                onClick={handleClose}
+                className="text-[11px] text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors font-medium"
+              >
+                Forgot password?
+              </Link>
+            </div>
+          )}
+
           <button
             type="submit"
             disabled={loading}
@@ -221,7 +260,7 @@ const AuthModal = () => {
         <div className="mt-4 text-center text-[12px] text-gray-500 dark:text-gray-400">
           {isRegister ? 'Already have an account?' : "Don't have an account?"}{' '}
           <button
-            onClick={() => { setIsRegister(!isRegister); setErrors({}); }}
+            onClick={() => { setIsRegister(!isRegister); setErrors({}); setPassword(''); }}
             className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-semibold outline-none transition-colors"
           >
             {isRegister ? 'Sign in' : 'Sign up'}
