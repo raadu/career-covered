@@ -49,3 +49,9 @@ junit.xml
 
 # OpenCode config
 opencode.json
+
+# Build caches
+.turbo
+.next
+.cache
+*.tsbuildinfo

@@ -33,6 +33,7 @@ ENV NODE_ENV=production
 # Copy pruned node_modules and compiled output
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/apps/api/dist ./dist
+COPY --from=builder /app/packages/db ./packages/db
 COPY --from=builder /app/packages/db/prisma ./prisma
 
 EXPOSE 3000
