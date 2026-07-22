@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import coverLetterReducer, {
+  restoreSessionStorage,
   setTemplate,
   setJobDescription,
   setGeneratedLetter,
@@ -448,6 +449,39 @@ describe('coverLetterSlice', () => {
       expect(created).toHaveProperty('savedTemplates');
       expect(created).toHaveProperty('activeTemplateId');
       expect(Array.isArray(created.savedTemplates)).toBe(true);
+    });
+  });
+
+  describe('restoreSessionStorage', () => {
+    beforeEach(() => {
+      sessionStorage.clear();
+    });
+
+    it('restores jobDescription and generatedLetter from sessionStorage', () => {
+      sessionStorage.setItem('cl_restore_jd', 'Restored JD');
+      sessionStorage.setItem('cl_restore_gl', 'Restored letter');
+
+      const result = restoreSessionStorage();
+
+      expect(result.jobDescription).toBe('Restored JD');
+      expect(result.generatedLetter).toBe('Restored letter');
+    });
+
+    it('clears restore keys from sessionStorage after reading', () => {
+      sessionStorage.setItem('cl_restore_jd', 'Restored JD');
+      sessionStorage.setItem('cl_restore_gl', 'Restored letter');
+
+      restoreSessionStorage();
+
+      expect(sessionStorage.getItem('cl_restore_jd')).toBeNull();
+      expect(sessionStorage.getItem('cl_restore_gl')).toBeNull();
+    });
+
+    it('returns empty strings when no restore keys in sessionStorage', () => {
+      const result = restoreSessionStorage();
+
+      expect(result.jobDescription).toBe('');
+      expect(result.generatedLetter).toBe('');
     });
   });
 });

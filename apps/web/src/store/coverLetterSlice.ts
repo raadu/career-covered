@@ -26,6 +26,14 @@ export interface CoverLetterState {
   activeTemplateId: string | null;
 }
 
+export function restoreSessionStorage(): { jobDescription: string; generatedLetter: string } {
+  const restoredJobDescription = sessionStorage.getItem('cl_restore_jd') || '';
+  const restoredGeneratedLetter = sessionStorage.getItem('cl_restore_gl') || '';
+  if (restoredJobDescription) sessionStorage.removeItem('cl_restore_jd');
+  if (restoredGeneratedLetter) sessionStorage.removeItem('cl_restore_gl');
+  return { jobDescription: restoredJobDescription, generatedLetter: restoredGeneratedLetter };
+}
+
 const savedTemplate = localStorage.getItem('cl_template') || '';
 const savedApiKey = localStorage.getItem('cl_apiKey') || '';
 const savedModel = localStorage.getItem('cl_model') || 'llama-3.3-70b-versatile';
@@ -36,12 +44,14 @@ const savedActiveId = localStorage.getItem('cl_active_template_id');
 const initialActiveId = savedTemplates.find((t) => t.id === savedActiveId)?.id
   ?? (savedTemplates.length > 0 ? savedTemplates[0].id : null);
 
+const { jobDescription: restoredJobDescription, generatedLetter: restoredGeneratedLetter } = restoreSessionStorage();
+
 const initialState: CoverLetterState = {
   template: initialActiveId
     ? savedTemplates.find((t) => t.id === initialActiveId)!.content
     : savedTemplate,
-  jobDescription: '',
-  generatedLetter: '',
+  jobDescription: restoredJobDescription,
+  generatedLetter: restoredGeneratedLetter,
   apiKey: savedApiKey,
   model: savedModel,
   isTemplateExpanded: !savedTemplate && savedTemplates.length === 0,

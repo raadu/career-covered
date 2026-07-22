@@ -6,6 +6,7 @@ import { saveAs } from 'file-saver';
 import { type RootState } from 'store';
 import { useState } from 'react';
 import { setGeneratedLetter } from 'store/coverLetterSlice';
+import { setAuthModalOpen } from 'store/authSlice';
 import { useGenerateCoverLetterMutation } from 'store/apiSlice';
 import { DEFAULT_MODEL } from 'utils/AIModelUtils';
 import { useCopy } from 'hooks/useCopy';
@@ -17,6 +18,7 @@ import ResultEditor from './ResultEditor';
 const ResultDisplay = () => {
     const dispatch = useDispatch();
     const { generatedLetter, template, apiKey, model } = useSelector((state: RootState) => state.coverLetter);
+    const { isAuthenticated } = useSelector((state: RootState) => state.auth);
     const [generate] = useGenerateCoverLetterMutation();
     const { copied, handleCopy } = useCopy();
     
@@ -64,6 +66,11 @@ const ResultDisplay = () => {
      * Professionally handles PDF generation and download.
      */
     const handleDownloadPDF = async () => {
+        if (!isAuthenticated) {
+            showToast("Oops! You should login to do that. Creating an account is so easy.", { type: 'info', duration: 6000 });
+            dispatch(setAuthModalOpen(true));
+            return;
+        }
         setIsDownloading('pdf');
         try {
             const doc = new jsPDF();

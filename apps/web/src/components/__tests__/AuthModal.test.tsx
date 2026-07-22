@@ -30,6 +30,7 @@ const openState = {
 describe('AuthModal', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    sessionStorage.clear();
   });
 
   it('does not render when modal is closed', () => {
@@ -67,6 +68,54 @@ describe('AuthModal', () => {
 
     fireEvent.click(screen.getByText('Continue with Google'));
     expect(window.location.href).toBe('/auth/google');
+
+    window.location = originalLocation;
+  });
+
+  it('saves coverLetter state to sessionStorage before Google redirect', () => {
+    const originalLocation = window.location;
+    delete window.location;
+    window.location = { href: '' } as any;
+
+    renderWithProviders(<AuthModal />, {
+      preloadedState: {
+        auth: { ...openState.auth },
+        coverLetter: {
+          jobDescription: 'Software engineer position',
+          generatedLetter: 'Dear hiring manager, I am writing...',
+        },
+      },
+    });
+
+    fireEvent.click(screen.getByText('Continue with Google'));
+
+    expect(sessionStorage.getItem('cl_restore_jd')).toBe('Software engineer position');
+    expect(sessionStorage.getItem('cl_restore_gl')).toBe('Dear hiring manager, I am writing...');
+    expect(sessionStorage.getItem('google_oauth_redirect')).toBe('true');
+
+    window.location = originalLocation;
+  });
+
+  it('does not save empty jobDescription or generatedLetter to sessionStorage', () => {
+    const originalLocation = window.location;
+    delete window.location;
+    window.location = { href: '' } as any;
+
+    renderWithProviders(<AuthModal />, {
+      preloadedState: {
+        auth: { ...openState.auth },
+        coverLetter: {
+          jobDescription: '',
+          generatedLetter: '',
+        },
+      },
+    });
+
+    fireEvent.click(screen.getByText('Continue with Google'));
+
+    expect(sessionStorage.getItem('cl_restore_jd')).toBeNull();
+    expect(sessionStorage.getItem('cl_restore_gl')).toBeNull();
+    expect(sessionStorage.getItem('google_oauth_redirect')).toBe('true');
 
     window.location = originalLocation;
   });

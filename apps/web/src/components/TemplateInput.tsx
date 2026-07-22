@@ -8,6 +8,8 @@ import {
   removeTemplate,
   renameTemplate,
 } from 'store/coverLetterSlice';
+import { setAuthModalOpen } from 'store/authSlice';
+import { showToast } from 'components/common/Toast';
 import CollapsibleTextArea from 'components/common/CollapsibleTextArea';
 import TemplateSelector from 'components/TemplateSelector';
 
@@ -19,6 +21,16 @@ const TemplateInput = () => {
     savedTemplates,
     activeTemplateId,
   } = useSelector((state: RootState) => state.coverLetter);
+  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+
+  const handleAddTemplate = () => {
+    if (!isAuthenticated) {
+      showToast("Oops! You should login to do that. Creating an account is so easy.", { type: 'info', duration: 6000 });
+      dispatch(setAuthModalOpen(true));
+      return;
+    }
+    dispatch(addTemplate());
+  };
 
   return (
     <div className="space-y-1">
@@ -36,7 +48,7 @@ const TemplateInput = () => {
         isExpanded={isTemplateExpanded}
         onToggleExpand={() => dispatch(toggleTemplateExpanded())}
         onClear={() => dispatch(setTemplate(''))}
-        onAddTemplate={() => dispatch(addTemplate())}
+        onAddTemplate={handleAddTemplate}
         placeholder="Paste your existing cover letter here. We'll largely keep your tone and structure but adapt it to the job."
       />
     </div>

@@ -21,6 +21,7 @@ interface FormErrors {
 const AuthModal = () => {
   const dispatch = useDispatch();
   const { isAuthModalOpen } = useSelector((state: RootState) => state.auth);
+  const { jobDescription, generatedLetter } = useSelector((state: RootState) => state.coverLetter);
 
   const [isRegister, setIsRegister] = useState(false);
   const [email, setEmail] = useState('');
@@ -128,6 +129,8 @@ const AuthModal = () => {
   };
 
   const handleGoogleSignIn = () => {
+    if (jobDescription) sessionStorage.setItem('cl_restore_jd', jobDescription);
+    if (generatedLetter) sessionStorage.setItem('cl_restore_gl', generatedLetter);
     sessionStorage.setItem('google_oauth_redirect', 'true');
     window.location.href = '/auth/google';
   };
