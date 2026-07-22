@@ -10,7 +10,7 @@ import { CoverLetterModule } from './cover-letter/cover-letter.module';
 @Module({
   imports: [
     // Load .env variables globally
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({ isGlobal: true, envFilePath: '../../.env' }),
 
     // Pino structured logger — pretty-print in dev, JSON in prod
     LoggerModule.forRoot({

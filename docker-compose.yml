@@ -65,6 +65,7 @@ services:
       WEB_URL: http://localhost:5173
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      GROQ_API_KEY: ${GROQ_API_KEY}
       GOOGLE_REDIRECT_URI: http://localhost:3000/auth/google/callback
     ports:
       - '3000:3000'
@@ -109,6 +110,7 @@ services:
       WEB_URL: http://localhost:5173
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      GROQ_API_KEY: ${GROQ_API_KEY}
       GOOGLE_REDIRECT_URI: http://localhost:3000/auth/google/callback
     ports:
       - '3000:3000'

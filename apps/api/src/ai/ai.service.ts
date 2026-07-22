@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { GenerateDto } from './dto/generate.dto';
 import { PrismaService } from '../prisma/prisma.service';
@@ -54,7 +58,9 @@ export class AiService {
       body: JSON.stringify(groqBody),
     });
 
-    const data = (await response.json()) as GroqResponse & { error?: { message: string } };
+    const data = (await response.json()) as GroqResponse & {
+      error?: { message: string };
+    };
 
     if (!response.ok) {
       this.logger.error('Groq API error', JSON.stringify(data));
@@ -79,7 +85,9 @@ export class AiService {
         try {
           const user = await this.authService.validateSession(sessionToken);
           if (user) {
-            this.logger.log(`Persisting generated cover letter for user: ${user.id}`);
+            this.logger.log(
+              `Persisting generated cover letter for user: ${user.id}`,
+            );
             await this.prisma.coverLetter.create({
               data: {
                 userId: user.id,
@@ -111,7 +119,10 @@ export class AiService {
       jobDescription?: string;
     },
   ): void {
-    const words = text.trim().split(/\s+/).filter((w) => w.length > 0);
+    const words = text
+      .trim()
+      .split(/\s+/)
+      .filter((w) => w.length > 0);
     const wordCount = words.length;
 
     if (rules.wordLimit && wordCount > rules.wordLimit) {
@@ -122,7 +133,8 @@ export class AiService {
 
     if (rules.sameLanguage && rules.jobDescription) {
       // Simple heuristic: check if common stop words of one language match
-      const isEnglish = (str: string) => /\b(the|and|is|in|at|to|with)\b/i.test(str);
+      const isEnglish = (str: string) =>
+        /\b(the|and|is|in|at|to|with)\b/i.test(str);
       const outputIsEnglish = isEnglish(text);
       const inputIsEnglish = isEnglish(rules.jobDescription);
 
