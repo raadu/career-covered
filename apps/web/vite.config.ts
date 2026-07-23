@@ -13,7 +13,7 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [
       react(), 
-      cloudflare(),
+      ...(env.DISABLE_CLOUDFLARE ? [] : [cloudflare()]),
       VitePWA({
         registerType: 'autoUpdate',
         includeAssets: ['favicon.svg', 'robots.txt', 'sitemap.xml'],

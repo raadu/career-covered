@@ -14,7 +14,9 @@ describe('TemplateService', () => {
       create: jest.fn().mockResolvedValue({ id: 't2' }),
       update: jest.fn().mockResolvedValue({ id: 't1' }),
       delete: jest.fn().mockResolvedValue(undefined),
+      count: jest.fn().mockResolvedValue(0),
     },
+    $transaction: jest.fn().mockImplementation((queries: Promise<any>[]) => Promise.all(queries)),
   };
 
   beforeEach(async () => {

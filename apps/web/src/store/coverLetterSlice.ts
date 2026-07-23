@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit';
 import { showToast } from 'components/common/Toast';
-import { logoutUser } from './authSlice';
 
 export interface SavedTemplate {
   id: string;
@@ -235,7 +234,7 @@ export const coverLetterSlice = createSlice({
         }
         showToast('Template has been removed', { duration: 2000 });
       })
-      .addCase(logoutUser.fulfilled, (state) => {
+      .addCase('auth/logoutUser/fulfilled', (state) => {
         state.savedTemplates = [];
         state.activeTemplateId = null;
         state.template = '';

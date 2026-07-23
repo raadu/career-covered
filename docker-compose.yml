@@ -129,13 +129,17 @@ services:
     volumes:
       - ./apps/web/src:/app/apps/web/src
       - ./apps/web/vite.config.ts:/app/apps/web/vite.config.ts
+      - ./apps/web/postcss.config.js:/app/apps/web/postcss.config.js
+      - ./apps/web/tailwind.config.js:/app/apps/web/tailwind.config.js
       - ./apps/web/index.html:/app/apps/web/index.html
       - ./apps/web/tsconfig.json:/app/apps/web/tsconfig.json
       - ./apps/web/tsconfig.app.json:/app/apps/web/tsconfig.app.json
+      - ./apps/web/tsconfig.node.json:/app/apps/web/tsconfig.node.json
       - ./packages/tsconfig:/app/packages/tsconfig
       - /app/node_modules
     environment:
       VITE_API_URL: http://api-dev:3000
+      DISABLE_CLOUDFLARE: "true"
     ports:
       - '5173:5173'
     depends_on:

@@ -34,7 +34,7 @@ const CommonButton = ({
   disabled,
   ...props
 }: CommonButtonProps) => {
-  const baseStyles = "relative flex items-center justify-center gap-2 rounded-lg font-semibold transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 overflow-hidden shadow-sm";
+  const baseStyles = "relative flex items-center justify-center gap-2 rounded-sm font-semibold transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 overflow-hidden shadow-sm";
   
   const variants = {
     primary: "bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 h-9 px-4 text-xs",

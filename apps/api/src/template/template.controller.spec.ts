@@ -36,7 +36,20 @@ describe('TemplateController', () => {
 
   it('should findAll templates for a user', async () => {
     const result = await controller.findAll(mockUser);
-    expect(service.findAll).toHaveBeenCalledWith(mockUser.id);
+    expect(service.findAll).toHaveBeenCalledWith(mockUser.id, undefined, undefined);
     expect(result).toEqual([]);
+  });
+
+  it('should findAll with pagination', async () => {
+    jest.spyOn(service, 'findAll').mockResolvedValue({
+      data: [],
+      total: 0,
+      page: 1,
+      limit: 10,
+      totalPages: 0,
+    });
+    const result = await controller.findAll(mockUser, '1', '10');
+    expect(service.findAll).toHaveBeenCalledWith(mockUser.id, 1, 10);
+    expect(result).toEqual({ data: [], total: 0, page: 1, limit: 10, totalPages: 0 });
   });
 });

@@ -11,6 +11,7 @@ import GeneratorControls from 'components/GeneratorControls';
 import ResultDisplay from 'components/ResultDisplay';
 import SupportView from 'views/SupportView';
 import FaqView from 'views/FaqView';
+import TemplatesView from 'views/TemplatesView';
 import ogImage from 'assets/og-image.png';
 import { fetchCurrentUser } from 'store/authSlice';
 import type { AppDispatch } from 'store';
@@ -47,6 +48,7 @@ const App = () => {
       <Routes>
         <Route path="/faq" element={<FaqView />} />
         <Route path="/support" element={<SupportView />} />
+        <Route path="/cover-letter/templates" element={<TemplatesView />} />
         <Route path="/" element={
           <div className="space-y-2 pb-2">
             <MainHeader />

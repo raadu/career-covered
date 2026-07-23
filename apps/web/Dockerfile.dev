@@ -9,4 +9,6 @@ RUN npm ci
 
 EXPOSE 5173
 
+WORKDIR /app/apps/web
+
 CMD ["npx", "vite", "--host"]
