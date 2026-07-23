@@ -13,10 +13,11 @@ import coverLetterReducer, {
   clearGeneratedLetter,
   setCustomization,
   incrementGenerationCount,
-  addTemplate,
-  removeTemplate,
-  renameTemplate,
   selectTemplate,
+  fetchTemplates,
+  createTemplate,
+  updateTemplate,
+  deleteTemplate,
   type SavedTemplate,
   type CoverLetterState,
 } from 'store/coverLetterSlice';
@@ -30,6 +31,7 @@ const createBlankState = (overrides?: Partial<CoverLetterState>): CoverLetterSta
   isTemplateExpanded: true,
   isJobDescExpanded: true,
   isGenerating: false,
+  isLoadingTemplates: false,
   customization: {
     limitWords: false,
     wordCount: 400,
@@ -247,155 +249,6 @@ describe('coverLetterSlice', () => {
     });
   });
 
-  describe('addTemplate', () => {
-    it('adds a template from current template content', () => {
-      const state = coverLetterReducer(
-        createBlankState({ template: 'My cover letter content' }),
-        addTemplate(),
-      );
-      expect(state.savedTemplates).toHaveLength(1);
-      expect(state.savedTemplates[0].content).toBe('My cover letter content');
-      expect(state.savedTemplates[0].name).toBe('Template 1');
-      expect(state.activeTemplateId).toBe(state.savedTemplates[0].id);
-    });
-
-    it('does nothing when template content is empty', () => {
-      const state = coverLetterReducer(
-        createBlankState({ template: '   ' }),
-        addTemplate(),
-      );
-      expect(state.savedTemplates).toHaveLength(0);
-      expect(state.activeTemplateId).toBeNull();
-    });
-
-    it('does nothing when template content is empty string', () => {
-      const state = coverLetterReducer(
-        createBlankState({ template: '' }),
-        addTemplate(),
-      );
-      expect(state.savedTemplates).toHaveLength(0);
-    });
-
-    it('assigns sequential template names', () => {
-      const afterFirst = coverLetterReducer(
-        createBlankState({ template: 'First' }),
-        addTemplate(),
-      );
-      expect(afterFirst.savedTemplates[0].name).toBe('Template 1');
-
-      const afterSecond = coverLetterReducer(
-        { ...afterFirst, template: 'Second' },
-        addTemplate(),
-      );
-      expect(afterSecond.savedTemplates).toHaveLength(2);
-      expect(afterSecond.savedTemplates[1].name).toBe('Template 2');
-    });
-
-    it('FIFO replaces oldest when at 3 templates', () => {
-      const threeTemplates: SavedTemplate[] = [tpl1, tpl2, tpl3];
-      const state = coverLetterReducer(
-        createBlankState({ template: 'Fourth content', savedTemplates: threeTemplates, activeTemplateId: 'id-3' }),
-        addTemplate(),
-      );
-
-      expect(state.savedTemplates).toHaveLength(3);
-      expect(state.savedTemplates.find((t) => t.id === 'id-1')).toBeUndefined();
-      expect(state.savedTemplates[2].content).toBe('Fourth content');
-      expect(state.activeTemplateId).toBe(state.savedTemplates[2].id);
-    });
-
-    it('persists activeTemplateId to localStorage', () => {
-      coverLetterReducer(createBlankState({ template: 'New' }), addTemplate());
-      const stored = localStorage.getItem('cl_active_template_id');
-      expect(stored).toBeTruthy();
-    });
-  });
-
-  describe('removeTemplate', () => {
-    it('removes a template by id', () => {
-      const state = coverLetterReducer(
-        createBlankState({ savedTemplates: [tpl1, tpl2], activeTemplateId: 'id-1' }),
-        removeTemplate('id-1'),
-      );
-      expect(state.savedTemplates).toHaveLength(1);
-      expect(state.savedTemplates[0].id).toBe('id-2');
-    });
-
-    it('re-selects first remaining template when active is removed', () => {
-      const state = coverLetterReducer(
-        createBlankState({ savedTemplates: [tpl1, tpl2, tpl3], activeTemplateId: 'id-2' }),
-        removeTemplate('id-2'),
-      );
-      expect(state.activeTemplateId).toBe('id-1');
-      expect(state.template).toBe('Content 1');
-    });
-
-    it('clears active and template when last template removed', () => {
-      const state = coverLetterReducer(
-        createBlankState({ savedTemplates: [tpl1], activeTemplateId: 'id-1', template: 'Content 1' }),
-        removeTemplate('id-1'),
-      );
-      expect(state.savedTemplates).toHaveLength(0);
-      expect(state.activeTemplateId).toBeNull();
-      expect(state.template).toBe('');
-    });
-
-    it('does not change active when non-active template removed', () => {
-      const state = coverLetterReducer(
-        createBlankState({ savedTemplates: [tpl1, tpl2], activeTemplateId: 'id-2' }),
-        removeTemplate('id-1'),
-      );
-      expect(state.activeTemplateId).toBe('id-2');
-      expect(state.template).toBe('');
-    });
-
-    it('is a no-op when id does not exist', () => {
-      const state = coverLetterReducer(
-        createBlankState({ savedTemplates: [tpl1], activeTemplateId: 'id-1' }),
-        removeTemplate('non-existent'),
-      );
-      expect(state.savedTemplates).toHaveLength(1);
-      expect(state.activeTemplateId).toBe('id-1');
-    });
-
-    it('removes localStorage key when no templates remain', () => {
-      localStorage.setItem('cl_active_template_id', 'id-1');
-      coverLetterReducer(
-        createBlankState({ savedTemplates: [tpl1], activeTemplateId: 'id-1' }),
-        removeTemplate('id-1'),
-      );
-      expect(localStorage.getItem('cl_active_template_id')).toBeNull();
-    });
-  });
-
-  describe('renameTemplate', () => {
-    it('renames an existing template', () => {
-      const state = coverLetterReducer(
-        createBlankState({ savedTemplates: [tpl1, tpl2] }),
-        renameTemplate({ id: 'id-1', name: 'Renamed' }),
-      );
-      const renamed = state.savedTemplates.find((t) => t.id === 'id-1');
-      expect(renamed?.name).toBe('Renamed');
-    });
-
-    it('does not affect other templates', () => {
-      const state = coverLetterReducer(
-        createBlankState({ savedTemplates: [tpl1, tpl2] }),
-        renameTemplate({ id: 'id-1', name: 'Renamed' }),
-      );
-      const unchanged = state.savedTemplates.find((t) => t.id === 'id-2');
-      expect(unchanged?.name).toBe('Template 2');
-    });
-
-    it('is a no-op when id does not exist', () => {
-      const state = coverLetterReducer(
-        createBlankState({ savedTemplates: [tpl1] }),
-        renameTemplate({ id: 'ghost', name: 'Ghost' }),
-      );
-      expect(state.savedTemplates[0].name).toBe('Template 1');
-    });
-  });
-
   describe('selectTemplate', () => {
     it('sets active template and populates editor content', () => {
       const state = coverLetterReducer(
@@ -433,6 +286,165 @@ describe('coverLetterSlice', () => {
     });
   });
 
+  describe('fetchTemplates extraReducers', () => {
+    it('sets isLoadingTemplates on pending', () => {
+      const action = fetchTemplates.pending('req');
+      const state = coverLetterReducer(createBlankState(), action);
+      expect(state.isLoadingTemplates).toBe(true);
+    });
+
+    it('populates savedTemplates on fulfilled', () => {
+      const templates = [tpl1, tpl2];
+      const action = fetchTemplates.fulfilled(templates, 'req');
+      const state = coverLetterReducer(createBlankState(), action);
+      expect(state.savedTemplates).toEqual(templates);
+      expect(state.isLoadingTemplates).toBe(false);
+    });
+
+    it('restores activeTemplateId from localStorage on fetch.fulfilled', () => {
+      localStorage.setItem('cl_active_template_id', 'id-1');
+      const templates = [tpl1, tpl2];
+      const action = fetchTemplates.fulfilled(templates, 'req');
+      const state = coverLetterReducer(createBlankState(), action);
+      expect(state.activeTemplateId).toBe('id-1');
+      expect(state.template).toBe('Content 1');
+    });
+
+    it('clears localStorage when saved id no longer exists in fetched list', () => {
+      localStorage.setItem('cl_active_template_id', 'id-1');
+      const templates = [tpl2];
+      const action = fetchTemplates.fulfilled(templates, 'req');
+      const state = coverLetterReducer(createBlankState(), action);
+      expect(state.savedTemplates).toEqual(templates);
+      expect(state.activeTemplateId).toBeNull();
+      expect(localStorage.getItem('cl_active_template_id')).toBeNull();
+    });
+
+    it('does not restore from localStorage when no saved id exists', () => {
+      const templates = [tpl1, tpl2];
+      const action = fetchTemplates.fulfilled(templates, 'req');
+      const state = coverLetterReducer(createBlankState(), action);
+      expect(state.activeTemplateId).toBeNull();
+    });
+
+    it('clears isLoadingTemplates on rejected', () => {
+      const action = fetchTemplates.rejected(new Error('fail'), 'req');
+      const state = coverLetterReducer(
+        createBlankState({ isLoadingTemplates: true }),
+        action,
+      );
+      expect(state.isLoadingTemplates).toBe(false);
+    });
+  });
+
+  describe('createTemplate extraReducers', () => {
+    it('appends new template and sets it active on fulfilled', () => {
+      const newTpl = makeTemplate('new-id', 'Template 1', 'Fresh content');
+      const action = createTemplate.fulfilled(newTpl, 'req', { name: 'Template 1', content: 'Fresh content' });
+      const state = coverLetterReducer(createBlankState(), action);
+      expect(state.savedTemplates).toEqual([newTpl]);
+      expect(state.activeTemplateId).toBe('new-id');
+      expect(state.template).toBe('Fresh content');
+      expect(state.isTemplateExpanded).toBe(true);
+    });
+
+    it('appends to existing templates', () => {
+      const newTpl = makeTemplate('new-id', 'Template 2', 'More content');
+      const action = createTemplate.fulfilled(newTpl, 'req', { name: 'Template 2', content: 'More content' });
+      const state = coverLetterReducer(
+        createBlankState({ savedTemplates: [tpl1], activeTemplateId: 'id-1' }),
+        action,
+      );
+      expect(state.savedTemplates).toHaveLength(2);
+      expect(state.savedTemplates[1]).toEqual(newTpl);
+      expect(state.activeTemplateId).toBe('new-id');
+    });
+
+    it('persists activeTemplateId to localStorage', () => {
+      const newTpl = makeTemplate('new-id', 'Template 1', 'Fresh content');
+      const action = createTemplate.fulfilled(newTpl, 'req', { name: 'Template 1', content: 'Fresh content' });
+      coverLetterReducer(createBlankState(), action);
+      expect(localStorage.getItem('cl_active_template_id')).toBe('new-id');
+    });
+  });
+
+  describe('updateTemplate extraReducers', () => {
+    it('replaces the matching template in savedTemplates', () => {
+      const updated = makeTemplate('id-1', 'Renamed', 'Content 1');
+      const action = updateTemplate.fulfilled(updated, 'req', { id: 'id-1', name: 'Renamed', content: 'Content 1' });
+      const state = coverLetterReducer(
+        createBlankState({ savedTemplates: [tpl1, tpl2], activeTemplateId: 'id-2' }),
+        action,
+      );
+      expect(state.savedTemplates[0]).toEqual(updated);
+      expect(state.savedTemplates[1]).toEqual(tpl2);
+    });
+
+    it('does nothing when id not found in local state', () => {
+      const updated = makeTemplate('ghost', 'Ghost', 'Ghost content');
+      const action = updateTemplate.fulfilled(updated, 'req', { id: 'ghost', name: 'Ghost', content: 'Ghost content' });
+      const state = coverLetterReducer(
+        createBlankState({ savedTemplates: [tpl1] }),
+        action,
+      );
+      expect(state.savedTemplates).toEqual([tpl1]);
+    });
+  });
+
+  describe('deleteTemplate extraReducers', () => {
+    it('removes template by id', () => {
+      const action = deleteTemplate.fulfilled('id-1', 'req', 'id-1');
+      const state = coverLetterReducer(
+        createBlankState({ savedTemplates: [tpl1, tpl2], activeTemplateId: 'id-2' }),
+        action,
+      );
+      expect(state.savedTemplates).toEqual([tpl2]);
+    });
+
+    it('re-selects first remaining template when active is deleted', () => {
+      const action = deleteTemplate.fulfilled('id-2', 'req', 'id-2');
+      const state = coverLetterReducer(
+        createBlankState({ savedTemplates: [tpl1, tpl2, tpl3], activeTemplateId: 'id-2' }),
+        action,
+      );
+      expect(state.activeTemplateId).toBe('id-1');
+      expect(state.template).toBe('Content 1');
+      expect(localStorage.getItem('cl_active_template_id')).toBe('id-1');
+    });
+
+    it('clears active and template when last template deleted', () => {
+      const action = deleteTemplate.fulfilled('id-1', 'req', 'id-1');
+      const state = coverLetterReducer(
+        createBlankState({ savedTemplates: [tpl1], activeTemplateId: 'id-1', template: 'Content 1' }),
+        action,
+      );
+      expect(state.savedTemplates).toHaveLength(0);
+      expect(state.activeTemplateId).toBeNull();
+      expect(state.template).toBe('');
+      expect(localStorage.getItem('cl_active_template_id')).toBeNull();
+    });
+
+    it('does not change active when non-active template removed', () => {
+      const action = deleteTemplate.fulfilled('id-1', 'req', 'id-1');
+      const state = coverLetterReducer(
+        createBlankState({ savedTemplates: [tpl1, tpl2], activeTemplateId: 'id-2' }),
+        action,
+      );
+      expect(state.activeTemplateId).toBe('id-2');
+      expect(localStorage.getItem('cl_active_template_id')).toBeNull();
+    });
+
+    it('does nothing when id not found in savedTemplates', () => {
+      const action = deleteTemplate.fulfilled('ghost', 'req', 'ghost');
+      const state = coverLetterReducer(
+        createBlankState({ savedTemplates: [tpl1], activeTemplateId: 'id-1' }),
+        action,
+      );
+      expect(state.savedTemplates).toHaveLength(1);
+      expect(state.activeTemplateId).toBe('id-1');
+    });
+  });
+
   describe('initial state', () => {
     it('returns valid initial state shape', () => {
       const created = coverLetterReducer(undefined, { type: '@@INIT' });
@@ -444,11 +456,22 @@ describe('coverLetterSlice', () => {
       expect(created).toHaveProperty('isTemplateExpanded');
       expect(created).toHaveProperty('isJobDescExpanded');
       expect(created).toHaveProperty('isGenerating');
+      expect(created).toHaveProperty('isLoadingTemplates');
       expect(created).toHaveProperty('customization');
       expect(created).toHaveProperty('generationCount');
       expect(created).toHaveProperty('savedTemplates');
       expect(created).toHaveProperty('activeTemplateId');
       expect(Array.isArray(created.savedTemplates)).toBe(true);
+    });
+
+    it('savedTemplates starts empty', () => {
+      const created = coverLetterReducer(undefined, { type: '@@INIT' });
+      expect(created.savedTemplates).toEqual([]);
+    });
+
+    it('activeTemplateId starts null', () => {
+      const created = coverLetterReducer(undefined, { type: '@@INIT' });
+      expect(created.activeTemplateId).toBeNull();
     });
   });
 

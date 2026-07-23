@@ -218,8 +218,23 @@ describe('TemplateSelector', () => {
     fireEvent.click(screen.getByTitle('Rename Template'));
 
     expect(screen.queryByTitle('Rename Template')).not.toBeInTheDocument();
-    // In edit mode the check button has green-500 class
     const checkBtn = document.querySelector('.text-green-500');
     expect(checkBtn).toBeInTheDocument();
+  });
+
+  it('renders with horizontal scroll', () => {
+    render(
+      <TemplateSelector
+        templates={[tplA, tplB]}
+        activeId={null}
+        onSelect={vi.fn()}
+        onRename={vi.fn()}
+        onRemove={vi.fn()}
+      />,
+    );
+
+    const container = screen.getByText('Template A').parentElement!.parentElement!;
+    expect(container.className).toContain('overflow-x-auto');
+    expect(container.className).toContain('no-scrollbar');
   });
 });

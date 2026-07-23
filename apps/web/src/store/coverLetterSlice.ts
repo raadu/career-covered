@@ -1,4 +1,6 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit';
+import { showToast } from 'components/common/Toast';
+import { logoutUser } from './authSlice';
 
 export interface SavedTemplate {
   id: string;
@@ -15,6 +17,7 @@ export interface CoverLetterState {
   isTemplateExpanded: boolean;
   isJobDescExpanded: boolean;
   isGenerating: boolean;
+  isLoadingTemplates: boolean;
   customization: {
     limitWords: boolean;
     wordCount: number;
@@ -38,25 +41,19 @@ const savedTemplate = localStorage.getItem('cl_template') || '';
 const savedApiKey = localStorage.getItem('cl_apiKey') || '';
 const savedModel = localStorage.getItem('cl_model') || 'llama-3.3-70b-versatile';
 const fallbackCount = parseInt(localStorage.getItem('cl_generation_count') || '0', 10);
-const savedTemplatesRaw = localStorage.getItem('cl_saved_templates');
-const savedTemplates: SavedTemplate[] = savedTemplatesRaw ? JSON.parse(savedTemplatesRaw) : [];
-const savedActiveId = localStorage.getItem('cl_active_template_id');
-const initialActiveId = savedTemplates.find((t) => t.id === savedActiveId)?.id
-  ?? (savedTemplates.length > 0 ? savedTemplates[0].id : null);
 
 const { jobDescription: restoredJobDescription, generatedLetter: restoredGeneratedLetter } = restoreSessionStorage();
 
 const initialState: CoverLetterState = {
-  template: initialActiveId
-    ? savedTemplates.find((t) => t.id === initialActiveId)!.content
-    : savedTemplate,
+  template: savedTemplate,
   jobDescription: restoredJobDescription,
   generatedLetter: restoredGeneratedLetter,
   apiKey: savedApiKey,
   model: savedModel,
-  isTemplateExpanded: !savedTemplate && savedTemplates.length === 0,
+  isTemplateExpanded: false,
   isJobDescExpanded: true,
   isGenerating: false,
+  isLoadingTemplates: false,
   customization: {
     limitWords: localStorage.getItem('cl_limitWords') === 'true',
     wordCount: parseInt(localStorage.getItem('cl_wordCount') || '400', 10),
@@ -64,9 +61,69 @@ const initialState: CoverLetterState = {
     sameLanguage: localStorage.getItem('cl_sameLanguage') === 'true',
   },
   generationCount: fallbackCount,
-  savedTemplates,
-  activeTemplateId: initialActiveId,
+  savedTemplates: [],
+  activeTemplateId: null,
 };
+
+export const fetchTemplates = createAsyncThunk(
+  'coverLetter/fetchTemplates',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await fetch('/api/templates');
+      if (!response.ok) throw new Error('Failed to fetch templates');
+      return (await response.json()) as SavedTemplate[];
+    } catch (err: any) {
+      return rejectWithValue(err.message || 'Failed to fetch templates');
+    }
+  },
+);
+
+export const createTemplate = createAsyncThunk(
+  'coverLetter/createTemplate',
+  async (data: { name: string; content: string }, { rejectWithValue }) => {
+    try {
+      const response = await fetch('/api/templates', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) throw new Error('Failed to create template');
+      return (await response.json()) as SavedTemplate;
+    } catch (err: any) {
+      return rejectWithValue(err.message || 'Failed to create template');
+    }
+  },
+);
+
+export const updateTemplate = createAsyncThunk(
+  'coverLetter/updateTemplate',
+  async (data: { id: string; name: string; content: string }, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`/api/templates/${data.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: data.name, content: data.content }),
+      });
+      if (!response.ok) throw new Error('Failed to update template');
+      return (await response.json()) as SavedTemplate;
+    } catch (err: any) {
+      return rejectWithValue(err.message || 'Failed to update template');
+    }
+  },
+);
+
+export const deleteTemplate = createAsyncThunk(
+  'coverLetter/deleteTemplate',
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`/api/templates/${id}`, { method: 'DELETE' });
+      if (!response.ok) throw new Error('Failed to delete template');
+      return id;
+    } catch (err: any) {
+      return rejectWithValue(err.message || 'Failed to delete template');
+    }
+  },
+);
 
 export const coverLetterSlice = createSlice({
   name: 'coverLetter',
@@ -94,8 +151,8 @@ export const coverLetterSlice = createSlice({
       state.isJobDescExpanded = !state.isJobDescExpanded;
     },
     setAllCollapsed: (state) => {
-        state.isTemplateExpanded = false;
-        state.isJobDescExpanded = false;
+      state.isTemplateExpanded = false;
+      state.isJobDescExpanded = false;
     },
     setIsGenerating: (state, action: PayloadAction<boolean>) => {
       state.isGenerating = action.payload;
@@ -116,43 +173,6 @@ export const coverLetterSlice = createSlice({
       localStorage.setItem('cl_generation_count', String(newFallbackCount));
       state.generationCount = newFallbackCount;
     },
-    addTemplate: (state) => {
-      const content = state.template.trim();
-      if (!content) return;
-
-      let updated = [...state.savedTemplates];
-      if (updated.length >= 3) {
-        updated = updated.slice(1);
-      }
-      const newTemplate: SavedTemplate = {
-        id: crypto.randomUUID(),
-        name: `Template ${updated.length + 1}`,
-        content,
-      };
-      updated.push(newTemplate);
-      state.savedTemplates = updated;
-      state.activeTemplateId = newTemplate.id;
-      localStorage.setItem('cl_active_template_id', newTemplate.id);
-    },
-    removeTemplate: (state, action: PayloadAction<string>) => {
-      const id = action.payload;
-      state.savedTemplates = state.savedTemplates.filter((t) => t.id !== id);
-      if (state.activeTemplateId === id) {
-        state.activeTemplateId = state.savedTemplates.length > 0 ? state.savedTemplates[0].id : null;
-        state.template = state.activeTemplateId
-          ? state.savedTemplates.find((t) => t.id === state.activeTemplateId)!.content
-          : '';
-        if (state.activeTemplateId) {
-          localStorage.setItem('cl_active_template_id', state.activeTemplateId);
-        } else {
-          localStorage.removeItem('cl_active_template_id');
-        }
-      }
-    },
-    renameTemplate: (state, action: PayloadAction<{ id: string; name: string }>) => {
-      const tpl = state.savedTemplates.find((t) => t.id === action.payload.id);
-      if (tpl) tpl.name = action.payload.name;
-    },
     selectTemplate: (state, action: PayloadAction<string>) => {
       const id = action.payload;
       const tpl = state.savedTemplates.find((t) => t.id === id);
@@ -163,6 +183,65 @@ export const coverLetterSlice = createSlice({
         localStorage.setItem('cl_active_template_id', id);
       }
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchTemplates.pending, (state) => {
+        state.isLoadingTemplates = true;
+      })
+      .addCase(fetchTemplates.fulfilled, (state, action) => {
+        state.savedTemplates = action.payload;
+        state.isLoadingTemplates = false;
+        const savedId = localStorage.getItem('cl_active_template_id');
+        if (savedId) {
+          const tpl = action.payload.find((t) => t.id === savedId);
+          if (tpl) {
+            state.activeTemplateId = savedId;
+            state.template = tpl.content;
+          } else {
+            localStorage.removeItem('cl_active_template_id');
+          }
+        }
+      })
+      .addCase(fetchTemplates.rejected, (state) => {
+        state.isLoadingTemplates = false;
+      })
+      .addCase(createTemplate.fulfilled, (state, action) => {
+        state.savedTemplates.push(action.payload);
+        state.activeTemplateId = action.payload.id;
+        state.template = action.payload.content;
+        state.isTemplateExpanded = true;
+        localStorage.setItem('cl_active_template_id', action.payload.id);
+        showToast('New template added', { duration: 2000 });
+      })
+      .addCase(updateTemplate.fulfilled, (state, action) => {
+        const idx = state.savedTemplates.findIndex((t) => t.id === action.payload.id);
+        if (idx !== -1) state.savedTemplates[idx] = action.payload;
+        showToast('Template updated', { duration: 2000 });
+      })
+      .addCase(deleteTemplate.fulfilled, (state, action) => {
+        const id = action.payload;
+        state.savedTemplates = state.savedTemplates.filter((t) => t.id !== id);
+        if (state.activeTemplateId === id) {
+          state.activeTemplateId = state.savedTemplates.length > 0 ? state.savedTemplates[0].id : null;
+          if (state.activeTemplateId) {
+            const tpl = state.savedTemplates.find((t) => t.id === state.activeTemplateId);
+            if (tpl) state.template = tpl.content;
+            localStorage.setItem('cl_active_template_id', state.activeTemplateId);
+          } else {
+            state.template = '';
+            localStorage.removeItem('cl_active_template_id');
+          }
+        }
+        showToast('Template has been removed', { duration: 2000 });
+      })
+      .addCase(logoutUser.fulfilled, (state) => {
+        state.savedTemplates = [];
+        state.activeTemplateId = null;
+        state.template = '';
+        localStorage.removeItem('cl_active_template_id');
+        localStorage.removeItem('cl_template');
+      });
   },
 });
 
@@ -179,9 +258,6 @@ export const {
   clearGeneratedLetter,
   setCustomization,
   incrementGenerationCount,
-  addTemplate,
-  removeTemplate,
-  renameTemplate,
   selectTemplate,
 } = coverLetterSlice.actions;
 

@@ -19,13 +19,7 @@ const persistenceMiddleware: Middleware = (store) => (next) => (action) => {
       localStorage.setItem('cl_apiKey', state.coverLetter.apiKey);
       localStorage.setItem('cl_model', state.coverLetter.model);
     }
-    if (
-      type.startsWith('coverLetter/addTemplate') ||
-      type.startsWith('coverLetter/removeTemplate') ||
-      type.startsWith('coverLetter/renameTemplate')
-    ) {
-      localStorage.setItem('cl_saved_templates', JSON.stringify(state.coverLetter.savedTemplates));
-    }
+
   }
   
   return result;

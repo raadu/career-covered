@@ -125,7 +125,7 @@ const TemplateSelector = ({
   if (templates.length === 0) return null;
 
   return (
-    <div className="flex sm:flex-wrap gap-1.5 sm:gap-2 mb-2 overflow-x-auto no-scrollbar">
+    <div className="flex gap-1.5 sm:gap-2 mb-2 overflow-x-auto no-scrollbar">
       {templates.map((tpl) => (
         <TemplateBox
           key={tpl.id}
