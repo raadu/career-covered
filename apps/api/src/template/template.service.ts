@@ -7,7 +7,13 @@ import * as db from '@career-covered/db';
 export class TemplateService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findAll(userId: string, page?: number, limit?: number): Promise<db.Template[] | { data: db.Template[]; total: number; page: number; limit: number; totalPages: number }> {
+  async findAll(
+    userId: string,
+    page?: number,
+    limit?: number,
+    sortByUpdateTime?: boolean,
+  ): Promise<db.Template[] | { data: db.Template[]; total: number; page: number; limit: number; totalPages: number }> {
+    const orderBy = sortByUpdateTime ? { updatedAt: 'desc' as const } : { createdAt: 'desc' as const };
     if (page && limit) {
       const skip = (page - 1) * limit;
       const [data, total] = await this.prisma.$transaction([
@@ -15,7 +21,7 @@ export class TemplateService {
           where: { userId },
           skip,
           take: limit,
-          orderBy: { createdAt: 'desc' },
+          orderBy,
         }),
         this.prisma.template.count({ where: { userId } }),
       ]);
@@ -23,7 +29,7 @@ export class TemplateService {
     }
     return this.prisma.template.findMany({
       where: { userId },
-      orderBy: { createdAt: 'desc' },
+      orderBy,
     });
   }
 

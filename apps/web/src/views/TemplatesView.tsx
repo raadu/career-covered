@@ -25,8 +25,6 @@ interface PaginatedResponse {
   totalPages: number;
 }
 
-const LIMIT = 10;
-
 const TemplatesView = () => {
   const { isAuthenticated, isLoading: authLoading } = useSelector((state: RootState) => state.auth);
 
@@ -34,6 +32,7 @@ const TemplatesView = () => {
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
   const [isLoading, setIsLoading] = useState(true);
 
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -47,12 +46,12 @@ const TemplatesView = () => {
   const [isUpdating, setIsUpdating] = useState(false);
 
   const [deletingTemplateId, setDeletingTemplateId] = useState<string | null>(null);
-  const [isDeleting, setIsDeleting] = useState(false);
 
-  const fetchPage = useCallback(async (p: number) => {
+  const fetchPage = useCallback(async (p: number, size?: number) => {
     setIsLoading(true);
+    const limit = size ?? pageSize;
     try {
-      const res = await fetch(`/api/templates?page=${p}&limit=${LIMIT}`);
+      const res = await fetch(`/api/templates?page=${p}&limit=${limit}&sortByUpdateTime=true`);
       if (!res.ok) throw new Error('Failed to fetch templates');
       const json: PaginatedResponse = await res.json();
       setData(json.data);
@@ -64,7 +63,7 @@ const TemplatesView = () => {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [pageSize]);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -73,7 +72,12 @@ const TemplatesView = () => {
   }, [isAuthenticated, fetchPage]);
 
   const handlePageChange = (p: number) => {
-    fetchPage(p);
+    fetchPage(p + 1);
+  };
+
+  const handlePageSizeChange = (size: number) => {
+    setPageSize(size);
+    fetchPage(1, size);
   };
 
   const handleCreate = async () => {
@@ -128,20 +132,17 @@ const TemplatesView = () => {
 
   const handleDelete = async () => {
     if (!deletingTemplateId) return;
-    setIsDeleting(true);
     try {
       const res = await fetch(`/api/templates/${deletingTemplateId}`, { method: 'DELETE' });
       if (!res.ok) throw new Error('Failed to delete template');
       showToast('Template has been removed', { duration: 2000 });
       setDeletingTemplateId(null);
       const newTotal = total - 1;
-      const newTotalPages = Math.ceil(newTotal / LIMIT);
+      const newTotalPages = Math.ceil(newTotal / pageSize);
       const targetPage = page > newTotalPages && newTotalPages > 0 ? newTotalPages : page;
       fetchPage(targetPage);
     } catch {
       showToast('Failed to delete template', { type: 'error' });
-    } finally {
-      setIsDeleting(false);
     }
   };
 
@@ -162,34 +163,50 @@ const TemplatesView = () => {
       header: 'Name',
       accessorKey: 'name',
       cell: ({ getValue }) => (
-        <span className="font-semibold text-gray-900 dark:text-gray-100">{getValue<string>()}</span>
+        <span className="truncate overflow-hidden text-ellipsis whitespace-nowrap max-w-[180px] font-semibold text-gray-900 dark:text-gray-100 block">
+          {getValue<string>()}
+        </span>
+      ),
+    },
+    {
+      header: 'Content',
+      accessorKey: 'content',
+      cell: ({ row }) => (
+        <span
+          className="truncate overflow-hidden text-ellipsis whitespace-nowrap max-w-[300px] text-gray-500 dark:text-gray-400 block cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+          onClick={() => handleEdit(row.original)}
+          title="Click to edit"
+        >
+          {row.original.content}
+        </span>
       ),
     },
     {
       header: 'Last Updated',
       accessorKey: 'updatedAt',
       cell: ({ getValue }) => (
-        <span className="text-gray-500 dark:text-gray-400">{formatDate(getValue<string>())}</span>
+        <span className="text-gray-500 dark:text-gray-400 whitespace-nowrap">{formatDate(getValue<string>())}</span>
       ),
     },
     {
       header: 'Actions',
       id: 'actions',
       cell: ({ row }) => (
-        <div className="flex items-center gap-2">
+        <div className="border border-gray-200 dark:border-gray-600 rounded px-2 py-1 flex items-center gap-1 w-fit">
           <button
             onClick={() => handleEdit(row.original)}
-            className="p-1.5 text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-sm transition-colors"
+            className="p-1 text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-sm transition-colors"
             title="Edit Template"
           >
-            <FaPencilAlt size={13} />
+            <FaPencilAlt size={12} />
           </button>
+          <div className="w-px h-4 bg-gray-200 dark:bg-gray-600" />
           <button
             onClick={() => setDeletingTemplateId(row.original.id)}
-            className="p-1.5 text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-sm transition-colors"
+            className="p-1 text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-sm transition-colors"
             title="Delete Template"
           >
-            <FaTrash size={13} />
+            <FaTrash size={12} />
           </button>
         </div>
       ),
@@ -207,7 +224,7 @@ const TemplatesView = () => {
             Cover Letter Templates
           </h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            {total} {total === 1 ? 'template' : 'templates'} total
+            You have {total} {total === 1 ? 'template' : 'templates'}
           </p>
         </div>
         <CommonButton
@@ -224,8 +241,10 @@ const TemplatesView = () => {
         data={data}
         pageCount={totalPages}
         pageIndex={page - 1}
-        pageSize={LIMIT}
-        onPaginationChange={handlePageChange}
+        pageSize={pageSize}
+        total={total}
+        onPageChange={handlePageChange}
+        onPageSizeChange={handlePageSizeChange}
         isLoading={isLoading}
         emptyMessage="No templates yet. Create one to get started."
       />

@@ -92,7 +92,7 @@ const SidebarNavigation = ({ isExpanded }: SidebarNavigationProps) => {
                 {item.label}
               </span>
 
-              {hasChildren && (
+              {hasChildren && item.path !== '/' && (
                 <FaChevronDown
                   size={10}
                   className={clsx(

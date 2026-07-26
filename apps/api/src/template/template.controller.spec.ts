@@ -36,7 +36,7 @@ describe('TemplateController', () => {
 
   it('should findAll templates for a user', async () => {
     const result = await controller.findAll(mockUser);
-    expect(service.findAll).toHaveBeenCalledWith(mockUser.id, undefined, undefined);
+    expect(service.findAll).toHaveBeenCalledWith(mockUser.id, undefined, undefined, undefined);
     expect(result).toEqual([]);
   });
 

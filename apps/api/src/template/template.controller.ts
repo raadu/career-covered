@@ -23,15 +23,17 @@ export class TemplateController {
   constructor(private readonly templateService: TemplateService) {}
 
   @Get()
-  @ApiOperation({ summary: 'List all custom templates for the user (supports pagination with ?page=&limit=)' })
+  @ApiOperation({ summary: 'List all custom templates for the user (supports pagination with ?page=&limit=&sortByUpdateTime=)' })
   async findAll(
     @CurrentUser() user: db.User,
     @Query('page') page?: string,
     @Query('limit') limit?: string,
+    @Query('sortByUpdateTime') sortByUpdateTime?: string,
   ): Promise<db.Template[] | { data: db.Template[]; total: number; page: number; limit: number; totalPages: number }> {
     const pageNum = page ? parseInt(page, 10) : undefined;
     const limitNum = limit ? parseInt(limit, 10) : undefined;
-    return this.templateService.findAll(user.id, pageNum, limitNum);
+    const sortUpdate = sortByUpdateTime === 'true';
+    return this.templateService.findAll(user.id, pageNum, limitNum, sortUpdate);
   }
 
   @Get(':id')
