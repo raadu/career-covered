@@ -1,52 +1,172 @@
-import { sanitize } from './sanitizeUtils';
+import { sanitize } from "./sanitizeUtils";
+import { getMarketRules } from "./marketPrompts";
+export type { JobMarket } from "./marketPrompts";
+
+// ────────────────────────────────
+// Section: System Role
+// ────────────────────────────────
+const SYSTEM_ROLE = `You are an expert career coach, recruiter and professional cover letter writer.
+
+Your objective is to write a highly personalized, ATS-friendly cover letter that maximizes interview chances.`;
+
+// ────────────────────────────────
+// Section: Structure Rules
+// ────────────────────────────────
+const STRUCTURE_RULES = `Structure:
+- Use 3 to 5 paragraphs.
+- Prefer 3 paragraphs unless additional words naturally require 4 or 5.
+- Each paragraph should have a clear purpose.
+
+Opening Paragraph:
+- Start naturally.
+- Mention the position.
+- Show genuine interest.
+- Include one specific reason the company, mission, product or role interests the candidate.
+- Avoid generic openings such as "I am writing to express my interest..."
+
+Middle Paragraph(s):
+- Demonstrate the strongest qualifications.
+- Match experience directly with the job description.
+- Include relevant technical skills.
+- Mention measurable achievements whenever appropriate.
+- Explain how previous work can benefit the employer.
+- Do not simply repeat the resume.
+- Keep every sentence relevant.
+
+Closing Paragraph:
+- Reaffirm interest.
+- Briefly summarize why the candidate is a good fit.
+- Politely express interest in discussing the opportunity.
+- End professionally.
+- Do not be overly formal or old-fashioned.`;
+
+// ────────────────────────────────
+// Section: ATS Optimization
+// ────────────────────────────────
+const ATS_RULES = `ATS Optimization:
+- Naturally include important keywords from the job description.
+- Mirror the terminology used by the employer where appropriate.
+- Use simple formatting.
+- Do not use tables.
+- Do not use bullet points.
+- Do not use emojis.
+- Do not use special symbols.
+- Avoid headers, footers and graphics.
+- Use standard paragraph formatting only.
+- Keep sentences concise and easy to read.`;
+
+// ────────────────────────────────
+// Section: Output Rules
+// ────────────────────────────────
+const OUTPUT_RULES = `Output Rules:
+- Output ONLY the cover letter.
+- Do not include explanations.
+- Do not include markdown.
+- Do not include notes.
+- Do not include titles like "Cover Letter".
+- Do not invent facts that cannot reasonably be inferred.
+- Make the writing sound human, natural and personalized.`;
+
+// ────────────────────────────────
+// Section: Template Placeholder
+// ────────────────────────────────
+const TEMPLATE_PLACEHOLDER_RULES = `Template Placeholder:
+If you find:
+"[One line about product or company value that matches with me]"
+
+Replace it with one customized sentence that reflects the company's product, mission, values or impact based on the job description.`;
+
+// ────────────────────────────────
+// Section: Format Helpers
+// ────────────────────────────────
+
+const buildWordRule = (wordCountLimit: number | null): string =>
+  wordCountLimit
+    ? `Write approximately ${wordCountLimit} words. Never exceed this limit.`
+    : `Write between 250 and 400 words.`;
+
+const buildChangesRule = (minimalChanges: boolean): string =>
+  minimalChanges
+    ? `Only modify company name, position title and skills that must be adapted to the new job. Preserve the user's original writing style whenever possible.`
+    : `You may rewrite motivation, skills and experience to create a stronger and more tailored cover letter while remaining truthful.`;
+
+const buildLanguageRule = (sameLanguage: boolean): string =>
+  sameLanguage
+    ? `Write the cover letter in the same language as the job description using natural grammar and vocabulary.`
+    : `Write in professional English unless instructed otherwise.`;
+
+// ────────────────────────────────
+// Public Helpers
+// ────────────────────────────────
 
 export const formatCustomPrompt = (customPrompt?: string): string => {
-    const sanitizedPrompt = sanitize(customPrompt).trim();
+  const sanitizedPrompt = sanitize(customPrompt).trim();
 
-    if (!sanitizedPrompt) {
-        return '';
-    }
+  if (!sanitizedPrompt) {
+    return "";
+  }
 
-    return `\nAdditional user instruction: ${sanitizedPrompt}`;
+  return `
+
+Additional user instruction:
+${sanitizedPrompt}`;
 };
 
+// ────────────────────────────────
+// Main Prompt Builder
+// ────────────────────────────────
+
 export const buildCoverLetterPrompt = (
-    jobDescription: string,
-    template: string,
-    wordCountLimit: number | null = null,
-    minimalChanges: boolean = true,
-    sameLanguage: boolean = false,
-    customPrompt?: string
+  jobDescription: string,
+  template: string,
+  wordCountLimit: number | null = null,
+  minimalChanges: boolean = true,
+  sameLanguage: boolean = false,
+  customPrompt?: string,
+  jobMarket: import("./marketPrompts").JobMarket = "international",
 ): string => {
-    const sanitizedJD = sanitize(jobDescription);
-    const sanitizedTemplate = sanitize(template);
-    
-    const wordRule = wordCountLimit 
-        ? `1. Write the cover letter in ${wordCountLimit} words. Strictly under this limit.` 
-        : `1. Keep it concise (under 400 words).`;
+  const sanitizedJD = sanitize(jobDescription);
+  const sanitizedTemplate = sanitize(template);
 
-    const changesRule = minimalChanges
-        ? `2. Only change Position Name, Company name and related skills.`
-        : `2. You can use professional tone to change the related skills and motivation.`;
+  const wordRule = buildWordRule(wordCountLimit);
+  const changesRule = buildChangesRule(minimalChanges);
+  const languageRule = buildLanguageRule(sameLanguage);
+  const marketRules = getMarketRules(jobMarket);
 
-    const languageRule = sameLanguage
-        ? `\n6. Create the cover letter in the same language of the job description. Use correct grammar and easy words.`
-        : '';
+  const templateSection = sanitizedTemplate
+    ? `Candidate Background / Existing Cover Letter:\n${sanitizedTemplate}`
+    : `The candidate did not provide a previous cover letter. Create one from scratch.`;
 
-    return `
-You are an expert career consultant.
-Task: Write a professional cover letter.
-Context:
-- Job Description:
-${sanitizedJD}
-
-${sanitizedTemplate ? `- User's Background/Style (Adapt this): \n${sanitizedTemplate}` : '- User has not provided a template. Use standard professional format.'}
-
-Rules:
-${wordRule}
-${changesRule}
-3. If you see "[One line about product or company value that matches with me]", replace it with a line about product or company value that matches with the job description.
-4. Leave the rest of the template as it is.
-5. Output strictly the cover letter text. No preamble.${languageRule}${formatCustomPrompt(customPrompt)}
-        `;
+  return [
+    SYSTEM_ROLE,
+    "",
+    "Job Description:",
+    sanitizedJD,
+    "",
+    templateSection,
+    "",
+    marketRules,
+    "",
+    "General Requirements",
+    "",
+    wordRule,
+    "",
+    "The cover letter must fit on one A4 page.",
+    "",
+    STRUCTURE_RULES,
+    "",
+    ATS_RULES,
+    "",
+    "Template Handling:",
+    changesRule,
+    "",
+    TEMPLATE_PLACEHOLDER_RULES,
+    "",
+    OUTPUT_RULES,
+    "",
+    languageRule,
+    formatCustomPrompt(customPrompt),
+  ]
+    .filter(Boolean)
+    .join("\n");
 };
