@@ -68,7 +68,7 @@ export const fetchTemplates = createAsyncThunk(
   'coverLetter/fetchTemplates',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch('/api/templates');
+      const response = await fetch('/api/templates?sortByUpdateTime=true');
       if (!response.ok) throw new Error('Failed to fetch templates');
       return (await response.json()) as SavedTemplate[];
     } catch (err: any) {
@@ -206,7 +206,7 @@ export const coverLetterSlice = createSlice({
         state.isLoadingTemplates = false;
       })
       .addCase(createTemplate.fulfilled, (state, action) => {
-        state.savedTemplates.push(action.payload);
+        state.savedTemplates.unshift(action.payload);
         state.activeTemplateId = action.payload.id;
         state.template = action.payload.content;
         state.isTemplateExpanded = true;
