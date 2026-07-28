@@ -348,7 +348,7 @@ describe('coverLetterSlice', () => {
       expect(state.isTemplateExpanded).toBe(true);
     });
 
-    it('appends to existing templates', () => {
+    it('prepends to existing templates', () => {
       const newTpl = makeTemplate('new-id', 'Template 2', 'More content');
       const action = createTemplate.fulfilled(newTpl, 'req', { name: 'Template 2', content: 'More content' });
       const state = coverLetterReducer(
@@ -356,7 +356,7 @@ describe('coverLetterSlice', () => {
         action,
       );
       expect(state.savedTemplates).toHaveLength(2);
-      expect(state.savedTemplates[1]).toEqual(newTpl);
+      expect(state.savedTemplates[0]).toEqual(newTpl);
       expect(state.activeTemplateId).toBe('new-id');
     });
 

@@ -65,6 +65,16 @@ export class TemplateController {
     return this.templateService.update(id, user.id, dto);
   }
 
+  @Delete('batch')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: 'Delete multiple templates by IDs' })
+  async removeBatch(
+    @Body() body: { ids: string[] },
+    @CurrentUser() user: db.User,
+  ): Promise<void> {
+    return this.templateService.removeBatch(body.ids, user.id);
+  }
+
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Delete a custom template' })

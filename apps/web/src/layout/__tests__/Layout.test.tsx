@@ -7,6 +7,15 @@ describe('Layout Component', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         localStorage.clear();
+        const mockFetch = vi.fn().mockResolvedValue({
+            ok: true,
+            json: () => Promise.resolve({ id: 'test', email: 'test@test.com', name: 'Test' }),
+        });
+        vi.stubGlobal('fetch', mockFetch);
+    });
+
+    afterEach(() => {
+        vi.unstubAllGlobals();
     });
 
     it('renders children correctly', () => {

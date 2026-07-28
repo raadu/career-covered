@@ -70,4 +70,10 @@ export class TemplateService {
       where: { id },
     });
   }
+
+  async removeBatch(ids: string[], userId: string): Promise<void> {
+    await this.prisma.template.deleteMany({
+      where: { id: { in: ids }, userId },
+    });
+  }
 }
