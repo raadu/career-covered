@@ -87,12 +87,16 @@ model CoverLetter {
   user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   templateId     String?
   template       Template? @relation(fields: [templateId], references: [id], onDelete: SetNull)
-  jobTitle       String
-  companyName    String
+  jobTitle       String    @default("")
+  companyName    String    @default("")
   jobDescription String
   generatedText  String
   model          String    // AI model used for generation (e.g. "llama-3.3-70b-versatile")
   wordLimit      Int?
+  minimalChanges Boolean?
+  sameLanguage   Boolean?
+  customPrompt   String?
+  jobMarket      String?   @default("international")
   createdAt      DateTime  @default(now())
 
   @@map("cover_letters")

@@ -5,6 +5,7 @@ export default {
   ) {
     const url = new URL(request.url);
 
+    // ─── Cover letter generation → Groq API ───────────────────
     if (url.pathname === "/api/generate" && request.method === "POST") {
       const body = (await request.json()) as Record<string, unknown>;
       const { userApiKey, ...groqBody } = body;
@@ -37,6 +38,24 @@ export default {
       });
     }
 
+    // ─── Other API / Auth requests → proxy to NestJS backend ───
+    if (
+      url.pathname.startsWith("/api/") ||
+      url.pathname.startsWith("/auth/")
+    ) {
+      const backendUrl = env.BACKEND_URL ?? "http://localhost:3000";
+      const backendReq = new Request(
+        `${backendUrl}${url.pathname}${url.search}`,
+        {
+          method: request.method,
+          headers: request.headers,
+          body: request.body,
+        },
+      );
+      return fetch(backendReq);
+    }
+
+    // ─── Static assets ────────────────────────────────────────
     return env.ASSETS.fetch(request);
   },
 };

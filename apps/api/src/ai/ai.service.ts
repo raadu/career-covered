@@ -5,8 +5,6 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { GenerateDto } from './dto/generate.dto';
-import { PrismaService } from '../prisma/prisma.service';
-import { AuthService } from '../auth/auth.service';
 
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
@@ -24,11 +22,9 @@ export class AiService {
 
   constructor(
     private readonly config: ConfigService,
-    private readonly prisma: PrismaService,
-    private readonly authService: AuthService,
   ) {}
 
-  async generate(dto: GenerateDto, sessionToken?: string): Promise<unknown> {
+  async generate(dto: GenerateDto): Promise<unknown> {
     const {
       userApiKey,
       jobDescription,
@@ -80,31 +76,8 @@ export class AiService {
         jobDescription,
       });
 
-      // ─── Optional Auth Persistence ───
-      if (sessionToken) {
-        try {
-          const user = await this.authService.validateSession(sessionToken);
-          if (user) {
-            this.logger.log(
-              `Persisting generated cover letter for user: ${user.id}`,
-            );
-            await this.prisma.coverLetter.create({
-              data: {
-                userId: user.id,
-                templateId: templateId || null,
-                jobTitle: jobTitle || 'Unspecified Position',
-                companyName: companyName || 'Unspecified Company',
-                jobDescription: jobDescription || '',
-                generatedText: resultText,
-                model: dto.model,
-                wordLimit: wordLimit || null,
-              },
-            });
-          }
-        } catch (dbErr) {
-          this.logger.error('Failed to save cover letter to database', dbErr);
-        }
-      }
+      // ─── Auth Persistence is handled by the frontend via POST /api/cover-letters ───
+      // (we don't save here because the frontend sends richer data including jobDescription)
     }
 
     return data;

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { showToast } from 'components/common/Toast';
 import { useDispatch, useSelector } from 'react-redux';
 import { buildCoverLetterPrompt } from 'utils/promptUtils';
@@ -14,7 +15,8 @@ import GenerateAction from './GenerateAction';
 
 const GeneratorControls = () => {
     const dispatch = useDispatch();
-    const { apiKey, jobDescription, template, model, generatedLetter, customization, generationCount } = useSelector((state: RootState) => state.coverLetter);
+    const { apiKey, jobDescription, template, model, generatedLetter, customization, generationCount, activeTemplateId } = useSelector((state: RootState) => state.coverLetter);
+    const { isAuthenticated } = useSelector((state: RootState) => state.auth);
     const [generate, { isLoading, error }] = useGenerateCoverLetterMutation();
     const [isEditing, setIsEditing] = useState(false);
     const [showHelpModal, setShowHelpModal] = useState(false);
@@ -64,6 +66,33 @@ const GeneratorControls = () => {
             dispatch(setGeneratedLetter(result));
             dispatch(incrementGenerationCount());
             showToast("Cover letter generated successfully!", { type: 'success' });
+
+            if (isAuthenticated) {
+                fetch('/api/cover-letters', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        templateId: activeTemplateId || undefined,
+                        jobDescription,
+                        generatedText: result,
+                        model: model || DEFAULT_MODEL,
+                        wordLimit: activeCustomization?.limitWords ? activeCustomization.wordCount : undefined,
+                        minimalChanges: activeCustomization?.minimalChanges || undefined,
+                        sameLanguage: activeCustomization?.sameLanguage || undefined,
+                    }),
+                }).then((res) => {
+                    if (res.ok) {
+                        showToast(
+                            <span>Generated cover letter is saved. You can <Link to="/cover-letter/previous" className="underline font-semibold">check here</Link>.</span>,
+                            { type: 'success', duration: 2000 }
+                        );
+                    } else {
+                        showToast('Failed to save cover letter', { type: 'error' });
+                    }
+                }).catch(() => {
+                    showToast('Failed to save cover letter', { type: 'error' });
+                });
+            }
         } catch (err) {
             console.error('Generation failed', err);
             showToast("Failed to generate cover letter. Please try again.", { type: 'error' });

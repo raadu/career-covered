@@ -21,7 +21,7 @@ const borderColors: Record<ToastType, string> = {
 };
 
 export function showToast(
-  message: string,
+  message: string | React.ReactNode,
   options?: ShowToastOptions,
 ): string {
   const { duration = 2000, type = 'success' } = options ?? {};
@@ -46,9 +46,9 @@ export function showToast(
         style={{ borderRadius: '0' }}
       >
         {icons[type]}
-        <p className="flex-1 text-[13px] font-medium text-gray-700 dark:text-gray-200 leading-snug pt-0.5">
+        <div className="flex-1 text-[13px] font-medium text-gray-700 dark:text-gray-200 leading-snug pt-0.5">
           {message}
-        </p>
+        </div>
         <button
           onClick={() => toast.dismiss(t.id)}
           className="p-0.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors shrink-0"

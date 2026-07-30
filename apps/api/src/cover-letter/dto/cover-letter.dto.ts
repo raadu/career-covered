@@ -1,5 +1,5 @@
-import { IsString, IsNotEmpty, IsOptional, IsNumber } from 'class-validator';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsString, IsOptional, IsNumber, IsBoolean } from 'class-validator';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateCoverLetterDto {
   @ApiPropertyOptional()
@@ -7,33 +7,110 @@ export class CreateCoverLetterDto {
   @IsString()
   templateId?: string;
 
-  @ApiProperty({ example: 'Software Engineer' })
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  jobTitle: string;
+  jobTitle?: string;
 
-  @ApiProperty({ example: 'Google' })
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  companyName: string;
+  companyName?: string;
 
-  @ApiProperty({ example: 'Paste job description...' })
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  jobDescription: string;
+  jobDescription?: string;
 
-  @ApiProperty({ example: 'Dear Hiring Manager...' })
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  generatedText: string;
+  generatedText?: string;
 
-  @ApiProperty({ example: 'llama-3.3-70b-versatile' })
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  model: string;
+  model?: string;
 
   @ApiPropertyOptional()
   @IsOptional()
   @IsNumber()
   wordLimit?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsBoolean()
+  minimalChanges?: boolean;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsBoolean()
+  sameLanguage?: boolean;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  customPrompt?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  jobMarket?: string;
+}
+
+export class UpdateCoverLetterDto {
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  jobTitle?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  companyName?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  jobDescription?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  generatedText?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  model?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsNumber()
+  wordLimit?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsBoolean()
+  minimalChanges?: boolean;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsBoolean()
+  sameLanguage?: boolean;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  customPrompt?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  jobMarket?: string;
+}
+
+export class BatchDeleteCoverLetterDto {
+  @IsString({ each: true })
+  ids: string[];
 }

@@ -35,7 +35,10 @@ const SidebarNavigation = ({ isExpanded }: SidebarNavigationProps) => {
       title: 'Cover Letter Generator',
       children: [
         ...(isAuthenticated
-          ? [{ path: '/cover-letter/templates', label: 'Templates' }]
+          ? [
+              { path: '/cover-letter/templates', label: 'Templates' },
+              { path: '/cover-letter/previous', label: 'Previously Created' },
+            ]
           : []),
       ],
     },

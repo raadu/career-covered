@@ -12,6 +12,7 @@ import ResultDisplay from 'components/ResultDisplay';
 import SupportView from 'views/SupportView';
 import FaqView from 'views/FaqView';
 import TemplatesView from 'views/TemplatesView';
+import PreviousCoverLettersView from 'views/PreviousCoverLettersView';
 import ogImage from 'assets/og-image.png';
 import { fetchCurrentUser } from 'store/authSlice';
 import type { AppDispatch } from 'store';
@@ -49,6 +50,7 @@ const App = () => {
         <Route path="/faq" element={<FaqView />} />
         <Route path="/support" element={<SupportView />} />
         <Route path="/cover-letter/templates" element={<TemplatesView />} />
+        <Route path="/cover-letter/previous" element={<PreviousCoverLettersView />} />
         <Route path="/" element={
           <div className="space-y-2 pb-2">
             <MainHeader />
