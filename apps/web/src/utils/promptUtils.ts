@@ -82,17 +82,21 @@ Replace it with one customized sentence that reflects the company's product, mis
 
 const buildWordRule = (wordCountLimit: number | null): string =>
   wordCountLimit
-    ? `Write approximately ${wordCountLimit} words. Never exceed this limit.`
+    ? `Word limit: ${wordCountLimit} words maximum. Count your words carefully. Do NOT exceed this limit.`
     : `Write between 250 and 400 words.`;
 
 const buildChangesRule = (minimalChanges: boolean): string =>
   minimalChanges
-    ? `Only modify company name, position title and skills that must be adapted to the new job. Preserve the user's original writing style whenever possible.`
+    ? `CRITICAL: Make ONLY these changes to the provided template:
+1. Replace company name with the new company.
+2. Replace position title with the new position.
+3. Update specific skills to match the job description (only if missing or outdated).
+Keep ALL other sentences exactly as written. Do NOT rewrite, rephrase, restructure, or add new paragraphs. Preserve the original text word-for-word except for the three changes listed above.`
     : `You may rewrite motivation, skills and experience to create a stronger and more tailored cover letter while remaining truthful.`;
 
 const buildLanguageRule = (sameLanguage: boolean): string =>
   sameLanguage
-    ? `Write the cover letter in the same language as the job description using natural grammar and vocabulary.`
+    ? `CRITICAL: The cover letter MUST be written in the SAME LANGUAGE as the job description below. Analyze the job description's language and write the entire cover letter in that language. Do NOT default to English.`
     : `Write in professional English unless instructed otherwise.`;
 
 // ────────────────────────────────

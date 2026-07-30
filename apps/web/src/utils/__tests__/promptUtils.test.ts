@@ -38,7 +38,7 @@ describe('promptUtils', () => {
 
         it('should include word count limit when provided', () => {
             const result = buildCoverLetterPrompt(jobDescription, template, 200);
-            expect(result).toContain('Write approximately 200 words');
+            expect(result).toContain('Word limit: 200 words maximum');
         });
 
         it('should handle missing template correctly', () => {
