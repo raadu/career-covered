@@ -17,7 +17,7 @@ import ResultEditor from './ResultEditor';
 
 const ResultDisplay = () => {
     const dispatch = useDispatch();
-    const { generatedLetter, template, apiKey, model } = useSelector((state: RootState) => state.coverLetter);
+    const { generatedLetter, template, apiKey } = useSelector((state: RootState) => state.coverLetter);
     const { isAuthenticated } = useSelector((state: RootState) => state.auth);
     const [generate] = useGenerateCoverLetterMutation();
     const { copied, handleCopy } = useCopy();
@@ -43,7 +43,7 @@ const ResultDisplay = () => {
 
             const result = await generate({ 
                 prompt, 
-                model: model || DEFAULT_MODEL,
+                model: DEFAULT_MODEL,
                 ...(apiKey && { userApiKey: apiKey }),
             }).unwrap();
             

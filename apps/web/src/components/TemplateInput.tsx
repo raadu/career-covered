@@ -9,6 +9,7 @@ import {
   createTemplate,
   updateTemplate,
   deleteTemplate,
+  clearTemplate,
 } from 'store/coverLetterSlice';
 import { setAuthModalOpen } from 'store/authSlice';
 import { showToast } from 'components/common/Toast';
@@ -91,7 +92,7 @@ const TemplateInput = () => {
         onChange={(val) => dispatch(setTemplate(val))}
         isExpanded={isTemplateExpanded}
         onToggleExpand={() => dispatch(toggleTemplateExpanded())}
-        onClear={() => dispatch(setTemplate(''))}
+        onClear={() => dispatch(clearTemplate())}
         onAddTemplate={handleAddTemplate}
         placeholder="Paste your existing cover letter here. We'll largely keep your tone and structure but adapt it to the job."
       />

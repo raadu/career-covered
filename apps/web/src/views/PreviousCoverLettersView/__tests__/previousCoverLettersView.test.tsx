@@ -247,7 +247,7 @@ describe('PreviousCoverLettersView — integration', () => {
       preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
     });
     await waitFor(() => {
-      expect(screen.getByText('Previously Created')).toBeInTheDocument();
+      expect(screen.getByText('Previously created cover letters')).toBeInTheDocument();
     });
     expect(screen.getByText('You have 3 saved cover letters')).toBeInTheDocument();
   });
@@ -445,7 +445,7 @@ describe('PreviousCoverLettersView — edge cases', () => {
       preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
     });
     await waitFor(() => {
-      expect(screen.getByText('Previously Created')).toBeInTheDocument();
+      expect(screen.getByText('Previously created cover letters')).toBeInTheDocument();
     });
   });
 
@@ -453,7 +453,7 @@ describe('PreviousCoverLettersView — edge cases', () => {
     renderWithProviders(<PreviousCoverLettersView />, {
       preloadedState: { auth: { isAuthenticated: false, isLoading: false } },
     });
-    expect(screen.queryByText('Previously Created')).not.toBeInTheDocument();
+    expect(screen.queryByText('Previously created cover letters')).not.toBeInTheDocument();
   });
 
   it('returns null while auth is loading', () => {

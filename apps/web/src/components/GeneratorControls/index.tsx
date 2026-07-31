@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { buildCoverLetterPrompt } from 'utils/promptUtils';
 import { DEFAULT_MODEL } from 'utils/AIModelUtils';
 import type { RootState } from 'store';
-import { setApiKey, setGeneratedLetter, setAllCollapsed, setModel, setCustomization, incrementGenerationCount } from 'store/coverLetterSlice';
+import { setApiKey, setGeneratedLetter, setAllCollapsed, setCustomization, incrementGenerationCount } from 'store/coverLetterSlice';
 import { useGenerateCoverLetterMutation } from 'store/apiSlice';
 import OnboardingModal from 'components/Modals/OnboardingModal';
 import CustomizeModal, { type CustomizationOptions, type CustomizeModalSavePayload } from 'components/Modals/CustomizeModal';
@@ -15,7 +15,7 @@ import GenerateAction from './GenerateAction';
 
 const GeneratorControls = () => {
     const dispatch = useDispatch();
-    const { apiKey, jobDescription, template, model, generatedLetter, customization, generationCount, activeTemplateId } = useSelector((state: RootState) => state.coverLetter);
+    const { apiKey, jobDescription, template, generatedLetter, customization, generationCount, activeTemplateId } = useSelector((state: RootState) => state.coverLetter);
     const { isAuthenticated } = useSelector((state: RootState) => state.auth);
     const [generate, { isLoading, error }] = useGenerateCoverLetterMutation();
     const [isEditing, setIsEditing] = useState(false);
@@ -60,7 +60,7 @@ const GeneratorControls = () => {
             dispatch(setAllCollapsed()); // Collapse inputs for better view
             const result = await generate({ 
                 prompt, 
-                model: model || DEFAULT_MODEL,
+                model: DEFAULT_MODEL,
                 ...(apiKey && { userApiKey: apiKey }),
             }).unwrap();
             dispatch(setGeneratedLetter(result));
@@ -75,7 +75,7 @@ const GeneratorControls = () => {
                         templateId: activeTemplateId || undefined,
                         jobDescription,
                         generatedText: result,
-                        model: model || DEFAULT_MODEL,
+                        model: DEFAULT_MODEL,
                         wordLimit: activeCustomization?.limitWords ? activeCustomization.wordCount : undefined,
                         minimalChanges: activeCustomization?.minimalChanges || undefined,
                         sameLanguage: activeCustomization?.sameLanguage || undefined,
@@ -111,20 +111,20 @@ const GeneratorControls = () => {
                     setShowHelpModal={setShowHelpModal}
                 />
 
-                <ControlActions 
-                    isFilterOn={isFilterOn}
-                    model={model || DEFAULT_MODEL}
-                    setModel={(val) => dispatch(setModel(val))}
-                    setShowCustomizeModal={setShowCustomizeModal}
-                />
+                <div className="flex flex-col sm:flex-row w-full lg:w-auto items-stretch lg:items-center gap-1.5">
+                    <ControlActions 
+                        isFilterOn={isFilterOn}
+                        setShowCustomizeModal={setShowCustomizeModal}
+                    />
 
-                <GenerateAction 
-                    isLoading={isLoading}
-                    hasJobDescription={!!jobDescription}
-                    hasGeneratedLetter={!!generatedLetter}
-                    onGenerate={() => handleGenerate()}
-                    error={error}
-                />
+                    <GenerateAction 
+                        isLoading={isLoading}
+                        hasJobDescription={!!jobDescription}
+                        hasGeneratedLetter={!!generatedLetter}
+                        onGenerate={() => handleGenerate()}
+                        error={error}
+                    />
+                </div>
             </div>
 
             <OnboardingModal 

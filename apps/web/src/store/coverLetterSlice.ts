@@ -12,7 +12,6 @@ export interface CoverLetterState {
   jobDescription: string;
   generatedLetter: string;
   apiKey: string;
-  model: string;
   isTemplateExpanded: boolean;
   isJobDescExpanded: boolean;
   isGenerating: boolean;
@@ -38,7 +37,6 @@ export function restoreSessionStorage(): { jobDescription: string; generatedLett
 
 const savedTemplate = localStorage.getItem('cl_template') || '';
 const savedApiKey = localStorage.getItem('cl_apiKey') || '';
-const savedModel = localStorage.getItem('cl_model') || 'llama-3.3-70b-versatile';
 const fallbackCount = parseInt(localStorage.getItem('cl_generation_count') || '0', 10);
 
 const { jobDescription: restoredJobDescription, generatedLetter: restoredGeneratedLetter } = restoreSessionStorage();
@@ -48,7 +46,6 @@ const initialState: CoverLetterState = {
   jobDescription: restoredJobDescription,
   generatedLetter: restoredGeneratedLetter,
   apiKey: savedApiKey,
-  model: savedModel,
   isTemplateExpanded: false,
   isJobDescExpanded: true,
   isGenerating: false,
@@ -131,6 +128,12 @@ export const coverLetterSlice = createSlice({
     setTemplate: (state, action: PayloadAction<string>) => {
       state.template = action.payload;
     },
+    clearTemplate: (state) => {
+      state.template = '';
+      state.activeTemplateId = null;
+      localStorage.setItem('cl_template', '');
+      localStorage.removeItem('cl_active_template_id');
+    },
     setJobDescription: (state, action: PayloadAction<string>) => {
       state.jobDescription = action.payload;
     },
@@ -139,9 +142,6 @@ export const coverLetterSlice = createSlice({
     },
     setApiKey: (state, action: PayloadAction<string>) => {
       state.apiKey = action.payload;
-    },
-    setModel: (state, action: PayloadAction<string>) => {
-      state.model = action.payload;
     },
     toggleTemplateExpanded: (state) => {
       state.isTemplateExpanded = !state.isTemplateExpanded;
@@ -249,7 +249,7 @@ export const {
   setJobDescription,
   setGeneratedLetter,
   setApiKey,
-  setModel,
+  clearTemplate,
   toggleTemplateExpanded,
   toggleJobDescExpanded,
   setAllCollapsed,

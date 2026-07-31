@@ -1,22 +1,17 @@
 import { FaArrowRight, FaSlidersH } from "react-icons/fa";
 import CommonButton from "components/common/CommonButton";
-import ModelSelector from "components/ModelSelector";
 
 interface ControlActionsProps {
   isFilterOn: boolean;
-  model: string;
-  setModel: (model: string) => void;
   setShowCustomizeModal: (show: boolean) => void;
 }
 
 const ControlActions = ({
   isFilterOn,
-  model,
-  setModel,
   setShowCustomizeModal,
 }: ControlActionsProps) => {
   return (
-    <div className="w-full lg:w-auto flex flex-wrap items-center justify-between lg:justify-end gap-2">
+    <div className="w-full sm:w-auto flex flex-wrap items-center justify-between sm:justify-end gap-1.5">
       <div
         title="Click Customize More to change settings."
         className={`flex items-center gap-1.5 px-2.5 h-9 text-xs font-semibold transition-colors cursor-default ${
@@ -43,11 +38,6 @@ const ControlActions = ({
       >
         Customize More
       </CommonButton>
-
-      <ModelSelector
-        selectedModel={model}
-        onModelChange={setModel}
-      />
     </div>
   );
 };

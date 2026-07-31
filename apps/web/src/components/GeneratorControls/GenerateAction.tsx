@@ -19,7 +19,7 @@ const GenerateAction = ({
   error,
 }: GenerateActionProps) => {
   return (
-    <div className="flex justify-center p-1 lg:p-0">
+    <div className="flex justify-center w-full sm:w-auto">
       <CommonButton
         variant="primary"
         onClick={onGenerate}

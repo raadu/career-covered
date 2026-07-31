@@ -5,7 +5,7 @@ import coverLetterReducer, {
   setJobDescription,
   setGeneratedLetter,
   setApiKey,
-  setModel,
+  clearTemplate,
   toggleTemplateExpanded,
   toggleJobDescExpanded,
   setAllCollapsed,
@@ -27,7 +27,6 @@ const createBlankState = (overrides?: Partial<CoverLetterState>): CoverLetterSta
   jobDescription: '',
   generatedLetter: '',
   apiKey: '',
-  model: 'llama-3.3-70b-versatile',
   isTemplateExpanded: true,
   isJobDescExpanded: true,
   isGenerating: false,
@@ -81,6 +80,42 @@ describe('coverLetterSlice', () => {
     });
   });
 
+  describe('clearTemplate', () => {
+    it('clears template text and deselects the active template', () => {
+      const state = coverLetterReducer(
+        createBlankState({ template: 'Existing template', activeTemplateId: 'id-1' }),
+        clearTemplate(),
+      );
+      expect(state.template).toBe('');
+      expect(state.activeTemplateId).toBeNull();
+    });
+
+    it('removes the persisted active template id from localStorage', () => {
+      localStorage.setItem('cl_active_template_id', 'id-1');
+      localStorage.setItem('cl_template', 'Existing template');
+      coverLetterReducer(
+        createBlankState({ template: 'Existing template', activeTemplateId: 'id-1' }),
+        clearTemplate(),
+      );
+      expect(localStorage.getItem('cl_active_template_id')).toBeNull();
+      expect(localStorage.getItem('cl_template')).toBe('');
+    });
+
+    it('does not re-select the template on fetch.fulfilled after clearing', () => {
+      localStorage.setItem('cl_active_template_id', 'id-1');
+      localStorage.setItem('cl_template', 'Existing template');
+      coverLetterReducer(
+        createBlankState({ template: 'Existing template', activeTemplateId: 'id-1' }),
+        clearTemplate(),
+      );
+      const templates = [tpl1, tpl2];
+      const action = fetchTemplates.fulfilled(templates, 'req');
+      const state = coverLetterReducer(createBlankState(), action);
+      expect(state.activeTemplateId).toBeNull();
+      expect(state.template).toBe('');
+    });
+  });
+
   describe('setGeneratedLetter', () => {
     it('updates generated letter', () => {
       const state = coverLetterReducer(createBlankState(), setGeneratedLetter('Dear Sir...'));
@@ -108,13 +143,6 @@ describe('coverLetterSlice', () => {
         setApiKey(''),
       );
       expect(state.apiKey).toBe('');
-    });
-  });
-
-  describe('setModel', () => {
-    it('updates model', () => {
-      const state = coverLetterReducer(createBlankState(), setModel('mixtral-8x7b'));
-      expect(state.model).toBe('mixtral-8x7b');
     });
   });
 
@@ -452,7 +480,7 @@ describe('coverLetterSlice', () => {
       expect(created).toHaveProperty('jobDescription');
       expect(created).toHaveProperty('generatedLetter');
       expect(created).toHaveProperty('apiKey');
-      expect(created).toHaveProperty('model');
+      expect(created).not.toHaveProperty('model');
       expect(created).toHaveProperty('isTemplateExpanded');
       expect(created).toHaveProperty('isJobDescExpanded');
       expect(created).toHaveProperty('isGenerating');

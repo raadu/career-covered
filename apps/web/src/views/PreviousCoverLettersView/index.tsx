@@ -2,6 +2,7 @@ import { Navigate } from 'react-router-dom';
 import { jsPDF } from 'jspdf';
 import { Document, Packer, Paragraph, TextRun } from 'docx';
 import { saveAs } from 'file-saver';
+import { useSelector } from 'react-redux';
 import { showToast } from 'components/common/Toast';
 import ConfirmModal from 'components/common/ConfirmModal';
 import Header from './Header';
@@ -9,6 +10,8 @@ import BatchActionBar from './BatchActionBar';
 import PreviousCoverLettersTable from './PreviousCoverLettersTable';
 import { usePreviousCoverLetters } from './usePreviousCoverLetters';
 import { useCopy } from 'hooks/useCopy';
+import { buildFileName } from 'utils/fileNameUtils';
+import type { RootState } from 'store';
 import type { CoverLetterItem } from './types';
 
 const PreviousCoverLettersView = () => {
@@ -37,6 +40,7 @@ const PreviousCoverLettersView = () => {
   } = usePreviousCoverLetters();
 
   const { handleCopy } = useCopy();
+  const { user } = useSelector((state: RootState) => state.auth);
 
   if (authLoading) return null;
   if (!isAuthenticated) return <Navigate to="/" replace />;
@@ -68,10 +72,7 @@ const PreviousCoverLettersView = () => {
         currentY += lineSpacing;
       });
 
-      const fileName = `Cover_Letter_${item.companyName || 'Unknown'}`.replace(
-        /\s+/g,
-        '_',
-      );
+      const fileName = buildFileName(user?.name);
       doc.save(`${fileName}.pdf`);
     } catch {
       showToast('Failed to generate PDF', { type: 'error' });
@@ -100,10 +101,7 @@ const PreviousCoverLettersView = () => {
       });
 
       const blob = await Packer.toBlob(doc);
-      const fileName = `Cover_Letter_${item.companyName || 'Unknown'}`.replace(
-        /\s+/g,
-        '_',
-      );
+      const fileName = buildFileName(user?.name);
       saveAs(blob, `${fileName}.docx`);
     } catch {
       showToast('Failed to generate Word document', { type: 'error' });

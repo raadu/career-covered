@@ -206,5 +206,46 @@ describe('TemplateInput', () => {
         expect(screen.queryByText('Do you really want to delete it?')).not.toBeInTheDocument();
       });
     });
+
+    it('deselects the active template when the clear button is pressed', () => {
+      const { store } = renderWithProviders(<TemplateInput />, {
+        preloadedState: {
+          ...authState,
+          coverLetter: {
+            template: 'Existing template content',
+            savedTemplates,
+            activeTemplateId: 't1',
+            isLoadingTemplates: false,
+          },
+        },
+      });
+
+      fireEvent.click(screen.getByTitle('Remove all the text'));
+
+      expect(store.getState().coverLetter.template).toBe('');
+      expect(store.getState().coverLetter.activeTemplateId).toBeNull();
+    });
+
+    it('persists the deselection by removing the active template id from localStorage', () => {
+      localStorage.setItem('cl_active_template_id', 't1');
+      localStorage.setItem('cl_template', 'Existing template content');
+
+      const { store } = renderWithProviders(<TemplateInput />, {
+        preloadedState: {
+          ...authState,
+          coverLetter: {
+            template: 'Existing template content',
+            savedTemplates,
+            activeTemplateId: 't1',
+            isLoadingTemplates: false,
+          },
+        },
+      });
+
+      fireEvent.click(screen.getByTitle('Remove all the text'));
+
+      expect(localStorage.getItem('cl_active_template_id')).toBeNull();
+      expect(store.getState().coverLetter.activeTemplateId).toBeNull();
+    });
   });
 });

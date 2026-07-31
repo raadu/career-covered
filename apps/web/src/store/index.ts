@@ -17,7 +17,6 @@ const persistenceMiddleware: Middleware = (store) => (next) => (action) => {
     if (type.startsWith('coverLetter/setTemplate') || type.startsWith('coverLetter/setApiKey')) {
       localStorage.setItem('cl_template', state.coverLetter.template);
       localStorage.setItem('cl_apiKey', state.coverLetter.apiKey);
-      localStorage.setItem('cl_model', state.coverLetter.model);
     }
 
   }
