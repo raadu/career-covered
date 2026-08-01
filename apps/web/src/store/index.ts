@@ -1,4 +1,5 @@
 import { configureStore, type Middleware } from '@reduxjs/toolkit';
+import { useDispatch } from 'react-redux';
 import coverLetterReducer from 'store/coverLetterSlice';
 import authReducer from 'store/authSlice';
 import { apiSlice } from 'store/apiSlice';
@@ -7,20 +8,18 @@ import { apiSlice } from 'store/apiSlice';
 const persistenceMiddleware: Middleware = (store) => (next) => (action) => {
   const result = next(action);
   const state = store.getState();
-  
-  if (
-    typeof action === 'object' && 
-    action !== null && 
-    'type' in action
-  ) {
+
+  if (typeof action === 'object' && action !== null && 'type' in action) {
     const type = (action as { type: string }).type;
-    if (type.startsWith('coverLetter/setTemplate') || type.startsWith('coverLetter/setApiKey')) {
+    if (
+      type.startsWith('coverLetter/setTemplate') ||
+      type.startsWith('coverLetter/setApiKey')
+    ) {
       localStorage.setItem('cl_template', state.coverLetter.template);
       localStorage.setItem('cl_apiKey', state.coverLetter.apiKey);
     }
-
   }
-  
+
   return result;
 };
 
@@ -36,6 +35,7 @@ export const store = configureStore({
       .concat(persistenceMiddleware),
 });
 
-
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
+
+export const useAppDispatch: () => AppDispatch = useDispatch;

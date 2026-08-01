@@ -27,12 +27,13 @@ export class CoverLetterController {
   constructor(private readonly coverLetterService: CoverLetterService) {}
 
   @Get()
-  @ApiOperation({ summary: 'List cover letters for the user (supports pagination)' })
+  @ApiOperation({
+    summary: 'List cover letters for the user (supports pagination)',
+  })
   async findAll(
     @CurrentUser() user: db.User,
     @Query('page') page?: string,
     @Query('limit') limit?: string,
-    @Query('sortByUpdateTime') sortByUpdateTime?: string,
   ): Promise<
     | db.CoverLetter[]
     | {

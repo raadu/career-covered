@@ -3,7 +3,7 @@ import DOMPurify from 'dompurify';
 /**
  * Sanitizes a string input to prevent XSS attacks.
  * It strips out HTML tags and attributes while preserving the text content.
- * 
+ *
  * @param input - The string to sanitize.
  * @returns A safe, sanitized string.
  */

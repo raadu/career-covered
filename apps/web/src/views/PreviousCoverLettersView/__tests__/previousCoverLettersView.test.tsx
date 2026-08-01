@@ -1,5 +1,11 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, fireEvent, renderWithProviders, waitFor } from '../../../../tests/test-utils';
+import {
+  render,
+  screen,
+  fireEvent,
+  renderWithProviders,
+  waitFor,
+} from '../../../../tests/test-utils';
 import BatchActionBar from 'views/PreviousCoverLettersView/BatchActionBar';
 import PreviousCoverLettersTable from 'views/PreviousCoverLettersView/PreviousCoverLettersTable';
 import PreviousCoverLettersView from 'views/PreviousCoverLettersView/index';
@@ -88,25 +94,37 @@ const withDataProps = {
  * ============================================================ */
 describe('BatchActionBar', () => {
   it('renders selected count', () => {
-    render(<BatchActionBar selectedCount={3} onDelete={vi.fn()} onClear={vi.fn()} />);
+    render(
+      <BatchActionBar selectedCount={3} onDelete={vi.fn()} onClear={vi.fn()} />,
+    );
     expect(screen.getByText('3 selected')).toBeInTheDocument();
   });
 
   it('renders singular count', () => {
-    render(<BatchActionBar selectedCount={1} onDelete={vi.fn()} onClear={vi.fn()} />);
+    render(
+      <BatchActionBar selectedCount={1} onDelete={vi.fn()} onClear={vi.fn()} />,
+    );
     expect(screen.getByText('1 selected')).toBeInTheDocument();
   });
 
   it('calls onDelete when delete button clicked', () => {
     const onDelete = vi.fn();
-    render(<BatchActionBar selectedCount={2} onDelete={onDelete} onClear={vi.fn()} />);
+    render(
+      <BatchActionBar
+        selectedCount={2}
+        onDelete={onDelete}
+        onClear={vi.fn()}
+      />,
+    );
     fireEvent.click(screen.getByText('Delete Selected'));
     expect(onDelete).toHaveBeenCalledOnce();
   });
 
   it('calls onClear when clear button clicked', () => {
     const onClear = vi.fn();
-    render(<BatchActionBar selectedCount={2} onDelete={vi.fn()} onClear={onClear} />);
+    render(
+      <BatchActionBar selectedCount={2} onDelete={vi.fn()} onClear={onClear} />,
+    );
     fireEvent.click(screen.getByText('Clear selection'));
     expect(onClear).toHaveBeenCalledOnce();
   });
@@ -118,7 +136,11 @@ describe('BatchActionBar', () => {
 describe('PreviousCoverLettersTable', () => {
   it('renders empty message when no data', () => {
     render(<PreviousCoverLettersTable {...emptyProps} />);
-    expect(screen.getByText('No saved cover letters yet. Generate one to get started.')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        'No saved cover letters yet. Generate one to get started.',
+      ),
+    ).toBeInTheDocument();
   });
 
   it('renders rows with job descriptions', () => {
@@ -157,7 +179,12 @@ describe('PreviousCoverLettersTable', () => {
 
   it('calls onDownloadPdf when PDF button clicked', () => {
     const onDownloadPdf = vi.fn();
-    render(<PreviousCoverLettersTable {...withDataProps} onDownloadPdf={onDownloadPdf} />);
+    render(
+      <PreviousCoverLettersTable
+        {...withDataProps}
+        onDownloadPdf={onDownloadPdf}
+      />,
+    );
     const pdfButtons = screen.getAllByTitle('Download as PDF');
     fireEvent.click(pdfButtons[0]);
     expect(onDownloadPdf).toHaveBeenCalledWith(mockItems[0]);
@@ -165,7 +192,12 @@ describe('PreviousCoverLettersTable', () => {
 
   it('calls onDownloadWord when Word button clicked', () => {
     const onDownloadWord = vi.fn();
-    render(<PreviousCoverLettersTable {...withDataProps} onDownloadWord={onDownloadWord} />);
+    render(
+      <PreviousCoverLettersTable
+        {...withDataProps}
+        onDownloadWord={onDownloadWord}
+      />,
+    );
     const wordButtons = screen.getAllByTitle('Download as Word');
     fireEvent.click(wordButtons[1]);
     expect(onDownloadWord).toHaveBeenCalledWith(mockItems[1]);
@@ -181,7 +213,9 @@ describe('PreviousCoverLettersTable', () => {
 
   it('calls onDelete when Delete button clicked', () => {
     const onDelete = vi.fn();
-    render(<PreviousCoverLettersTable {...withDataProps} onDelete={onDelete} />);
+    render(
+      <PreviousCoverLettersTable {...withDataProps} onDelete={onDelete} />,
+    );
     const deleteButtons = screen.getAllByTitle('Delete');
     fireEvent.click(deleteButtons[0]);
     expect(onDelete).toHaveBeenCalledWith('1');
@@ -195,7 +229,12 @@ describe('PreviousCoverLettersTable', () => {
 
   it('calls onToggleSelectAll when header checkbox clicked', () => {
     const onToggleSelectAll = vi.fn();
-    render(<PreviousCoverLettersTable {...withDataProps} onToggleSelectAll={onToggleSelectAll} />);
+    render(
+      <PreviousCoverLettersTable
+        {...withDataProps}
+        onToggleSelectAll={onToggleSelectAll}
+      />,
+    );
     const checkboxes = screen.getAllByRole('checkbox');
     fireEvent.click(checkboxes[0]);
     expect(onToggleSelectAll).toHaveBeenCalledOnce();
@@ -203,14 +242,21 @@ describe('PreviousCoverLettersTable', () => {
 
   it('calls onToggleSelect when row checkbox clicked', () => {
     const onToggleSelect = vi.fn();
-    render(<PreviousCoverLettersTable {...withDataProps} onToggleSelect={onToggleSelect} />);
+    render(
+      <PreviousCoverLettersTable
+        {...withDataProps}
+        onToggleSelect={onToggleSelect}
+      />,
+    );
     const checkboxes = screen.getAllByRole('checkbox');
     fireEvent.click(checkboxes[1]);
     expect(onToggleSelect).toHaveBeenCalledWith('1');
   });
 
   it('shows loading skeleton when isLoading is true', () => {
-    const { container } = render(<PreviousCoverLettersTable {...withDataProps} isLoading={true} />);
+    const { container } = render(
+      <PreviousCoverLettersTable {...withDataProps} isLoading={true} />,
+    );
     const skeletonDivs = container.querySelectorAll('.animate-pulse');
     expect(skeletonDivs.length).toBeGreaterThan(0);
   });
@@ -247,9 +293,13 @@ describe('PreviousCoverLettersView — integration', () => {
       preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
     });
     await waitFor(() => {
-      expect(screen.getByText('Previously created cover letters')).toBeInTheDocument();
+      expect(
+        screen.getByText('Previously created cover letters'),
+      ).toBeInTheDocument();
     });
-    expect(screen.getByText('You have 3 saved cover letters')).toBeInTheDocument();
+    expect(
+      screen.getByText('You have 3 saved cover letters'),
+    ).toBeInTheDocument();
   });
 
   it('renders all rows after fetch', async () => {
@@ -257,7 +307,9 @@ describe('PreviousCoverLettersView — integration', () => {
       preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
     });
     await waitFor(() => {
-      expect(screen.getByText('Software Engineer at Google')).toBeInTheDocument();
+      expect(
+        screen.getByText('Software Engineer at Google'),
+      ).toBeInTheDocument();
     });
     expect(screen.getByText('Product Designer at Figma')).toBeInTheDocument();
     expect(screen.getByText('Product Manager at Amazon')).toBeInTheDocument();
@@ -277,7 +329,9 @@ describe('PreviousCoverLettersView — integration', () => {
       preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
     });
     await waitFor(() => {
-      expect(screen.getByText('Software Engineer at Google')).toBeInTheDocument();
+      expect(
+        screen.getByText('Software Engineer at Google'),
+      ).toBeInTheDocument();
     });
     expect(screen.queryByText(/selected/)).not.toBeInTheDocument();
   });
@@ -287,7 +341,9 @@ describe('PreviousCoverLettersView — integration', () => {
       preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
     });
     await waitFor(() => {
-      expect(screen.getByText('Software Engineer at Google')).toBeInTheDocument();
+      expect(
+        screen.getByText('Software Engineer at Google'),
+      ).toBeInTheDocument();
     });
 
     const checkboxes = screen.getAllByRole('checkbox');
@@ -303,7 +359,9 @@ describe('PreviousCoverLettersView — integration', () => {
       preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
     });
     await waitFor(() => {
-      expect(screen.getByText('Software Engineer at Google')).toBeInTheDocument();
+      expect(
+        screen.getByText('Software Engineer at Google'),
+      ).toBeInTheDocument();
     });
 
     const checkboxes = screen.getAllByRole('checkbox');
@@ -317,7 +375,9 @@ describe('PreviousCoverLettersView — integration', () => {
       preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
     });
     await waitFor(() => {
-      expect(screen.getByText('Software Engineer at Google')).toBeInTheDocument();
+      expect(
+        screen.getByText('Software Engineer at Google'),
+      ).toBeInTheDocument();
     });
 
     const deleteButtons = screen.getAllByTitle('Delete');
@@ -330,7 +390,9 @@ describe('PreviousCoverLettersView — integration', () => {
       preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
     });
     await waitFor(() => {
-      expect(screen.getByText('Software Engineer at Google')).toBeInTheDocument();
+      expect(
+        screen.getByText('Software Engineer at Google'),
+      ).toBeInTheDocument();
     });
 
     const checkboxes = screen.getAllByRole('checkbox');
@@ -352,7 +414,14 @@ describe('PreviousCoverLettersView — integration', () => {
     });
     mockFetch.mockResolvedValueOnce({
       ok: true,
-      json: () => Promise.resolve({ data: [], total: 0, page: 1, limit: 10, totalPages: 0 }),
+      json: () =>
+        Promise.resolve({
+          data: [],
+          total: 0,
+          page: 1,
+          limit: 10,
+          totalPages: 0,
+        }),
     });
     vi.stubGlobal('fetch', mockFetch);
 
@@ -360,7 +429,9 @@ describe('PreviousCoverLettersView — integration', () => {
       preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
     });
     await waitFor(() => {
-      expect(screen.getByText('Software Engineer at Google')).toBeInTheDocument();
+      expect(
+        screen.getByText('Software Engineer at Google'),
+      ).toBeInTheDocument();
     });
 
     const checkboxes = screen.getAllByRole('checkbox');
@@ -380,7 +451,9 @@ describe('PreviousCoverLettersView — integration', () => {
 
     await waitFor(() => {
       const batchCall = mockFetch.mock.calls.find(
-        (call) => call[0] === '/api/cover-letters/batch' && call[1]?.method === 'DELETE',
+        (call) =>
+          call[0] === '/api/cover-letters/batch' &&
+          call[1]?.method === 'DELETE',
       );
       expect(batchCall).toBeDefined();
     });
@@ -400,7 +473,14 @@ describe('PreviousCoverLettersView — edge cases', () => {
       'fetch',
       vi.fn().mockResolvedValue({
         ok: true,
-        json: () => Promise.resolve({ data: [], total: 0, page: 1, limit: 10, totalPages: 0 }),
+        json: () =>
+          Promise.resolve({
+            data: [],
+            total: 0,
+            page: 1,
+            limit: 10,
+            totalPages: 0,
+          }),
       }),
     );
 
@@ -408,7 +488,11 @@ describe('PreviousCoverLettersView — edge cases', () => {
       preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
     });
     await waitFor(() => {
-      expect(screen.getByText('No saved cover letters yet. Generate one to get started.')).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          'No saved cover letters yet. Generate one to get started.',
+        ),
+      ).toBeInTheDocument();
     });
   });
 
@@ -417,13 +501,14 @@ describe('PreviousCoverLettersView — edge cases', () => {
       'fetch',
       vi.fn().mockResolvedValue({
         ok: true,
-        json: () => Promise.resolve({
-          data: [mockItems[0]],
-          total: 1,
-          page: 1,
-          limit: 10,
-          totalPages: 1,
-        }),
+        json: () =>
+          Promise.resolve({
+            data: [mockItems[0]],
+            total: 1,
+            page: 1,
+            limit: 10,
+            totalPages: 1,
+          }),
       }),
     );
 
@@ -431,21 +516,22 @@ describe('PreviousCoverLettersView — edge cases', () => {
       preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
     });
     await waitFor(() => {
-      expect(screen.getByText('You have 1 saved cover letter')).toBeInTheDocument();
+      expect(
+        screen.getByText('You have 1 saved cover letter'),
+      ).toBeInTheDocument();
     });
   });
 
   it('shows error toast on fetch failure', async () => {
-    vi.stubGlobal(
-      'fetch',
-      vi.fn().mockResolvedValue({ ok: false }),
-    );
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false }));
 
     renderWithProviders(<PreviousCoverLettersView />, {
       preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
     });
     await waitFor(() => {
-      expect(screen.getByText('Previously created cover letters')).toBeInTheDocument();
+      expect(
+        screen.getByText('Previously created cover letters'),
+      ).toBeInTheDocument();
     });
   });
 
@@ -453,7 +539,9 @@ describe('PreviousCoverLettersView — edge cases', () => {
     renderWithProviders(<PreviousCoverLettersView />, {
       preloadedState: { auth: { isAuthenticated: false, isLoading: false } },
     });
-    expect(screen.queryByText('Previously created cover letters')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('Previously created cover letters'),
+    ).not.toBeInTheDocument();
   });
 
   it('returns null while auth is loading', () => {

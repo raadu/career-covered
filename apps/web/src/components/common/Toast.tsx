@@ -41,7 +41,9 @@ export function showToast(
     (t) => (
       <div
         className={`flex items-start gap-3 px-4 py-3 bg-white dark:bg-gray-800 border-2 ${borderColors[type]} shadow-lg max-w-sm pointer-events-auto ${
-          t.visible ? 'animate-in fade-in slide-in-from-right-2 duration-200' : 'animate-out fade-out slide-out-to-right-2 duration-200'
+          t.visible
+            ? 'animate-in fade-in slide-in-from-right-2 duration-200'
+            : 'animate-out fade-out slide-out-to-right-2 duration-200'
         }`}
         style={{ borderRadius: '0' }}
       >

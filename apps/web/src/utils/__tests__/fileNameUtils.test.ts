@@ -31,11 +31,15 @@ describe('buildFileName', () => {
   });
 
   it('separates every word of a three-word name', () => {
-    expect(buildFileName('Helena Mann Dzousa')).toBe('Cover_Letter_Helena_Mann_Dzousa');
+    expect(buildFileName('Helena Mann Dzousa')).toBe(
+      'Cover_Letter_Helena_Mann_Dzousa',
+    );
   });
 
   it('separates every word of a four-word name', () => {
-    expect(buildFileName('Mary Jane Watson Parker')).toBe('Cover_Letter_Mary_Jane_Watson_Parker');
+    expect(buildFileName('Mary Jane Watson Parker')).toBe(
+      'Cover_Letter_Mary_Jane_Watson_Parker',
+    );
   });
 
   it('trims leading and trailing whitespace', () => {
@@ -47,6 +51,8 @@ describe('buildFileName', () => {
   });
 
   it('collapses tabs and newlines into single underscores', () => {
-    expect(buildFileName('John\tSmith\nDoe')).toBe('Cover_Letter_John_Smith_Doe');
+    expect(buildFileName('John\tSmith\nDoe')).toBe(
+      'Cover_Letter_John_Smith_Doe',
+    );
   });
 });

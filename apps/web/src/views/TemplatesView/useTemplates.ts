@@ -20,7 +20,6 @@ export function useTemplates() {
   const [isLoading, setIsLoading] = useState(true);
 
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const [isBatchDeleting, setIsBatchDeleting] = useState(false);
   const [showBatchConfirm, setShowBatchConfirm] = useState(false);
 
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -33,27 +32,32 @@ export function useTemplates() {
   const [editContent, setEditContent] = useState('');
   const [isUpdating, setIsUpdating] = useState(false);
 
-  const [deletingTemplateId, setDeletingTemplateId] = useState<string | null>(null);
+  const [deletingTemplateId, setDeletingTemplateId] = useState<string | null>(
+    null,
+  );
 
-  const fetchPage = useCallback(async (p: number, size?: number) => {
-    setIsLoading(true);
-    const limit = size ?? pageSize;
-    try {
-      const res = await fetch(
-        `/api/templates?page=${p}&limit=${limit}&sortByUpdateTime=true`,
-      );
-      if (!res.ok) throw new Error('Failed to fetch templates');
-      const json: PaginatedResponse = await res.json();
-      setData(json.data);
-      setTotal(json.total);
-      setPage(json.page);
-      setTotalPages(json.totalPages);
-    } catch {
-      showToast('Failed to load templates', { type: 'error' });
-    } finally {
-      setIsLoading(false);
-    }
-  }, [pageSize]);
+  const fetchPage = useCallback(
+    async (p: number, size?: number) => {
+      setIsLoading(true);
+      const limit = size ?? pageSize;
+      try {
+        const res = await fetch(
+          `/api/templates?page=${p}&limit=${limit}&sortByUpdateTime=true`,
+        );
+        if (!res.ok) throw new Error('Failed to fetch templates');
+        const json: PaginatedResponse = await res.json();
+        setData(json.data);
+        setTotal(json.total);
+        setPage(json.page);
+        setTotalPages(json.totalPages);
+      } catch {
+        showToast('Failed to load templates', { type: 'error' });
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [pageSize],
+  );
 
   useEffect(() => {
     if (isAuthenticated) fetchPage(1);
@@ -63,7 +67,8 @@ export function useTemplates() {
     setSelectedIds(new Set());
   }, [data]);
 
-  const allSelected = data.length > 0 && data.every((t) => selectedIds.has(t.id));
+  const allSelected =
+    data.length > 0 && data.every((t) => selectedIds.has(t.id));
   const someSelected = data.some((t) => selectedIds.has(t.id));
 
   const toggleSelectAll = () => {
@@ -169,7 +174,6 @@ export function useTemplates() {
   };
 
   const handleBatchDelete = async () => {
-    setIsBatchDeleting(true);
     try {
       const res = await fetch('/api/templates/batch', {
         method: 'DELETE',
@@ -190,8 +194,6 @@ export function useTemplates() {
       fetchPage(targetPage);
     } catch {
       showToast('Failed to delete templates', { type: 'error' });
-    } finally {
-      setIsBatchDeleting(false);
     }
   };
 

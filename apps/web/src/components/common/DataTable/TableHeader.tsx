@@ -4,7 +4,9 @@ interface TableHeaderProps<T> {
   headerGroups: HeaderGroup<T>[];
 }
 
-const TableHeader = <T extends object>({ headerGroups }: TableHeaderProps<T>) => (
+const TableHeader = <T extends object>({
+  headerGroups,
+}: TableHeaderProps<T>) => (
   <thead>
     {headerGroups.map((headerGroup) => (
       <tr key={headerGroup.id}>

@@ -17,7 +17,7 @@ const faqItems = [
   {
     question: 'Is my data secure?',
     answer:
-      'Yes, your data security and privacy are important to us. Your job descriptions and cover letters are sent directly from your browser to Groq\'s API for AI processing — they are never stored on our servers. We do not collect, sell, or share any personal information. All data transmitted between your browser and the API is encrypted using HTTPS. We also use DOMpurify to sanitize all content and protect against XSS attacks. Your templates and preferences are stored locally in your browser only.',
+      "Yes, your data security and privacy are important to us. Your job descriptions and cover letters are sent directly from your browser to Groq's API for AI processing — they are never stored on our servers. We do not collect, sell, or share any personal information. All data transmitted between your browser and the API is encrypted using HTTPS. We also use DOMpurify to sanitize all content and protect against XSS attacks. Your templates and preferences are stored locally in your browser only.",
   },
   {
     question: 'How many cover letters can I create for free?',
@@ -42,12 +42,14 @@ const faqItems = [
   {
     question: 'What templates can I use?',
     answer:
-      'Career Covered offers a variety of professional cover letter templates to choose from, including General, Software Engineer, Design, Marketing, Business, and more. You can also paste your own custom cover letter template — the AI will follow your template\'s structure, format, and style while intelligently tailoring the content to match the job description. This flexibility ensures your cover letter always matches your personal brand and industry standards.',
+      "Career Covered offers a variety of professional cover letter templates to choose from, including General, Software Engineer, Design, Marketing, Business, and more. You can also paste your own custom cover letter template — the AI will follow your template's structure, format, and style while intelligently tailoring the content to match the job description. This flexibility ensures your cover letter always matches your personal brand and industry standards.",
   },
 ];
 
 const FaqView = () => {
-  const [openItems, setOpenItems] = useState(() => faqItems.map((_, i) => i < 5));
+  const [openItems, setOpenItems] = useState(() =>
+    faqItems.map((_, i) => i < 5),
+  );
 
   const toggleItem = (index: number) => {
     setOpenItems((prev) => {
@@ -66,13 +68,19 @@ const FaqView = () => {
           content="Frequently asked questions about Career Covered's free AI cover letter generator. Learn about Groq API keys, data security, exports, templates, and more."
         />
         <link rel="canonical" href="https://careercovered.com/#/faq" />
-        <meta property="og:title" content="FAQ | Career Covered — Free AI Cover Letter Generator" />
+        <meta
+          property="og:title"
+          content="FAQ | Career Covered — Free AI Cover Letter Generator"
+        />
         <meta
           property="og:description"
           content="Frequently asked questions about Career Covered's free AI cover letter generator. Learn about Groq API keys, data security, exports, templates, and more."
         />
         <meta property="og:url" content="https://careercovered.com/#/faq" />
-        <meta name="twitter:title" content="FAQ | Career Covered — Free AI Cover Letter Generator" />
+        <meta
+          name="twitter:title"
+          content="FAQ | Career Covered — Free AI Cover Letter Generator"
+        />
         <meta
           name="twitter:description"
           content="Frequently asked questions about Career Covered's free AI cover letter generator. Learn about Groq API keys, data security, exports, templates, and more."
@@ -86,7 +94,8 @@ const FaqView = () => {
               Frequently Asked Questions
             </h1>
             <p className="text-gray-500 dark:text-gray-400 text-sm sm:text-lg leading-relaxed max-w-xl mx-auto">
-              Everything you need to know about Career Covered. Can't find what you're looking for?{' '}
+              Everything you need to know about Career Covered. Can't find what
+              you're looking for?{' '}
               <Link
                 to="/support"
                 className="text-blue-600 dark:text-blue-400 hover:underline font-semibold"
@@ -126,7 +135,9 @@ const FaqView = () => {
                     </span>
                     <FaChevronDown
                       className={`shrink-0 text-gray-400 dark:text-gray-500 transition-all duration-500 ${
-                        isOpen ? 'rotate-180 text-blue-500 dark:text-blue-400' : ''
+                        isOpen
+                          ? 'rotate-180 text-blue-500 dark:text-blue-400'
+                          : ''
                       }`}
                       size={14}
                     />

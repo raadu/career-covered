@@ -4,7 +4,9 @@ import TemplateSelector from '../TemplateSelector';
 import type { SavedTemplate } from 'store/coverLetterSlice';
 
 const makeTpl = (id: string, name: string, content: string): SavedTemplate => ({
-  id, name, content,
+  id,
+  name,
+  content,
 });
 
 const tplA = makeTpl('a', 'Template A', 'Content A');
@@ -233,7 +235,8 @@ describe('TemplateSelector', () => {
       />,
     );
 
-    const container = screen.getByText('Template A').parentElement!.parentElement!;
+    const container =
+      screen.getByText('Template A').parentElement!.parentElement!;
     expect(container.className).toContain('overflow-x-auto');
     expect(container.className).toContain('no-scrollbar');
   });

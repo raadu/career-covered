@@ -55,7 +55,10 @@ const TemplatesView = () => {
 
   return (
     <div className="py-6 md:py-8 px-1 sm:px-2">
-      <TemplatesHeader total={total} onCreateClick={() => setIsCreateOpen(true)} />
+      <TemplatesHeader
+        total={total}
+        onCreateClick={() => setIsCreateOpen(true)}
+      />
 
       {someSelected && (
         <BatchActionBar

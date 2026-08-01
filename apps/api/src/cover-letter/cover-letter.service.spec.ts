@@ -5,7 +5,6 @@ import { NotFoundException } from '@nestjs/common';
 
 describe('CoverLetterService', () => {
   let service: CoverLetterService;
-  let prisma: PrismaService;
 
   const mockPrismaService = {
     coverLetter: {
@@ -25,7 +24,6 @@ describe('CoverLetterService', () => {
     }).compile();
 
     service = module.get<CoverLetterService>(CoverLetterService);
-    prisma = module.get<PrismaService>(PrismaService);
   });
 
   it('should be defined', () => {

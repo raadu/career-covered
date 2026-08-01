@@ -1,5 +1,10 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { screen, fireEvent, waitFor, renderWithProviders } from '../../../../tests/test-utils';
+import {
+  screen,
+  fireEvent,
+  waitFor,
+  renderWithProviders,
+} from '../../../../tests/test-utils';
 import jsPDF from 'jspdf';
 import { saveAs } from 'file-saver';
 import PreviousCoverLettersView from 'views/PreviousCoverLettersView/index';
@@ -139,6 +144,8 @@ describe('PreviousCoverLettersView — downloads', () => {
       expect(screen.getByTitle('Download as PDF')).toBeInTheDocument();
     });
     fireEvent.click(screen.getAllByTitle('Download as PDF')[0]);
-    expect(saveSpy).toHaveBeenCalledWith('Cover_Letter_Mary_Jane_Watson_Parker.pdf');
+    expect(saveSpy).toHaveBeenCalledWith(
+      'Cover_Letter_Mary_Jane_Watson_Parker.pdf',
+    );
   });
 });

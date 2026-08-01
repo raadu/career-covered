@@ -4,6 +4,7 @@ import {
   CreateCoverLetterDto,
   UpdateCoverLetterDto,
 } from './dto/cover-letter.dto';
+import { paginate, paginationSkip } from '../common/paginate';
 import * as db from '@career-covered/db';
 
 @Injectable()
@@ -27,8 +28,9 @@ export class CoverLetterService {
     const orderBy = { createdAt: 'desc' as const };
 
     if (page && limit) {
-      const skip = (page - 1) * limit;
-      const [data, total] = await this.prisma.$transaction([
+      const skip = paginationSkip(page, limit);
+      return paginate(
+        this.prisma,
         this.prisma.coverLetter.findMany({
           where: { userId },
           skip,
@@ -37,14 +39,9 @@ export class CoverLetterService {
           include: { template: { select: { name: true, id: true } } },
         }),
         this.prisma.coverLetter.count({ where: { userId } }),
-      ]);
-      return {
-        data,
-        total,
         page,
         limit,
-        totalPages: Math.ceil(total / limit),
-      };
+      );
     }
 
     return this.prisma.coverLetter.findMany({

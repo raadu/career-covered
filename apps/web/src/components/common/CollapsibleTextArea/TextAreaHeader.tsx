@@ -1,5 +1,11 @@
-import { type MouseEvent } from "react";
-import { LuChevronDown, LuChevronUp, LuCopy, LuEraser, LuPlus } from "react-icons/lu";
+import { type MouseEvent } from 'react';
+import {
+  LuChevronDown,
+  LuChevronUp,
+  LuCopy,
+  LuEraser,
+  LuPlus,
+} from 'react-icons/lu';
 
 interface TextAreaHeaderProps {
   label: string;
@@ -23,7 +29,10 @@ const TextAreaHeader = ({
   onAddTemplate,
 }: TextAreaHeaderProps) => {
   const chevron = (
-    <button className="text-gray-400 dark:text-gray-500 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors p-1" aria-label={isExpanded ? "Collapse" : "Expand"}>
+    <button
+      className="text-gray-400 dark:text-gray-500 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors p-1"
+      aria-label={isExpanded ? 'Collapse' : 'Expand'}
+    >
       {isExpanded ? <LuChevronUp size={14} /> : <LuChevronDown size={14} />}
     </button>
   );

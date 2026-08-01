@@ -7,16 +7,21 @@ interface PrimaryOnboardingUIProps {
   isSettingsMode: boolean;
 }
 
-const PrimaryOnboardingUI = ({ onShowDetailed, isSettingsMode }: PrimaryOnboardingUIProps) => {
+const PrimaryOnboardingUI = ({
+  onShowDetailed,
+  isSettingsMode,
+}: PrimaryOnboardingUIProps) => {
   return (
     <>
       <div className="space-y-1.5">
         <h1 className="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-gray-100 tracking-tight">
-          {isSettingsMode ? "How to get your API Key" : "It’s so easy to start!"}
+          {isSettingsMode
+            ? 'How to get your API Key'
+            : 'It’s so easy to start!'}
         </h1>
         <p className="text-gray-500 dark:text-gray-400 text-[15px] max-w-md mx-auto leading-relaxed">
           {isSettingsMode ? (
-            "You need an API key. It’s easy to get one for free. Just follow the steps."
+            'You need an API key. It’s easy to get one for free. Just follow the steps.'
           ) : (
             <>
               You just need an API key. It’s easy to get one for free.
@@ -34,7 +39,7 @@ const PrimaryOnboardingUI = ({ onShowDetailed, isSettingsMode }: PrimaryOnboardi
               1
             </span>
             <div className="flex-1">
-              Go to{" "}
+              Go to{' '}
               <a
                 href={PROVIDER_URL}
                 target="_blank"
@@ -42,7 +47,7 @@ const PrimaryOnboardingUI = ({ onShowDetailed, isSettingsMode }: PrimaryOnboardi
                 className="text-blue-600 hover:text-blue-700 font-semibold inline-flex items-center gap-1 transition-colors underline underline-offset-4 decoration-blue-200"
               >
                 groq website <FaExternalLinkAlt size={9} />
-              </a>{" "}
+              </a>{' '}
               and login with your google account.
             </div>
           </li>
@@ -82,7 +87,7 @@ const PrimaryOnboardingUI = ({ onShowDetailed, isSettingsMode }: PrimaryOnboardi
         </button>
 
         <div className="pt-4 border-t border-gray-50 dark:border-gray-700 mt-4 flex justify-center">
-          <Link 
+          <Link
             to="/support"
             className="flex items-center gap-2 text-[11px] text-gray-400 dark:text-gray-500 hover:text-blue-500 dark:hover:text-blue-400 transition-colors font-bold uppercase tracking-widest"
           >

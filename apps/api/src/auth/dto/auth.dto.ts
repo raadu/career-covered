@@ -12,11 +12,15 @@ export class RegisterDto {
   @IsString()
   name: string;
 
-  @ApiProperty({ example: 'MySecure1', description: 'At least 1 capital letter, 1 number, 6+ characters' })
+  @ApiProperty({
+    example: 'MySecure1',
+    description: 'At least 1 capital letter, 1 number, 6+ characters',
+  })
   @IsString()
   @MinLength(6)
   @Matches(PASSWORD_RULES, {
-    message: 'Password must include at least 1 capital letter, 1 number, and be 6+ characters',
+    message:
+      'Password must include at least 1 capital letter, 1 number, and be 6+ characters',
   })
   password: string;
 }

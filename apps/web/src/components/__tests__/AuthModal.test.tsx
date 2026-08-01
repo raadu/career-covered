@@ -8,7 +8,9 @@ vi.mock('../common/Toast', () => ({
   showToast: mockShowToast,
 }));
 
-const mockDispatch = vi.hoisted(() => vi.fn(() => ({ unwrap: () => Promise.resolve() })));
+const mockDispatch = vi.hoisted(() =>
+  vi.fn(() => ({ unwrap: () => Promise.resolve() })),
+);
 vi.mock('react-redux', async () => {
   const actual = await vi.importActual('react-redux');
   return {
@@ -26,6 +28,22 @@ const openState = {
     authError: null,
   },
 };
+
+// jsdom's window.location can't be reassigned directly; stub it via
+// defineProperty and return a restore function for the test to call.
+function mockWindowLocation() {
+  const original = window.location;
+  Object.defineProperty(window, 'location', {
+    configurable: true,
+    value: { ...original, href: '' },
+  });
+  return () => {
+    Object.defineProperty(window, 'location', {
+      configurable: true,
+      value: original,
+    });
+  };
+}
 
 describe('AuthModal', () => {
   beforeEach(() => {
@@ -55,27 +73,25 @@ describe('AuthModal', () => {
     renderWithProviders(<AuthModal />, { preloadedState: openState });
 
     fireEvent.click(screen.getByText('Sign up'));
-    expect(screen.getAllByText('Create account').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('Create account').length).toBeGreaterThanOrEqual(
+      1,
+    );
     expect(screen.getByPlaceholderText('Full name')).toBeInTheDocument();
   });
 
   it('redirects to Google OAuth on Google button click', () => {
-    const originalLocation = window.location;
-    delete window.location;
-    window.location = { href: '' } as any;
+    const restoreLocation = mockWindowLocation();
 
     renderWithProviders(<AuthModal />, { preloadedState: openState });
 
     fireEvent.click(screen.getByText('Continue with Google'));
     expect(window.location.href).toBe('/auth/google');
 
-    window.location = originalLocation;
+    restoreLocation();
   });
 
   it('saves coverLetter state to sessionStorage before Google redirect', () => {
-    const originalLocation = window.location;
-    delete window.location;
-    window.location = { href: '' } as any;
+    const restoreLocation = mockWindowLocation();
 
     renderWithProviders(<AuthModal />, {
       preloadedState: {
@@ -89,17 +105,19 @@ describe('AuthModal', () => {
 
     fireEvent.click(screen.getByText('Continue with Google'));
 
-    expect(sessionStorage.getItem('cl_restore_jd')).toBe('Software engineer position');
-    expect(sessionStorage.getItem('cl_restore_gl')).toBe('Dear hiring manager, I am writing...');
+    expect(sessionStorage.getItem('cl_restore_jd')).toBe(
+      'Software engineer position',
+    );
+    expect(sessionStorage.getItem('cl_restore_gl')).toBe(
+      'Dear hiring manager, I am writing...',
+    );
     expect(sessionStorage.getItem('google_oauth_redirect')).toBe('true');
 
-    window.location = originalLocation;
+    restoreLocation();
   });
 
   it('does not save empty jobDescription or generatedLetter to sessionStorage', () => {
-    const originalLocation = window.location;
-    delete window.location;
-    window.location = { href: '' } as any;
+    const restoreLocation = mockWindowLocation();
 
     renderWithProviders(<AuthModal />, {
       preloadedState: {
@@ -117,7 +135,7 @@ describe('AuthModal', () => {
     expect(sessionStorage.getItem('cl_restore_gl')).toBeNull();
     expect(sessionStorage.getItem('google_oauth_redirect')).toBe('true');
 
-    window.location = originalLocation;
+    restoreLocation();
   });
 
   it('shows validation errors for empty fields', () => {
@@ -133,13 +151,23 @@ describe('AuthModal', () => {
 
     fireEvent.click(screen.getByText('Sign up'));
 
-    fireEvent.change(screen.getByPlaceholderText('Full name'), { target: { value: 'Test' } });
-    fireEvent.change(screen.getByPlaceholderText('Email address'), { target: { value: 'test@test.com' } });
-    fireEvent.change(screen.getByPlaceholderText('Password'), { target: { value: 'weak' } });
+    fireEvent.change(screen.getByPlaceholderText('Full name'), {
+      target: { value: 'Test' },
+    });
+    fireEvent.change(screen.getByPlaceholderText('Email address'), {
+      target: { value: 'test@test.com' },
+    });
+    fireEvent.change(screen.getByPlaceholderText('Password'), {
+      target: { value: 'weak' },
+    });
 
     fireEvent.click(screen.getAllByText('Create account')[1]);
 
-    expect(screen.getByText('Password should have minimum 6 characters, 1 capital letter and 1 number.')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        'Password should have minimum 6 characters, 1 capital letter and 1 number.',
+      ),
+    ).toBeInTheDocument();
   });
 
   it('shows forgot password link when in sign in mode', () => {
@@ -151,22 +179,30 @@ describe('AuthModal', () => {
   describe('API interactions', () => {
     it('handles 409 conflict on register', async () => {
       const mockFetch = vi.fn().mockResolvedValue({
-        ok: false, status: 409, json: () => Promise.resolve({ message: 'Conflict' }),
+        ok: false,
+        status: 409,
+        json: () => Promise.resolve({ message: 'Conflict' }),
       });
       vi.stubGlobal('fetch', mockFetch);
 
       renderWithProviders(<AuthModal />, { preloadedState: openState });
 
       fireEvent.click(screen.getByText('Sign up'));
-      fireEvent.change(screen.getByPlaceholderText('Full name'), { target: { value: 'Test' } });
-      fireEvent.change(screen.getByPlaceholderText('Email address'), { target: { value: 'test@test.com' } });
-      fireEvent.change(screen.getByPlaceholderText('Password'), { target: { value: 'Strong1' } });
+      fireEvent.change(screen.getByPlaceholderText('Full name'), {
+        target: { value: 'Test' },
+      });
+      fireEvent.change(screen.getByPlaceholderText('Email address'), {
+        target: { value: 'test@test.com' },
+      });
+      fireEvent.change(screen.getByPlaceholderText('Password'), {
+        target: { value: 'Strong1' },
+      });
       fireEvent.click(screen.getAllByText('Create account')[1]);
 
       await waitFor(() => {
         expect(mockShowToast).toHaveBeenCalledWith(
           "Your email already exists. Let's log into your account!",
-          { type: 'info' }
+          { type: 'info' },
         );
       });
 
@@ -176,43 +212,58 @@ describe('AuthModal', () => {
 
     it('handles 404 on login', async () => {
       const mockFetch = vi.fn().mockResolvedValue({
-        ok: false, status: 404, json: () => Promise.resolve({ message: 'Not found' }),
+        ok: false,
+        status: 404,
+        json: () => Promise.resolve({ message: 'Not found' }),
       });
       vi.stubGlobal('fetch', mockFetch);
 
       renderWithProviders(<AuthModal />, { preloadedState: openState });
 
-      fireEvent.change(screen.getByPlaceholderText('Email address'), { target: { value: 'test@test.com' } });
-      fireEvent.change(screen.getByPlaceholderText('Password'), { target: { value: 'Strong1' } });
+      fireEvent.change(screen.getByPlaceholderText('Email address'), {
+        target: { value: 'test@test.com' },
+      });
+      fireEvent.change(screen.getByPlaceholderText('Password'), {
+        target: { value: 'Strong1' },
+      });
       fireEvent.click(screen.getAllByText('Sign in')[1]);
 
       await waitFor(() => {
         expect(mockShowToast).toHaveBeenCalledWith(
           "You're not registered yet. Let's get you onboarded!",
-          { type: 'info', duration: 5000 }
+          { type: 'info', duration: 5000 },
         );
       });
 
-      expect(screen.getAllByText('Create account').length).toBeGreaterThanOrEqual(1);
+      expect(
+        screen.getAllByText('Create account').length,
+      ).toBeGreaterThanOrEqual(1);
       vi.unstubAllGlobals();
     });
 
     it('shows success toast and dispatches setUser on successful sign in', async () => {
       const mockFetch = vi.fn().mockResolvedValue({
-        ok: true, status: 200, json: () => Promise.resolve({ id: '1', email: 'test@test.com', name: 'Test' }),
+        ok: true,
+        status: 200,
+        json: () =>
+          Promise.resolve({ id: '1', email: 'test@test.com', name: 'Test' }),
       });
       vi.stubGlobal('fetch', mockFetch);
 
       renderWithProviders(<AuthModal />, { preloadedState: openState });
 
-      fireEvent.change(screen.getByPlaceholderText('Email address'), { target: { value: 'test@test.com' } });
-      fireEvent.change(screen.getByPlaceholderText('Password'), { target: { value: 'Strong1' } });
+      fireEvent.change(screen.getByPlaceholderText('Email address'), {
+        target: { value: 'test@test.com' },
+      });
+      fireEvent.change(screen.getByPlaceholderText('Password'), {
+        target: { value: 'Strong1' },
+      });
       fireEvent.click(screen.getAllByText('Sign in')[1]);
 
       await waitFor(() => {
         expect(mockShowToast).toHaveBeenCalledWith(
           "Welcome! Let's be serious about your job hunt \uD83D\uDE20",
-          { type: 'success', duration: 3000 }
+          { type: 'success', duration: 3000 },
         );
       });
 
@@ -222,22 +273,31 @@ describe('AuthModal', () => {
 
     it('shows register success toast on successful register', async () => {
       const mockFetch = vi.fn().mockResolvedValue({
-        ok: true, status: 201, json: () => Promise.resolve({ id: '1', email: 'test@test.com', name: 'Test' }),
+        ok: true,
+        status: 201,
+        json: () =>
+          Promise.resolve({ id: '1', email: 'test@test.com', name: 'Test' }),
       });
       vi.stubGlobal('fetch', mockFetch);
 
       renderWithProviders(<AuthModal />, { preloadedState: openState });
 
       fireEvent.click(screen.getByText('Sign up'));
-      fireEvent.change(screen.getByPlaceholderText('Full name'), { target: { value: 'Test' } });
-      fireEvent.change(screen.getByPlaceholderText('Email address'), { target: { value: 'test@test.com' } });
-      fireEvent.change(screen.getByPlaceholderText('Password'), { target: { value: 'Strong1' } });
+      fireEvent.change(screen.getByPlaceholderText('Full name'), {
+        target: { value: 'Test' },
+      });
+      fireEvent.change(screen.getByPlaceholderText('Email address'), {
+        target: { value: 'test@test.com' },
+      });
+      fireEvent.change(screen.getByPlaceholderText('Password'), {
+        target: { value: 'Strong1' },
+      });
       fireEvent.click(screen.getAllByText('Create account')[1]);
 
       await waitFor(() => {
         expect(mockShowToast).toHaveBeenCalledWith(
           "Awesome! You're now registered.",
-          { type: 'success', duration: 3000 }
+          { type: 'success', duration: 3000 },
         );
       });
 

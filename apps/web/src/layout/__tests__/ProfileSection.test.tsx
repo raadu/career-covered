@@ -83,6 +83,8 @@ describe('ProfileSection', () => {
     });
 
     fireEvent.click(screen.getByText('T'));
-    expect(screen.getByText('Are you sure you want to sign out?')).toBeInTheDocument();
+    expect(
+      screen.getByText('Are you sure you want to sign out?'),
+    ).toBeInTheDocument();
   });
 });

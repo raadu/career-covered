@@ -1,4 +1,5 @@
-import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import { createApiThunk } from 'store/createApiThunk';
 
 export interface UserProfile {
   id: string;
@@ -25,34 +26,27 @@ const initialState: AuthState = {
 
 // ─── Async Actions ───────────────────────────────────────────────────────────
 
-export const fetchCurrentUser = createAsyncThunk(
+export const fetchCurrentUser = createApiThunk<UserProfile>(
   'auth/fetchCurrentUser',
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await fetch('/auth/me');
-      if (!response.ok) {
-        throw new Error('Not authenticated');
-      }
-      const data = await response.json();
-      return data as UserProfile;
-    } catch (err: any) {
-      return rejectWithValue(err.message || 'Failed to fetch user profile');
+  async () => {
+    const response = await fetch('/auth/me');
+    if (!response.ok) {
+      throw new Error('Not authenticated');
     }
-  }
+    return (await response.json()) as UserProfile;
+  },
+  'Failed to fetch user profile',
 );
 
-export const logoutUser = createAsyncThunk(
+export const logoutUser = createApiThunk<void>(
   'auth/logoutUser',
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await fetch('/auth/logout', { method: 'POST' });
-      if (!response.ok) {
-        throw new Error('Logout failed');
-      }
-    } catch (err: any) {
-      return rejectWithValue(err.message || 'Logout failed');
+  async () => {
+    const response = await fetch('/auth/logout', { method: 'POST' });
+    if (!response.ok) {
+      throw new Error('Logout failed');
     }
-  }
+  },
+  'Logout failed',
 );
 
 export const authSlice = createSlice({
@@ -81,12 +75,15 @@ export const authSlice = createSlice({
       .addCase(fetchCurrentUser.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(fetchCurrentUser.fulfilled, (state, action: PayloadAction<UserProfile>) => {
-        state.user = action.payload;
-        state.isAuthenticated = true;
-        state.isLoading = false;
-        state.authError = null;
-      })
+      .addCase(
+        fetchCurrentUser.fulfilled,
+        (state, action: PayloadAction<UserProfile>) => {
+          state.user = action.payload;
+          state.isAuthenticated = true;
+          state.isLoading = false;
+          state.authError = null;
+        },
+      )
       .addCase(fetchCurrentUser.rejected, (state) => {
         state.user = null;
         state.isAuthenticated = false;
@@ -108,5 +105,6 @@ export const authSlice = createSlice({
   },
 });
 
-export const { setAuthModalOpen, setUser, setAuthLoading, setAuthError } = authSlice.actions;
+export const { setAuthModalOpen, setUser, setAuthLoading, setAuthError } =
+  authSlice.actions;
 export default authSlice.reducer;

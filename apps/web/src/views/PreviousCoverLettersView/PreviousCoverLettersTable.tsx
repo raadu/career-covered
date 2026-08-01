@@ -1,11 +1,6 @@
 import { useMemo } from 'react';
 import { type ColumnDef } from '@tanstack/react-table';
-import {
-  FaFilePdf,
-  FaFileWord,
-  FaCopy,
-  FaTrash,
-} from 'react-icons/fa';
+import { FaFilePdf, FaFileWord, FaCopy, FaTrash } from 'react-icons/fa';
 import DataTable from 'components/common/DataTable';
 import Checkbox from 'views/TemplatesView/Checkbox';
 import formatDate from './formatDate';

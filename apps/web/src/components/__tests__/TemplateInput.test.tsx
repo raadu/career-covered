@@ -1,4 +1,9 @@
-import { renderWithProviders, screen, fireEvent, waitFor } from '../../../tests/test-utils';
+import {
+  renderWithProviders,
+  screen,
+  fireEvent,
+  waitFor,
+} from '../../../tests/test-utils';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import TemplateInput from '../TemplateInput';
 
@@ -16,12 +21,16 @@ describe('TemplateInput', () => {
   it('renders the label and textarea', () => {
     renderWithProviders(<TemplateInput />);
     expect(screen.getByText(/Your Cover Letter Template/i)).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(/Paste your existing cover letter here/i)).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText(/Paste your existing cover letter here/i),
+    ).toBeInTheDocument();
   });
 
   it('updates the state when the user types', () => {
     const { store } = renderWithProviders(<TemplateInput />);
-    const textarea = screen.getByPlaceholderText(/Paste your existing cover letter here/i) as HTMLTextAreaElement;
+    const textarea = screen.getByPlaceholderText(
+      /Paste your existing cover letter here/i,
+    ) as HTMLTextAreaElement;
 
     fireEvent.change(textarea, { target: { value: 'My resume details' } });
 
@@ -31,7 +40,9 @@ describe('TemplateInput', () => {
   it('handles malicious code input safely', () => {
     const maliciousPayload = '<img src=x onerror=alert(1)>';
     const { store } = renderWithProviders(<TemplateInput />);
-    const textarea = screen.getByPlaceholderText(/Paste your existing cover letter here/i);
+    const textarea = screen.getByPlaceholderText(
+      /Paste your existing cover letter here/i,
+    );
 
     fireEvent.change(textarea, { target: { value: maliciousPayload } });
 
@@ -42,14 +53,16 @@ describe('TemplateInput', () => {
   describe('when not authenticated', () => {
     it('shows auth modal and toast on save template click', () => {
       const { store } = renderWithProviders(<TemplateInput />);
-      const textarea = screen.getByPlaceholderText(/Paste your existing cover letter here/i);
+      const textarea = screen.getByPlaceholderText(
+        /Paste your existing cover letter here/i,
+      );
       fireEvent.change(textarea, { target: { value: 'My template content' } });
 
       const saveButton = screen.getByTitle('Save as a template');
       fireEvent.click(saveButton);
 
       expect(mockShowToast).toHaveBeenCalledWith(
-        "Oops! You should login to do that. Creating an account is so easy.",
+        'Oops! You should login to do that. Creating an account is so easy.',
         { type: 'info', duration: 6000 },
       );
       expect(store.getState().auth.isAuthModalOpen).toBe(true);
@@ -72,22 +85,28 @@ describe('TemplateInput', () => {
       },
     };
 
-    const savedTemplates = [
-      { id: 't1', name: 'Template 1', content: 'Hello' },
-    ];
+    const savedTemplates = [{ id: 't1', name: 'Template 1', content: 'Hello' }];
 
     beforeEach(() => {
-      vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
-        ok: true,
-        json: () => Promise.resolve(savedTemplates),
-      }));
+      vi.stubGlobal(
+        'fetch',
+        vi.fn().mockResolvedValue({
+          ok: true,
+          json: () => Promise.resolve(savedTemplates),
+        }),
+      );
     });
 
     it('shows loading skeleton when templates are loading', () => {
       const { container } = renderWithProviders(<TemplateInput />, {
         preloadedState: {
           ...authState,
-          coverLetter: { template: '', savedTemplates: [], activeTemplateId: null, isLoadingTemplates: true },
+          coverLetter: {
+            template: '',
+            savedTemplates: [],
+            activeTemplateId: null,
+            isLoadingTemplates: true,
+          },
         },
       });
       const skeletons = container.querySelectorAll('.animate-pulse');
@@ -116,11 +135,18 @@ describe('TemplateInput', () => {
       const { store } = renderWithProviders(<TemplateInput />, {
         preloadedState: {
           ...authState,
-          coverLetter: { template: 'My template', savedTemplates: [], activeTemplateId: null, isLoadingTemplates: false },
+          coverLetter: {
+            template: 'My template',
+            savedTemplates: [],
+            activeTemplateId: null,
+            isLoadingTemplates: false,
+          },
         },
       });
 
-      const textarea = screen.getByPlaceholderText(/Paste your existing cover letter here/i);
+      const textarea = screen.getByPlaceholderText(
+        /Paste your existing cover letter here/i,
+      );
       fireEvent.change(textarea, { target: { value: 'My template' } });
 
       const saveButton = screen.getByTitle('Save as a template');
@@ -150,7 +176,9 @@ describe('TemplateInput', () => {
 
       fireEvent.click(screen.getByTitle('Delete Template'));
 
-      expect(screen.getByText('Do you really want to delete it?')).toBeInTheDocument();
+      expect(
+        screen.getByText('Do you really want to delete it?'),
+      ).toBeInTheDocument();
       expect(screen.getByText('Sure!')).toBeInTheDocument();
       expect(screen.getByText('Nope')).toBeInTheDocument();
     });
@@ -174,15 +202,19 @@ describe('TemplateInput', () => {
 
       fireEvent.click(screen.getByTitle('Delete Template'));
 
-      expect(screen.getByText('Do you really want to delete it?')).toBeInTheDocument();
+      expect(
+        screen.getByText('Do you really want to delete it?'),
+      ).toBeInTheDocument();
 
       fireEvent.click(screen.getByText('Nope'));
 
-      expect(screen.queryByText('Do you really want to delete it?')).not.toBeInTheDocument();
+      expect(
+        screen.queryByText('Do you really want to delete it?'),
+      ).not.toBeInTheDocument();
     });
 
     it('dispatches deleteTemplate on confirm', async () => {
-      const { store } = renderWithProviders(<TemplateInput />, {
+      renderWithProviders(<TemplateInput />, {
         preloadedState: {
           ...authState,
           coverLetter: {
@@ -203,7 +235,9 @@ describe('TemplateInput', () => {
       fireEvent.click(screen.getByText('Sure!'));
 
       await waitFor(() => {
-        expect(screen.queryByText('Do you really want to delete it?')).not.toBeInTheDocument();
+        expect(
+          screen.queryByText('Do you really want to delete it?'),
+        ).not.toBeInTheDocument();
       });
     });
 

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useAppDispatch } from 'store';
 import { setApiKey } from 'store/coverLetterSlice';
 import CommonButton from 'components/common/CommonButton';
 import { PROVIDER_NAME } from 'utils/AIModelUtils';
@@ -13,10 +13,14 @@ interface OnboardingModalProps {
   onClose?: () => void;
 }
 
-const OnboardingModal = ({ isOpen, onComplete, onClose }: OnboardingModalProps) => {
+const OnboardingModal = ({
+  isOpen,
+  onComplete,
+  onClose,
+}: OnboardingModalProps) => {
   const [tempKey, setTempKey] = useState('');
   const [view, setView] = useState<'primary' | 'detailed'>('primary');
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   if (!isOpen) return null;
 
@@ -34,7 +38,7 @@ const OnboardingModal = ({ isOpen, onComplete, onClose }: OnboardingModalProps) 
       onClick={() => onClose && onClose()}
     >
       <div
-         className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-300 scrollbar-hide border border-white/20 relative"
+        className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-300 scrollbar-hide border border-white/20 relative"
         role="dialog"
         aria-modal="true"
         onClick={(e) => e.stopPropagation()}
@@ -51,14 +55,12 @@ const OnboardingModal = ({ isOpen, onComplete, onClose }: OnboardingModalProps) 
 
         <div className="p-7 md:p-10 space-y-5 text-center">
           {view === 'primary' ? (
-            <PrimaryOnboardingUI 
-              onShowDetailed={() => setView('detailed')} 
+            <PrimaryOnboardingUI
+              onShowDetailed={() => setView('detailed')}
               isSettingsMode={!!onClose}
             />
           ) : (
-            <DetailedOnboardingUI 
-              onBack={() => setView('primary')} 
-            />
+            <DetailedOnboardingUI onBack={() => setView('primary')} />
           )}
 
           <div className="flex flex-col md:flex-row gap-3 pt-2">

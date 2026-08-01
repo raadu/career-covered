@@ -1,6 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import type { ReactNode } from 'react';
 
-const mockCustom = vi.hoisted(() => vi.fn(() => 'toast-id'));
+type CustomToastCall = (
+  renderFn: (t: { id: string; visible: boolean }) => ReactNode,
+  options: { duration?: number; position?: string },
+) => string;
+
+const mockCustom = vi.hoisted(() => vi.fn<CustomToastCall>(() => 'toast-id'));
 vi.mock('react-hot-toast', () => ({
   toast: {
     custom: mockCustom,

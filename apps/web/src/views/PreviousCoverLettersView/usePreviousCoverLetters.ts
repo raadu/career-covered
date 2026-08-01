@@ -26,9 +26,7 @@ export function usePreviousCoverLetters() {
       setIsLoading(true);
       const limit = size ?? pageSize;
       try {
-        const res = await fetch(
-          `/api/cover-letters?page=${p}&limit=${limit}`,
-        );
+        const res = await fetch(`/api/cover-letters?page=${p}&limit=${limit}`);
         if (!res.ok) throw new Error('Failed to fetch cover letters');
         const json: PaginatedResponse = await res.json();
         setData(json.data ?? []);
@@ -108,7 +106,10 @@ export function usePreviousCoverLetters() {
         body: JSON.stringify({ ids: Array.from(selectedIds) }),
       });
       if (!res.ok) throw new Error('Failed to delete cover letters');
-      showToast(`${selectedIds.size} cover letter${selectedIds.size > 1 ? 's' : ''} removed`, { duration: 2000 });
+      showToast(
+        `${selectedIds.size} cover letter${selectedIds.size > 1 ? 's' : ''} removed`,
+        { duration: 2000 },
+      );
       setShowBatchConfirm(false);
       setSelectedIds(new Set());
       const newTotal = total - selectedIds.size;

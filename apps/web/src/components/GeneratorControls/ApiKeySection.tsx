@@ -1,6 +1,6 @@
-import { FaKey, FaQuestionCircle, FaTimes } from "react-icons/fa";
-import CommonButton from "components/common/CommonButton";
-import { PROVIDER_NAME } from "utils/AIModelUtils";
+import { FaKey, FaQuestionCircle, FaTimes } from 'react-icons/fa';
+import CommonButton from 'components/common/CommonButton';
+import { PROVIDER_NAME } from 'utils/AIModelUtils';
 
 interface ApiKeySectionProps {
   apiKey: string;
@@ -35,7 +35,7 @@ const ApiKeySection = ({
             className="pl-9 w-full h-9 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-sm bg-gray-50/50 dark:bg-gray-700/50 focus:bg-white dark:focus:bg-gray-600 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500 font-mono text-gray-900 dark:text-gray-100"
           />
         </div>
-        
+
         {apiKey && (
           <button
             onClick={() => setShowKeyInput(false)}
@@ -66,10 +66,15 @@ const ApiKeySection = ({
       <CommonButton
         variant="outline"
         onClick={() => setShowKeyInput(true)}
-        icon={<FaKey size={10} className="group-hover:rotate-12 transition-transform" />}
+        icon={
+          <FaKey
+            size={10}
+            className="group-hover:rotate-12 transition-transform"
+          />
+        }
         className="group"
       >
-        {apiKey ? "Update API Key" : "Add Custom API Key"}
+        {apiKey ? 'Update API Key' : 'Add Custom API Key'}
       </CommonButton>
       <CommonButton
         variant="ghost"

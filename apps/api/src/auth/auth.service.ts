@@ -72,7 +72,9 @@ export class AuthService implements OnModuleInit {
       throw new NotFoundException('Email not registered');
     }
     if (!user.passwordHash) {
-      throw new UnauthorizedException('You forgot. You were using Google Login for this email. Please continue with Google.');
+      throw new UnauthorizedException(
+        'You forgot. You were using Google Login for this email. Please continue with Google.',
+      );
     }
 
     const valid = await bcrypt.compare(password, user.passwordHash);

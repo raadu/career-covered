@@ -20,17 +20,15 @@ interface GroqResponse {
 export class AiService {
   private readonly logger = new Logger(AiService.name);
 
-  constructor(
-    private readonly config: ConfigService,
-  ) {}
+  constructor(private readonly config: ConfigService) {}
 
   async generate(dto: GenerateDto): Promise<unknown> {
     const {
       userApiKey,
       jobDescription,
-      templateId,
-      jobTitle,
-      companyName,
+      templateId: _templateId,
+      jobTitle: _jobTitle,
+      companyName: _companyName,
       wordLimit,
       minimalChanges,
       sameLanguage,

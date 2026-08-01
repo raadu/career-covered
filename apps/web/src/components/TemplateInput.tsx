@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { type RootState } from 'store';
+import { useSelector } from 'react-redux';
+import { type RootState, useAppDispatch } from 'store';
 import {
   setTemplate,
   toggleTemplateExpanded,
@@ -18,7 +18,7 @@ import CollapsibleTextArea from 'components/common/CollapsibleTextArea';
 import TemplateSelector from 'components/TemplateSelector';
 
 const TemplateInput = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const {
     template,
     isTemplateExpanded,
@@ -38,14 +38,19 @@ const TemplateInput = () => {
 
   const handleAddTemplate = () => {
     if (!isAuthenticated) {
-      showToast("Oops! You should login to do that. Creating an account is so easy.", { type: 'info', duration: 6000 });
+      showToast(
+        'Oops! You should login to do that. Creating an account is so easy.',
+        { type: 'info', duration: 6000 },
+      );
       dispatch(setAuthModalOpen(true));
       return;
     }
     const trimmed = template.trim();
     if (!trimmed) return;
     const nextNumber = savedTemplates.length + 1;
-    dispatch(createTemplate({ name: `Template ${nextNumber}`, content: trimmed }));
+    dispatch(
+      createTemplate({ name: `Template ${nextNumber}`, content: trimmed }),
+    );
   };
 
   const handleRename = (id: string, name: string) => {

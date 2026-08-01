@@ -1,6 +1,6 @@
-import { sanitize } from "./sanitizeUtils";
-import { getMarketRules } from "./marketPrompts";
-export type { JobMarket } from "./marketPrompts";
+import { sanitize } from './sanitizeUtils';
+import { getMarketRules } from './marketPrompts';
+export type { JobMarket } from './marketPrompts';
 
 // ────────────────────────────────
 // Section: System Role
@@ -107,7 +107,7 @@ export const formatCustomPrompt = (customPrompt?: string): string => {
   const sanitizedPrompt = sanitize(customPrompt).trim();
 
   if (!sanitizedPrompt) {
-    return "";
+    return '';
   }
 
   return `
@@ -127,7 +127,7 @@ export const buildCoverLetterPrompt = (
   minimalChanges: boolean = true,
   sameLanguage: boolean = false,
   customPrompt?: string,
-  jobMarket: import("./marketPrompts").JobMarket = "international",
+  jobMarket: import('./marketPrompts').JobMarket = 'international',
 ): string => {
   const sanitizedJD = sanitize(jobDescription);
   const sanitizedTemplate = sanitize(template);
@@ -143,34 +143,34 @@ export const buildCoverLetterPrompt = (
 
   return [
     SYSTEM_ROLE,
-    "",
-    "Job Description:",
+    '',
+    'Job Description:',
     sanitizedJD,
-    "",
+    '',
     templateSection,
-    "",
+    '',
     marketRules,
-    "",
-    "General Requirements",
-    "",
+    '',
+    'General Requirements',
+    '',
     wordRule,
-    "",
-    "The cover letter must fit on one A4 page.",
-    "",
+    '',
+    'The cover letter must fit on one A4 page.',
+    '',
     STRUCTURE_RULES,
-    "",
+    '',
     ATS_RULES,
-    "",
-    "Template Handling:",
+    '',
+    'Template Handling:',
     changesRule,
-    "",
+    '',
     TEMPLATE_PLACEHOLDER_RULES,
-    "",
+    '',
     OUTPUT_RULES,
-    "",
+    '',
     languageRule,
     formatCustomPrompt(customPrompt),
   ]
     .filter(Boolean)
-    .join("\n");
+    .join('\n');
 };

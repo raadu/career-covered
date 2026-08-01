@@ -15,7 +15,7 @@ const Header = ({ onClose }: HeaderProps) => {
           Cover Letter Customization
         </h3>
       </div>
-      <button 
+      <button
         onClick={onClose}
         className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors p-1.5 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700"
         aria-label="Close modal"

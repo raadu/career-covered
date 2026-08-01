@@ -1,5 +1,11 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, fireEvent, renderWithProviders, waitFor } from '../../../../tests/test-utils';
+import {
+  render,
+  screen,
+  fireEvent,
+  renderWithProviders,
+  waitFor,
+} from '../../../../tests/test-utils';
 import Checkbox from 'views/TemplatesView/Checkbox';
 import BatchActionBar from 'views/TemplatesView/BatchActionBar';
 import TemplateTable from 'views/TemplatesView/TemplateTable';
@@ -7,9 +13,27 @@ import TemplatesView from 'views/TemplatesView/index';
 import type { Template } from 'views/TemplatesView/types';
 
 const mockTemplates: Template[] = [
-  { id: '1', name: 'Dev', content: 'Backend', createdAt: '2024-01-01', updatedAt: '2024-01-02' },
-  { id: '2', name: 'Design', content: 'Figma', createdAt: '2024-01-03', updatedAt: '2024-01-04' },
-  { id: '3', name: 'PM', content: 'Jira', createdAt: '2024-01-05', updatedAt: '2024-01-06' },
+  {
+    id: '1',
+    name: 'Dev',
+    content: 'Backend',
+    createdAt: '2024-01-01',
+    updatedAt: '2024-01-02',
+  },
+  {
+    id: '2',
+    name: 'Design',
+    content: 'Figma',
+    createdAt: '2024-01-03',
+    updatedAt: '2024-01-04',
+  },
+  {
+    id: '3',
+    name: 'PM',
+    content: 'Jira',
+    createdAt: '2024-01-05',
+    updatedAt: '2024-01-06',
+  },
 ];
 
 const emptyProps = {
@@ -60,19 +84,25 @@ describe('Checkbox', () => {
   });
 
   it('sets indeterminate via ref when indeterminate is true', () => {
-    const { container } = render(<Checkbox checked={false} indeterminate={true} onChange={vi.fn()} />);
+    const { container } = render(
+      <Checkbox checked={false} indeterminate={true} onChange={vi.fn()} />,
+    );
     const input = container.querySelector('input') as HTMLInputElement;
     expect(input.indeterminate).toBe(true);
   });
 
   it('does not set indeterminate when indeterminate is false', () => {
-    const { container } = render(<Checkbox checked={false} indeterminate={false} onChange={vi.fn()} />);
+    const { container } = render(
+      <Checkbox checked={false} indeterminate={false} onChange={vi.fn()} />,
+    );
     const input = container.querySelector('input') as HTMLInputElement;
     expect(input.indeterminate).toBe(false);
   });
 
   it('does not set indeterminate when indeterminate is undefined', () => {
-    const { container } = render(<Checkbox checked={false} onChange={vi.fn()} />);
+    const { container } = render(
+      <Checkbox checked={false} onChange={vi.fn()} />,
+    );
     const input = container.querySelector('input') as HTMLInputElement;
     expect(input.indeterminate).toBe(false);
   });
@@ -89,25 +119,37 @@ describe('Checkbox', () => {
  * ============================================================ */
 describe('BatchActionBar', () => {
   it('renders selected count', () => {
-    render(<BatchActionBar selectedCount={3} onDelete={vi.fn()} onClear={vi.fn()} />);
+    render(
+      <BatchActionBar selectedCount={3} onDelete={vi.fn()} onClear={vi.fn()} />,
+    );
     expect(screen.getByText('3 selected')).toBeInTheDocument();
   });
 
   it('renders singular count', () => {
-    render(<BatchActionBar selectedCount={1} onDelete={vi.fn()} onClear={vi.fn()} />);
+    render(
+      <BatchActionBar selectedCount={1} onDelete={vi.fn()} onClear={vi.fn()} />,
+    );
     expect(screen.getByText('1 selected')).toBeInTheDocument();
   });
 
   it('calls onDelete when delete button clicked', () => {
     const onDelete = vi.fn();
-    render(<BatchActionBar selectedCount={2} onDelete={onDelete} onClear={vi.fn()} />);
+    render(
+      <BatchActionBar
+        selectedCount={2}
+        onDelete={onDelete}
+        onClear={vi.fn()}
+      />,
+    );
     fireEvent.click(screen.getByText('Delete Selected'));
     expect(onDelete).toHaveBeenCalledOnce();
   });
 
   it('calls onClear when clear button clicked', () => {
     const onClear = vi.fn();
-    render(<BatchActionBar selectedCount={2} onDelete={vi.fn()} onClear={onClear} />);
+    render(
+      <BatchActionBar selectedCount={2} onDelete={vi.fn()} onClear={onClear} />,
+    );
     fireEvent.click(screen.getByText('Clear selection'));
     expect(onClear).toHaveBeenCalledOnce();
   });
@@ -119,7 +161,9 @@ describe('BatchActionBar', () => {
 describe('TemplateTable', () => {
   it('renders empty message when no data', () => {
     render(<TemplateTable {...emptyProps} />);
-    expect(screen.getByText('No templates yet. Create one to get started.')).toBeInTheDocument();
+    expect(
+      screen.getByText('No templates yet. Create one to get started.'),
+    ).toBeInTheDocument();
   });
 
   it('renders rows with template data', () => {
@@ -137,7 +181,12 @@ describe('TemplateTable', () => {
 
   it('calls onToggleSelectAll when header checkbox clicked', () => {
     const onToggleSelectAll = vi.fn();
-    render(<TemplateTable {...withDataProps} onToggleSelectAll={onToggleSelectAll} />);
+    render(
+      <TemplateTable
+        {...withDataProps}
+        onToggleSelectAll={onToggleSelectAll}
+      />,
+    );
     const checkboxes = screen.getAllByRole('checkbox');
     fireEvent.click(checkboxes[0]);
     expect(onToggleSelectAll).toHaveBeenCalledOnce();
@@ -145,7 +194,9 @@ describe('TemplateTable', () => {
 
   it('calls onToggleSelect when row checkbox clicked', () => {
     const onToggleSelect = vi.fn();
-    render(<TemplateTable {...withDataProps} onToggleSelect={onToggleSelect} />);
+    render(
+      <TemplateTable {...withDataProps} onToggleSelect={onToggleSelect} />,
+    );
     const checkboxes = screen.getAllByRole('checkbox');
     fireEvent.click(checkboxes[1]); // first row
     expect(onToggleSelect).toHaveBeenCalledWith('1');
@@ -167,7 +218,9 @@ describe('TemplateTable', () => {
   });
 
   it('shows loading skeleton when isLoading is true', () => {
-    const { container } = render(<TemplateTable {...withDataProps} isLoading={true} />);
+    const { container } = render(
+      <TemplateTable {...withDataProps} isLoading={true} />,
+    );
     const skeletonDivs = container.querySelectorAll('.animate-pulse');
     expect(skeletonDivs.length).toBeGreaterThan(0);
   });
@@ -181,17 +234,29 @@ describe('TemplateTable', () => {
 
   it('shows indeterminate state on header checkbox when someSelected is true and allSelected is false', () => {
     const { container } = render(
-      <TemplateTable {...withDataProps} someSelected={true} allSelected={false} />,
+      <TemplateTable
+        {...withDataProps}
+        someSelected={true}
+        allSelected={false}
+      />,
     );
-    const checkbox = container.querySelector('thead input[type="checkbox"]') as HTMLInputElement;
+    const checkbox = container.querySelector(
+      'thead input[type="checkbox"]',
+    ) as HTMLInputElement;
     expect(checkbox.indeterminate).toBe(true);
   });
 
   it('does not show indeterminate when allSelected is true', () => {
     const { container } = render(
-      <TemplateTable {...withDataProps} someSelected={true} allSelected={true} />,
+      <TemplateTable
+        {...withDataProps}
+        someSelected={true}
+        allSelected={true}
+      />,
     );
-    const checkbox = container.querySelector('thead input[type="checkbox"]') as HTMLInputElement;
+    const checkbox = container.querySelector(
+      'thead input[type="checkbox"]',
+    ) as HTMLInputElement;
     expect(checkbox.indeterminate).toBe(false);
   });
 });
@@ -223,7 +288,9 @@ describe('TemplatesView — selection logic', () => {
   });
 
   it('renders header with correct template count', async () => {
-    renderWithProviders(<TemplatesView />, { preloadedState: { auth: { isAuthenticated: true, isLoading: false } } });
+    renderWithProviders(<TemplatesView />, {
+      preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
+    });
     await waitFor(() => {
       expect(screen.getByText('Cover Letter Templates')).toBeInTheDocument();
     });
@@ -231,7 +298,9 @@ describe('TemplatesView — selection logic', () => {
   });
 
   it('renders all template rows after fetch', async () => {
-    renderWithProviders(<TemplatesView />, { preloadedState: { auth: { isAuthenticated: true, isLoading: false } } });
+    renderWithProviders(<TemplatesView />, {
+      preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
+    });
     await waitFor(() => {
       expect(screen.getByText('Dev')).toBeInTheDocument();
     });
@@ -240,14 +309,18 @@ describe('TemplatesView — selection logic', () => {
   });
 
   it('does not show batch action bar initially', async () => {
-    renderWithProviders(<TemplatesView />, { preloadedState: { auth: { isAuthenticated: true, isLoading: false } } });
+    renderWithProviders(<TemplatesView />, {
+      preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
+    });
     await waitFor(() => {
       expect(screen.queryByText(/selected/)).not.toBeInTheDocument();
     });
   });
 
   it('shows batch action bar when a row checkbox is clicked', async () => {
-    renderWithProviders(<TemplatesView />, { preloadedState: { auth: { isAuthenticated: true, isLoading: false } } });
+    renderWithProviders(<TemplatesView />, {
+      preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
+    });
     await waitFor(() => {
       expect(screen.getByText('Dev')).toBeInTheDocument();
     });
@@ -261,7 +334,9 @@ describe('TemplatesView — selection logic', () => {
   });
 
   it('selects all when header checkbox is clicked', async () => {
-    renderWithProviders(<TemplatesView />, { preloadedState: { auth: { isAuthenticated: true, isLoading: false } } });
+    renderWithProviders(<TemplatesView />, {
+      preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
+    });
     await waitFor(() => {
       expect(screen.getByText('Dev')).toBeInTheDocument();
     });
@@ -273,7 +348,9 @@ describe('TemplatesView — selection logic', () => {
   });
 
   it('clears selection when Clear selection is clicked', async () => {
-    renderWithProviders(<TemplatesView />, { preloadedState: { auth: { isAuthenticated: true, isLoading: false } } });
+    renderWithProviders(<TemplatesView />, {
+      preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
+    });
     await waitFor(() => {
       expect(screen.getByText('Dev')).toBeInTheDocument();
     });
@@ -287,7 +364,9 @@ describe('TemplatesView — selection logic', () => {
   });
 
   it('deselects all when header checkbox is clicked twice', async () => {
-    renderWithProviders(<TemplatesView />, { preloadedState: { auth: { isAuthenticated: true, isLoading: false } } });
+    renderWithProviders(<TemplatesView />, {
+      preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
+    });
     await waitFor(() => {
       expect(screen.getByText('Dev')).toBeInTheDocument();
     });
@@ -306,7 +385,9 @@ describe('TemplatesView — selection logic', () => {
   });
 
   it('shows batch delete confirm modal when Delete Selected is clicked', async () => {
-    renderWithProviders(<TemplatesView />, { preloadedState: { auth: { isAuthenticated: true, isLoading: false } } });
+    renderWithProviders(<TemplatesView />, {
+      preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
+    });
     await waitFor(() => {
       expect(screen.getByText('Dev')).toBeInTheDocument();
     });
@@ -347,7 +428,9 @@ describe('TemplatesView — CRUD operations', () => {
   });
 
   it('opens create modal when New Template is clicked', async () => {
-    renderWithProviders(<TemplatesView />, { preloadedState: { auth: { isAuthenticated: true, isLoading: false } } });
+    renderWithProviders(<TemplatesView />, {
+      preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
+    });
     await waitFor(() => {
       expect(screen.getByText('Dev')).toBeInTheDocument();
     });
@@ -357,7 +440,9 @@ describe('TemplatesView — CRUD operations', () => {
   });
 
   it('opens edit modal when edit button is clicked', async () => {
-    renderWithProviders(<TemplatesView />, { preloadedState: { auth: { isAuthenticated: true, isLoading: false } } });
+    renderWithProviders(<TemplatesView />, {
+      preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
+    });
     await waitFor(() => {
       expect(screen.getByText('Dev')).toBeInTheDocument();
     });
@@ -368,7 +453,9 @@ describe('TemplatesView — CRUD operations', () => {
   });
 
   it('shows single delete confirm when delete button clicked', async () => {
-    renderWithProviders(<TemplatesView />, { preloadedState: { auth: { isAuthenticated: true, isLoading: false } } });
+    renderWithProviders(<TemplatesView />, {
+      preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
+    });
     await waitFor(() => {
       expect(screen.getByText('Dev')).toBeInTheDocument();
     });
@@ -389,11 +476,20 @@ describe('TemplatesView — CRUD operations', () => {
     });
     mockFetch.mockResolvedValueOnce({
       ok: true,
-      json: () => Promise.resolve({ data: [], total: 0, page: 1, limit: 10, totalPages: 0 }),
+      json: () =>
+        Promise.resolve({
+          data: [],
+          total: 0,
+          page: 1,
+          limit: 10,
+          totalPages: 0,
+        }),
     });
     vi.stubGlobal('fetch', mockFetch);
 
-    renderWithProviders(<TemplatesView />, { preloadedState: { auth: { isAuthenticated: true, isLoading: false } } });
+    renderWithProviders(<TemplatesView />, {
+      preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
+    });
     await waitFor(() => {
       expect(screen.getByText('Dev')).toBeInTheDocument();
     });
@@ -405,7 +501,8 @@ describe('TemplatesView — CRUD operations', () => {
 
     await waitFor(() => {
       const batchCall = mockFetch.mock.calls.find(
-        (call) => call[0] === '/api/templates/batch' && call[1]?.method === 'DELETE',
+        (call) =>
+          call[0] === '/api/templates/batch' && call[1]?.method === 'DELETE',
       );
       expect(batchCall).toBeDefined();
     });
@@ -425,13 +522,24 @@ describe('TemplatesView — edge cases', () => {
       'fetch',
       vi.fn().mockResolvedValue({
         ok: true,
-        json: () => Promise.resolve({ data: [], total: 0, page: 1, limit: 10, totalPages: 0 }),
+        json: () =>
+          Promise.resolve({
+            data: [],
+            total: 0,
+            page: 1,
+            limit: 10,
+            totalPages: 0,
+          }),
       }),
     );
 
-    renderWithProviders(<TemplatesView />, { preloadedState: { auth: { isAuthenticated: true, isLoading: false } } });
+    renderWithProviders(<TemplatesView />, {
+      preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
+    });
     await waitFor(() => {
-      expect(screen.getByText('No templates yet. Create one to get started.')).toBeInTheDocument();
+      expect(
+        screen.getByText('No templates yet. Create one to get started.'),
+      ).toBeInTheDocument();
     });
   });
 
@@ -440,37 +548,43 @@ describe('TemplatesView — edge cases', () => {
       'fetch',
       vi.fn().mockResolvedValue({
         ok: true,
-        json: () => Promise.resolve({
-          data: [mockTemplates[0]],
-          total: 1,
-          page: 1,
-          limit: 10,
-          totalPages: 1,
-        }),
+        json: () =>
+          Promise.resolve({
+            data: [mockTemplates[0]],
+            total: 1,
+            page: 1,
+            limit: 10,
+            totalPages: 1,
+          }),
       }),
     );
 
-    renderWithProviders(<TemplatesView />, { preloadedState: { auth: { isAuthenticated: true, isLoading: false } } });
+    renderWithProviders(<TemplatesView />, {
+      preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
+    });
     await waitFor(() => {
       expect(screen.getByText('You have 1 template')).toBeInTheDocument();
     });
   });
 
   it('shows error toast on fetch failure', async () => {
-    vi.stubGlobal(
-      'fetch',
-      vi.fn().mockResolvedValue({ ok: false }),
-    );
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false }));
 
-    renderWithProviders(<TemplatesView />, { preloadedState: { auth: { isAuthenticated: true, isLoading: false } } });
+    renderWithProviders(<TemplatesView />, {
+      preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
+    });
     await waitFor(() => {
       expect(screen.getByText('Cover Letter Templates')).toBeInTheDocument();
     });
   });
 
   it('redirects to home when not authenticated', () => {
-    renderWithProviders(<TemplatesView />, { preloadedState: { auth: { isAuthenticated: false, isLoading: false } } });
-    expect(screen.queryByText('Cover Letter Templates')).not.toBeInTheDocument();
+    renderWithProviders(<TemplatesView />, {
+      preloadedState: { auth: { isAuthenticated: false, isLoading: false } },
+    });
+    expect(
+      screen.queryByText('Cover Letter Templates'),
+    ).not.toBeInTheDocument();
   });
 
   it('returns null while auth is loading', () => {

@@ -35,7 +35,11 @@ describe('CoverLetterController', () => {
 
   it('should list all cover letters', async () => {
     const result = await controller.findAll(mockUser);
-    expect(service.findAll).toHaveBeenCalledWith(mockUser.id);
+    expect(service.findAll).toHaveBeenCalledWith(
+      mockUser.id,
+      undefined,
+      undefined,
+    );
     expect(result).toEqual([]);
   });
 });

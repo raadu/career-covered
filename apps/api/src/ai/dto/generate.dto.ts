@@ -1,4 +1,13 @@
-import { IsString, IsOptional, IsNumber, Min, Max, IsArray, ValidateNested, IsBoolean } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsNumber,
+  Min,
+  Max,
+  IsArray,
+  ValidateNested,
+  IsBoolean,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
@@ -35,7 +44,9 @@ export class GenerateDto {
   @IsNumber()
   temperature?: number;
 
-  @ApiPropertyOptional({ description: 'Caller can supply their own Groq API key' })
+  @ApiPropertyOptional({
+    description: 'Caller can supply their own Groq API key',
+  })
   @IsOptional()
   @IsString()
   userApiKey?: string;
@@ -75,4 +86,3 @@ export class GenerateDto {
   @IsBoolean()
   sameLanguage?: boolean;
 }
-

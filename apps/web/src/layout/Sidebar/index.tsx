@@ -12,16 +12,14 @@ interface SidebarProps {
 
 const Sidebar = ({ isExpanded, onToggle }: SidebarProps) => {
   return (
-    <aside 
+    <aside
       className={clsx(
-        "bg-white dark:bg-gray-900 border-b lg:border-b-0 lg:border-r border-gray-200 dark:border-gray-800 flex flex-row lg:flex-col items-center lg:items-stretch transition-all duration-300 ease-in-out relative shrink-0 z-10 w-full lg:w-auto h-auto lg:h-full",
-        isExpanded ? 'lg:w-56' : 'lg:w-16'
+        'bg-white dark:bg-gray-900 border-b lg:border-b-0 lg:border-r border-gray-200 dark:border-gray-800 flex flex-row lg:flex-col items-center lg:items-stretch transition-all duration-300 ease-in-out relative shrink-0 z-10 w-full lg:w-auto h-auto lg:h-full',
+        isExpanded ? 'lg:w-56' : 'lg:w-16',
       )}
     >
       <SidebarHeader isExpanded={isExpanded} />
-      <SidebarNavigation 
-        isExpanded={isExpanded} 
-      />
+      <SidebarNavigation isExpanded={isExpanded} />
       <div className="flex lg:flex-col ml-auto lg:ml-0 lg:mt-auto items-center lg:items-stretch lg:w-full gap-4 lg:gap-0 pr-3 lg:pr-0">
         <ProfileSection isExpanded={isExpanded} />
         <DarkModeToggle isExpanded={isExpanded} />
@@ -32,4 +30,3 @@ const Sidebar = ({ isExpanded, onToggle }: SidebarProps) => {
 };
 
 export default Sidebar;
-

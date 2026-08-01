@@ -4,7 +4,11 @@ interface MinimalChangesSectionProps {
   hasTemplate: boolean;
 }
 
-const MinimalChangesSection = ({ minimalChanges, onToggle, hasTemplate }: MinimalChangesSectionProps) => {
+const MinimalChangesSection = ({
+  minimalChanges,
+  onToggle,
+  hasTemplate,
+}: MinimalChangesSectionProps) => {
   if (!hasTemplate) return null;
 
   return (
@@ -19,10 +23,10 @@ const MinimalChangesSection = ({ minimalChanges, onToggle, hasTemplate }: Minima
             Only replace placeholders and minor tweaks.
           </span>
         </div>
-        
+
         <label className="relative inline-flex items-center cursor-pointer">
-          <input 
-            type="checkbox" 
+          <input
+            type="checkbox"
             className="sr-only peer"
             checked={minimalChanges}
             onChange={onToggle}

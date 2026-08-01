@@ -27,16 +27,22 @@ const EditTemplateModal = ({
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
-      onClick={() => { if (!isUpdating) onClose(); }}
+      onClick={() => {
+        if (!isUpdating) onClose();
+      }}
     >
       <div
         className="bg-white dark:bg-gray-800 w-full max-w-lg rounded-sm shadow-xl border border-gray-200 dark:border-gray-700 p-6"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">Edit Template</h2>
+        <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4">
+          Edit Template
+        </h2>
         <div className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1.5">Name</label>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1.5">
+              Name
+            </label>
             <input
               value={name}
               onChange={(e) => onNameChange(e.target.value)}
@@ -44,7 +50,9 @@ const EditTemplateModal = ({
             />
           </div>
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1.5">Content</label>
+            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1.5">
+              Content
+            </label>
             <textarea
               value={content}
               onChange={(e) => onContentChange(e.target.value)}
@@ -54,7 +62,11 @@ const EditTemplateModal = ({
           </div>
         </div>
         <div className="flex justify-end gap-2 mt-6">
-          <CommonButton variant="secondary" onClick={onClose} disabled={isUpdating}>
+          <CommonButton
+            variant="secondary"
+            onClick={onClose}
+            disabled={isUpdating}
+          >
             Cancel
           </CommonButton>
           <CommonButton

@@ -5,7 +5,6 @@ import { NotFoundException } from '@nestjs/common';
 
 describe('TemplateService', () => {
   let service: TemplateService;
-  let prisma: PrismaService;
 
   const mockPrismaService = {
     template: {
@@ -16,7 +15,11 @@ describe('TemplateService', () => {
       delete: jest.fn().mockResolvedValue(undefined),
       count: jest.fn().mockResolvedValue(0),
     },
-    $transaction: jest.fn().mockImplementation((queries: Promise<any>[]) => Promise.all(queries)),
+    $transaction: jest
+      .fn()
+      .mockImplementation((queries: Promise<unknown>[]) =>
+        Promise.all(queries),
+      ),
   };
 
   beforeEach(async () => {
@@ -28,7 +31,6 @@ describe('TemplateService', () => {
     }).compile();
 
     service = module.get<TemplateService>(TemplateService);
-    prisma = module.get<PrismaService>(PrismaService);
   });
 
   it('should be defined', () => {

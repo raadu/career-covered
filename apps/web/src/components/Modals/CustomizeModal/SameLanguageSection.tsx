@@ -3,7 +3,10 @@ interface SameLanguageSectionProps {
   onToggle: () => void;
 }
 
-const SameLanguageSection = ({ sameLanguage, onToggle }: SameLanguageSectionProps) => {
+const SameLanguageSection = ({
+  sameLanguage,
+  onToggle,
+}: SameLanguageSectionProps) => {
   return (
     <>
       <hr className="border-gray-100 dark:border-gray-700" />
@@ -16,10 +19,10 @@ const SameLanguageSection = ({ sameLanguage, onToggle }: SameLanguageSectionProp
             Create the cover letter in the same language of the job description.
           </span>
         </div>
-        
+
         <label className="relative inline-flex items-center cursor-pointer flex-shrink-0">
-          <input 
-            type="checkbox" 
+          <input
+            type="checkbox"
             className="sr-only peer"
             checked={sameLanguage}
             onChange={onToggle}

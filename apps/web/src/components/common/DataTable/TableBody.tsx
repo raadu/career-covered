@@ -28,7 +28,10 @@ const TableBody = <T extends object>({
     return (
       <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
         <tr>
-          <td colSpan={columnsLength} className="px-4 py-12 text-center text-sm text-gray-400 dark:text-gray-500">
+          <td
+            colSpan={columnsLength}
+            className="px-4 py-12 text-center text-sm text-gray-400 dark:text-gray-500"
+          >
             {emptyMessage}
           </td>
         </tr>
@@ -44,7 +47,10 @@ const TableBody = <T extends object>({
           className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
         >
           {row.getVisibleCells().map((cell) => (
-            <td key={cell.id} className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
+            <td
+              key={cell.id}
+              className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300"
+            >
               {flexRender(cell.column.columnDef.cell, cell.getContext())}
             </td>
           ))}

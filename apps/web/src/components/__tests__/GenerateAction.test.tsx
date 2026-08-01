@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
+import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import GenerateAction from '../GeneratorControls/GenerateAction';
 
 describe('GenerateAction', () => {
@@ -50,7 +51,7 @@ describe('GenerateAction', () => {
     render(
       <GenerateAction
         {...defaultProps}
-        error={{ status: 500, data: {} } as any}
+        error={{ status: 500, data: {} } satisfies FetchBaseQueryError}
       />,
     );
     expect(screen.getByText(/Error generating/i)).toBeInTheDocument();

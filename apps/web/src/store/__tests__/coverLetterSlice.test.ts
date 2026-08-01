@@ -22,7 +22,9 @@ import coverLetterReducer, {
   type CoverLetterState,
 } from 'store/coverLetterSlice';
 
-const createBlankState = (overrides?: Partial<CoverLetterState>): CoverLetterState => ({
+const createBlankState = (
+  overrides?: Partial<CoverLetterState>,
+): CoverLetterState => ({
   template: '',
   jobDescription: '',
   generatedLetter: '',
@@ -43,7 +45,11 @@ const createBlankState = (overrides?: Partial<CoverLetterState>): CoverLetterSta
   ...overrides,
 });
 
-const makeTemplate = (id: string, name: string, content: string): SavedTemplate => ({
+const makeTemplate = (
+  id: string,
+  name: string,
+  content: string,
+): SavedTemplate => ({
   id,
   name,
   content,
@@ -60,7 +66,10 @@ beforeEach(() => {
 describe('coverLetterSlice', () => {
   describe('setTemplate', () => {
     it('updates template text', () => {
-      const state = coverLetterReducer(createBlankState(), setTemplate('Hello World'));
+      const state = coverLetterReducer(
+        createBlankState(),
+        setTemplate('Hello World'),
+      );
       expect(state.template).toBe('Hello World');
     });
 
@@ -75,7 +84,10 @@ describe('coverLetterSlice', () => {
 
   describe('setJobDescription', () => {
     it('updates job description', () => {
-      const state = coverLetterReducer(createBlankState(), setJobDescription('Engineer role'));
+      const state = coverLetterReducer(
+        createBlankState(),
+        setJobDescription('Engineer role'),
+      );
       expect(state.jobDescription).toBe('Engineer role');
     });
   });
@@ -83,7 +95,10 @@ describe('coverLetterSlice', () => {
   describe('clearTemplate', () => {
     it('clears template text and deselects the active template', () => {
       const state = coverLetterReducer(
-        createBlankState({ template: 'Existing template', activeTemplateId: 'id-1' }),
+        createBlankState({
+          template: 'Existing template',
+          activeTemplateId: 'id-1',
+        }),
         clearTemplate(),
       );
       expect(state.template).toBe('');
@@ -94,7 +109,10 @@ describe('coverLetterSlice', () => {
       localStorage.setItem('cl_active_template_id', 'id-1');
       localStorage.setItem('cl_template', 'Existing template');
       coverLetterReducer(
-        createBlankState({ template: 'Existing template', activeTemplateId: 'id-1' }),
+        createBlankState({
+          template: 'Existing template',
+          activeTemplateId: 'id-1',
+        }),
         clearTemplate(),
       );
       expect(localStorage.getItem('cl_active_template_id')).toBeNull();
@@ -105,7 +123,10 @@ describe('coverLetterSlice', () => {
       localStorage.setItem('cl_active_template_id', 'id-1');
       localStorage.setItem('cl_template', 'Existing template');
       coverLetterReducer(
-        createBlankState({ template: 'Existing template', activeTemplateId: 'id-1' }),
+        createBlankState({
+          template: 'Existing template',
+          activeTemplateId: 'id-1',
+        }),
         clearTemplate(),
       );
       const templates = [tpl1, tpl2];
@@ -118,7 +139,10 @@ describe('coverLetterSlice', () => {
 
   describe('setGeneratedLetter', () => {
     it('updates generated letter', () => {
-      const state = coverLetterReducer(createBlankState(), setGeneratedLetter('Dear Sir...'));
+      const state = coverLetterReducer(
+        createBlankState(),
+        setGeneratedLetter('Dear Sir...'),
+      );
       expect(state.generatedLetter).toBe('Dear Sir...');
     });
 
@@ -133,7 +157,10 @@ describe('coverLetterSlice', () => {
 
   describe('setApiKey', () => {
     it('updates API key', () => {
-      const state = coverLetterReducer(createBlankState(), setApiKey('gsk-mykey'));
+      const state = coverLetterReducer(
+        createBlankState(),
+        setApiKey('gsk-mykey'),
+      );
       expect(state.apiKey).toBe('gsk-mykey');
     });
 
@@ -187,7 +214,10 @@ describe('coverLetterSlice', () => {
 
   describe('setIsGenerating', () => {
     it('sets generating to true', () => {
-      const state = coverLetterReducer(createBlankState(), setIsGenerating(true));
+      const state = coverLetterReducer(
+        createBlankState(),
+        setIsGenerating(true),
+      );
       expect(state.isGenerating).toBe(true);
     });
 
@@ -210,7 +240,10 @@ describe('coverLetterSlice', () => {
     });
 
     it('is idempotent when already empty', () => {
-      const state = coverLetterReducer(createBlankState(), clearGeneratedLetter());
+      const state = coverLetterReducer(
+        createBlankState(),
+        clearGeneratedLetter(),
+      );
       expect(state.generatedLetter).toBe('');
     });
   });
@@ -219,7 +252,12 @@ describe('coverLetterSlice', () => {
     it('updates customization options', () => {
       const state = coverLetterReducer(
         createBlankState(),
-        setCustomization({ limitWords: true, wordCount: 500, minimalChanges: true, sameLanguage: true }),
+        setCustomization({
+          limitWords: true,
+          wordCount: 500,
+          minimalChanges: true,
+          sameLanguage: true,
+        }),
       );
       expect(state.customization.limitWords).toBe(true);
       expect(state.customization.wordCount).toBe(500);
@@ -230,7 +268,12 @@ describe('coverLetterSlice', () => {
     it('persists to localStorage', () => {
       coverLetterReducer(
         createBlankState(),
-        setCustomization({ limitWords: true, wordCount: 300, minimalChanges: false, sameLanguage: true }),
+        setCustomization({
+          limitWords: true,
+          wordCount: 300,
+          minimalChanges: false,
+          sameLanguage: true,
+        }),
       );
       expect(localStorage.getItem('cl_limitWords')).toBe('true');
       expect(localStorage.getItem('cl_wordCount')).toBe('300');
@@ -240,8 +283,20 @@ describe('coverLetterSlice', () => {
 
     it('resets customization to defaults', () => {
       const state = coverLetterReducer(
-        createBlankState({ customization: { limitWords: true, wordCount: 500, minimalChanges: true, sameLanguage: true } }),
-        setCustomization({ limitWords: false, wordCount: 400, minimalChanges: false, sameLanguage: false }),
+        createBlankState({
+          customization: {
+            limitWords: true,
+            wordCount: 500,
+            minimalChanges: true,
+            sameLanguage: true,
+          },
+        }),
+        setCustomization({
+          limitWords: false,
+          wordCount: 400,
+          minimalChanges: false,
+          sameLanguage: false,
+        }),
       );
       expect(state.customization).toEqual({
         limitWords: false,
@@ -280,7 +335,10 @@ describe('coverLetterSlice', () => {
   describe('selectTemplate', () => {
     it('sets active template and populates editor content', () => {
       const state = coverLetterReducer(
-        createBlankState({ savedTemplates: [tpl1, tpl2], activeTemplateId: 'id-2' }),
+        createBlankState({
+          savedTemplates: [tpl1, tpl2],
+          activeTemplateId: 'id-2',
+        }),
         selectTemplate('id-1'),
       );
       expect(state.activeTemplateId).toBe('id-1');
@@ -290,7 +348,11 @@ describe('coverLetterSlice', () => {
 
     it('is a no-op when id does not exist in savedTemplates', () => {
       const state = coverLetterReducer(
-        createBlankState({ savedTemplates: [tpl1], activeTemplateId: 'id-1', template: 'Existing' }),
+        createBlankState({
+          savedTemplates: [tpl1],
+          activeTemplateId: 'id-1',
+          template: 'Existing',
+        }),
         selectTemplate('non-existent'),
       );
       expect(state.activeTemplateId).toBe('id-1');
@@ -307,7 +369,11 @@ describe('coverLetterSlice', () => {
 
     it('expands the template editor', () => {
       const state = coverLetterReducer(
-        createBlankState({ savedTemplates: [tpl1], activeTemplateId: null, isTemplateExpanded: false }),
+        createBlankState({
+          savedTemplates: [tpl1],
+          activeTemplateId: null,
+          isTemplateExpanded: false,
+        }),
         selectTemplate('id-1'),
       );
       expect(state.isTemplateExpanded).toBe(true);
@@ -368,7 +434,10 @@ describe('coverLetterSlice', () => {
   describe('createTemplate extraReducers', () => {
     it('appends new template and sets it active on fulfilled', () => {
       const newTpl = makeTemplate('new-id', 'Template 1', 'Fresh content');
-      const action = createTemplate.fulfilled(newTpl, 'req', { name: 'Template 1', content: 'Fresh content' });
+      const action = createTemplate.fulfilled(newTpl, 'req', {
+        name: 'Template 1',
+        content: 'Fresh content',
+      });
       const state = coverLetterReducer(createBlankState(), action);
       expect(state.savedTemplates).toEqual([newTpl]);
       expect(state.activeTemplateId).toBe('new-id');
@@ -378,7 +447,10 @@ describe('coverLetterSlice', () => {
 
     it('prepends to existing templates', () => {
       const newTpl = makeTemplate('new-id', 'Template 2', 'More content');
-      const action = createTemplate.fulfilled(newTpl, 'req', { name: 'Template 2', content: 'More content' });
+      const action = createTemplate.fulfilled(newTpl, 'req', {
+        name: 'Template 2',
+        content: 'More content',
+      });
       const state = coverLetterReducer(
         createBlankState({ savedTemplates: [tpl1], activeTemplateId: 'id-1' }),
         action,
@@ -390,7 +462,10 @@ describe('coverLetterSlice', () => {
 
     it('persists activeTemplateId to localStorage', () => {
       const newTpl = makeTemplate('new-id', 'Template 1', 'Fresh content');
-      const action = createTemplate.fulfilled(newTpl, 'req', { name: 'Template 1', content: 'Fresh content' });
+      const action = createTemplate.fulfilled(newTpl, 'req', {
+        name: 'Template 1',
+        content: 'Fresh content',
+      });
       coverLetterReducer(createBlankState(), action);
       expect(localStorage.getItem('cl_active_template_id')).toBe('new-id');
     });
@@ -399,9 +474,16 @@ describe('coverLetterSlice', () => {
   describe('updateTemplate extraReducers', () => {
     it('replaces the matching template in savedTemplates', () => {
       const updated = makeTemplate('id-1', 'Renamed', 'Content 1');
-      const action = updateTemplate.fulfilled(updated, 'req', { id: 'id-1', name: 'Renamed', content: 'Content 1' });
+      const action = updateTemplate.fulfilled(updated, 'req', {
+        id: 'id-1',
+        name: 'Renamed',
+        content: 'Content 1',
+      });
       const state = coverLetterReducer(
-        createBlankState({ savedTemplates: [tpl1, tpl2], activeTemplateId: 'id-2' }),
+        createBlankState({
+          savedTemplates: [tpl1, tpl2],
+          activeTemplateId: 'id-2',
+        }),
         action,
       );
       expect(state.savedTemplates[0]).toEqual(updated);
@@ -410,7 +492,11 @@ describe('coverLetterSlice', () => {
 
     it('does nothing when id not found in local state', () => {
       const updated = makeTemplate('ghost', 'Ghost', 'Ghost content');
-      const action = updateTemplate.fulfilled(updated, 'req', { id: 'ghost', name: 'Ghost', content: 'Ghost content' });
+      const action = updateTemplate.fulfilled(updated, 'req', {
+        id: 'ghost',
+        name: 'Ghost',
+        content: 'Ghost content',
+      });
       const state = coverLetterReducer(
         createBlankState({ savedTemplates: [tpl1] }),
         action,
@@ -423,7 +509,10 @@ describe('coverLetterSlice', () => {
     it('removes template by id', () => {
       const action = deleteTemplate.fulfilled('id-1', 'req', 'id-1');
       const state = coverLetterReducer(
-        createBlankState({ savedTemplates: [tpl1, tpl2], activeTemplateId: 'id-2' }),
+        createBlankState({
+          savedTemplates: [tpl1, tpl2],
+          activeTemplateId: 'id-2',
+        }),
         action,
       );
       expect(state.savedTemplates).toEqual([tpl2]);
@@ -432,7 +521,10 @@ describe('coverLetterSlice', () => {
     it('re-selects first remaining template when active is deleted', () => {
       const action = deleteTemplate.fulfilled('id-2', 'req', 'id-2');
       const state = coverLetterReducer(
-        createBlankState({ savedTemplates: [tpl1, tpl2, tpl3], activeTemplateId: 'id-2' }),
+        createBlankState({
+          savedTemplates: [tpl1, tpl2, tpl3],
+          activeTemplateId: 'id-2',
+        }),
         action,
       );
       expect(state.activeTemplateId).toBe('id-1');
@@ -443,7 +535,11 @@ describe('coverLetterSlice', () => {
     it('clears active and template when last template deleted', () => {
       const action = deleteTemplate.fulfilled('id-1', 'req', 'id-1');
       const state = coverLetterReducer(
-        createBlankState({ savedTemplates: [tpl1], activeTemplateId: 'id-1', template: 'Content 1' }),
+        createBlankState({
+          savedTemplates: [tpl1],
+          activeTemplateId: 'id-1',
+          template: 'Content 1',
+        }),
         action,
       );
       expect(state.savedTemplates).toHaveLength(0);
@@ -455,7 +551,10 @@ describe('coverLetterSlice', () => {
     it('does not change active when non-active template removed', () => {
       const action = deleteTemplate.fulfilled('id-1', 'req', 'id-1');
       const state = coverLetterReducer(
-        createBlankState({ savedTemplates: [tpl1, tpl2], activeTemplateId: 'id-2' }),
+        createBlankState({
+          savedTemplates: [tpl1, tpl2],
+          activeTemplateId: 'id-2',
+        }),
         action,
       );
       expect(state.activeTemplateId).toBe('id-2');

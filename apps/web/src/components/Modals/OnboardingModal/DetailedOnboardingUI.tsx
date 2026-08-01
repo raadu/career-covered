@@ -1,5 +1,5 @@
-import { PROVIDER_URL } from "utils/AIModelUtils";
-import { FaExternalLinkAlt, FaArrowLeft } from "react-icons/fa";
+import { PROVIDER_URL } from 'utils/AIModelUtils';
+import { FaExternalLinkAlt, FaArrowLeft } from 'react-icons/fa';
 
 interface DetailedOnboardingUIProps {
   onBack: () => void;
@@ -41,14 +41,14 @@ const DetailedOnboardingUI = ({ onBack }: DetailedOnboardingUIProps) => {
                 <strong className="text-gray-800 dark:text-gray-200 block mb-0">
                   Visit the Platform
                 </strong>
-                Go to the{" "}
+                Go to the{' '}
                 <a
                   href={PROVIDER_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-600 font-semibold underline underline-offset-4 decoration-blue-200"
                 >
-                  Groq Cloud Console{" "}
+                  Groq Cloud Console{' '}
                   <FaExternalLinkAlt size={9} className="inline mb-1" />
                 </a>
                 . This is the official developer portal.
@@ -77,7 +77,10 @@ const DetailedOnboardingUI = ({ onBack }: DetailedOnboardingUIProps) => {
                 <strong className="text-gray-800 dark:text-gray-200 block mb-0">
                   Locate API Keys
                 </strong>
-                On the dashboard, find the <strong>"API Keys"</strong> tab. On mobile, you may need to open the <strong>top-left hamburger menu</strong> first to see the sidebar options.
+                On the dashboard, find the <strong>"API Keys"</strong> tab. On
+                mobile, you may need to open the{' '}
+                <strong>top-left hamburger menu</strong> first to see the
+                sidebar options.
               </div>
             </div>
 
@@ -90,7 +93,7 @@ const DetailedOnboardingUI = ({ onBack }: DetailedOnboardingUIProps) => {
                   Create API Key
                 </strong>
                 Click <strong>"Create API Key"</strong> button. Put any display
-                name or expiration you want. Then click{" "}
+                name or expiration you want. Then click{' '}
                 <strong>"Submit"</strong> button.
               </div>
             </div>
@@ -115,7 +118,7 @@ const DetailedOnboardingUI = ({ onBack }: DetailedOnboardingUIProps) => {
                 <strong className="text-gray-800 dark:text-gray-200 block mb-0">
                   The Final Step
                 </strong>
-                Paste the key in the box below. Then press{" "}
+                Paste the key in the box below. Then press{' '}
                 <strong>"Start"</strong> button.
               </div>
             </div>

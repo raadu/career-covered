@@ -26,17 +26,17 @@ describe('useCopy hook', () => {
 
   it('should copy text and show success toast', () => {
     const { result } = renderHook(() => useCopy());
-    
+
     act(() => {
       result.current.handleCopy('Hello, world!', 'Test Text');
     });
 
     expect(navigator.clipboard.writeText).toHaveBeenCalledWith('Hello, world!');
     expect(result.current.copied).toBe(true);
-    expect(mockShowToast).toHaveBeenCalledWith(
-      'Test Text copied!',
-      { type: 'success', duration: undefined }
-    );
+    expect(mockShowToast).toHaveBeenCalledWith('Test Text copied!', {
+      type: 'success',
+      duration: undefined,
+    });
   });
 
   it('should show error toast if value is empty', () => {
@@ -48,10 +48,9 @@ describe('useCopy hook', () => {
 
     expect(navigator.clipboard.writeText).not.toHaveBeenCalled();
     expect(result.current.copied).toBe(false);
-    expect(mockShowToast).toHaveBeenCalledWith(
-      'Nothing to copy!',
-      { type: 'error' }
-    );
+    expect(mockShowToast).toHaveBeenCalledWith('Nothing to copy!', {
+      type: 'error',
+    });
   });
 
   it('should call onSuccess callback if provided', () => {

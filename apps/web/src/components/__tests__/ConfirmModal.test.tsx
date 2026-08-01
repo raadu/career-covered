@@ -11,7 +11,7 @@ describe('ConfirmModal', () => {
         message="Are you sure?"
         onConfirm={vi.fn()}
         onCancel={vi.fn()}
-      />
+      />,
     );
     expect(screen.getByText('Sign out')).toBeInTheDocument();
     expect(screen.getByText('Are you sure?')).toBeInTheDocument();
@@ -27,7 +27,7 @@ describe('ConfirmModal', () => {
         message="Are you sure?"
         onConfirm={vi.fn()}
         onCancel={vi.fn()}
-      />
+      />,
     );
     expect(container.firstChild).toBeNull();
   });
@@ -45,7 +45,7 @@ describe('ConfirmModal', () => {
         cancelLabel="Nope"
         onConfirm={onConfirm}
         onCancel={onCancel}
-      />
+      />,
     );
 
     fireEvent.click(screen.getByText('Sure!'));
@@ -63,7 +63,7 @@ describe('ConfirmModal', () => {
         message="Are you sure?"
         onConfirm={vi.fn()}
         onCancel={onCancel}
-      />
+      />,
     );
 
     fireEvent.click(screen.getByText('Nope'));
@@ -80,7 +80,7 @@ describe('ConfirmModal', () => {
         message="Are you sure?"
         onConfirm={vi.fn()}
         onCancel={onCancel}
-      />
+      />,
     );
 
     // Click the backdrop overlay

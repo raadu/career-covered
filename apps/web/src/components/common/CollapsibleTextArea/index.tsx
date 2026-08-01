@@ -1,7 +1,7 @@
-import TextAreaHeader from "./TextAreaHeader";
-import TextAreaBody from "./TextAreaBody";
-import { useCopy } from "hooks/useCopy";
-import { useClear } from "hooks/useClear";
+import TextAreaHeader from './TextAreaHeader';
+import TextAreaBody from './TextAreaBody';
+import { useCopy } from 'hooks/useCopy';
+import { useClear } from 'hooks/useClear';
 
 interface CollapsibleTextAreaProps {
   label: string;

@@ -1,11 +1,11 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import { Provider } from 'react-redux'
-import { HashRouter } from 'react-router-dom'
-import { HelmetProvider } from 'react-helmet-async'
-import App from './App'
-import './index.css'
-import { store } from 'store'
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { Provider } from 'react-redux';
+import { HashRouter } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
+import App from './App';
+import './index.css';
+import { store } from 'store';
 
 const storedDark = localStorage.getItem('cl_darkMode');
 if (storedDark === 'true') {
@@ -22,4 +22,4 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       </HelmetProvider>
     </Provider>
   </React.StrictMode>,
-)
+);

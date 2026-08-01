@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AiController } from './ai.controller';
 import { AiService } from './ai.service';
 import { GenerateDto } from './dto/generate.dto';
-import { Request } from 'express';
 
 describe('AiController', () => {
   let controller: AiController;
@@ -31,17 +30,14 @@ describe('AiController', () => {
     expect(controller).toBeDefined();
   });
 
-  it('should call aiService.generate with DTO and session token', async () => {
+  it('should call aiService.generate with the DTO', async () => {
     const dto: GenerateDto = {
       model: 'llama-3.3-70b-versatile',
       messages: [{ role: 'user', content: 'write letter' }],
     };
-    const req = {
-      cookies: { session: 'mock-token' },
-    } as unknown as Request;
 
-    const result = await controller.generate(dto, req);
-    expect(service.generate).toHaveBeenCalledWith(dto, 'mock-token');
+    const result = await controller.generate(dto);
+    expect(service.generate).toHaveBeenCalledWith(dto);
     expect(result).toEqual({
       choices: [{ message: { content: 'mock letter' } }],
     });

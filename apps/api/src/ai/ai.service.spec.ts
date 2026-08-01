@@ -1,27 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AiService } from './ai.service';
 import { ConfigService } from '@nestjs/config';
-import { PrismaService } from '../prisma/prisma.service';
-import { AuthService } from '../auth/auth.service';
 import { InternalServerErrorException } from '@nestjs/common';
 
 describe('AiService', () => {
   let service: AiService;
-  let prisma: PrismaService;
-  let authService: AuthService;
 
   const mockConfigService = {
     get: jest.fn().mockReturnValue('mock-groq-key'),
-  };
-
-  const mockPrismaService = {
-    coverLetter: {
-      create: jest.fn().mockResolvedValue({ id: 'cl-1' }),
-    },
-  };
-
-  const mockAuthService = {
-    validateSession: jest.fn().mockResolvedValue({ id: 'user-1' }),
   };
 
   beforeEach(async () => {
@@ -29,14 +15,10 @@ describe('AiService', () => {
       providers: [
         AiService,
         { provide: ConfigService, useValue: mockConfigService },
-        { provide: PrismaService, useValue: mockPrismaService },
-        { provide: AuthService, useValue: mockAuthService },
       ],
     }).compile();
 
     service = module.get<AiService>(AiService);
-    prisma = module.get<PrismaService>(PrismaService);
-    authService = module.get<AuthService>(AuthService);
   });
 
   afterEach(() => {
@@ -57,7 +39,7 @@ describe('AiService', () => {
     ).rejects.toThrow(InternalServerErrorException);
   });
 
-  it('should fetch cover letter and save to db if session exists', async () => {
+  it('should proxy the request to Groq and return the response as-is (no DB/session involvement)', async () => {
     const fetchMock = jest.fn().mockResolvedValue({
       ok: true,
       json: jest.fn().mockResolvedValue({
@@ -66,22 +48,50 @@ describe('AiService', () => {
     });
     global.fetch = fetchMock;
 
-    const result = await service.generate(
-      {
-        model: 'llama-3.3-70b-versatile',
-        messages: [{ role: 'user', content: 'test' }],
-        wordLimit: 100,
-        jobTitle: 'Software Engineer',
-        companyName: 'Google',
-      },
-      'mock-session',
-    );
+    const result = await service.generate({
+      model: 'llama-3.3-70b-versatile',
+      messages: [{ role: 'user', content: 'test' }],
+      wordLimit: 100,
+      jobTitle: 'Software Engineer',
+      companyName: 'Google',
+    });
 
-    expect(fetchMock).toHaveBeenCalled();
-    expect(authService.validateSession).toHaveBeenCalledWith('mock-session');
-    expect(prisma.coverLetter.create).toHaveBeenCalled();
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://api.groq.com/openai/v1/chat/completions',
+      expect.objectContaining({
+        method: 'POST',
+        headers: expect.objectContaining({
+          Authorization: 'Bearer mock-groq-key',
+        }),
+      }),
+    );
     expect(result).toEqual({
       choices: [{ message: { content: 'hello' } }],
     });
+  });
+
+  it('should use the caller-supplied API key over the configured fallback', async () => {
+    const fetchMock = jest.fn().mockResolvedValue({
+      ok: true,
+      json: jest.fn().mockResolvedValue({
+        choices: [{ message: { content: 'hello' } }],
+      }),
+    });
+    global.fetch = fetchMock;
+
+    await service.generate({
+      model: 'llama-3.3-70b-versatile',
+      messages: [{ role: 'user', content: 'test' }],
+      userApiKey: 'user-supplied-key',
+    });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({
+        headers: expect.objectContaining({
+          Authorization: 'Bearer user-supplied-key',
+        }),
+      }),
+    );
   });
 });

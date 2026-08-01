@@ -3,12 +3,18 @@ interface CustomPromptSectionProps {
   setCustomPrompt: (val: string) => void;
 }
 
-const CustomPromptSection = ({ customPrompt, setCustomPrompt }: CustomPromptSectionProps) => {
+const CustomPromptSection = ({
+  customPrompt,
+  setCustomPrompt,
+}: CustomPromptSectionProps) => {
   return (
     <>
       <hr className="border-gray-100 dark:border-gray-700" />
       <div className="space-y-2">
-        <label htmlFor="custom-prompt" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+        <label
+          htmlFor="custom-prompt"
+          className="block text-sm font-medium text-gray-700 dark:text-gray-200"
+        >
           Custom Prompt
         </label>
         <textarea

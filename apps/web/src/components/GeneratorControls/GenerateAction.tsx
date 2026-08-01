@@ -1,7 +1,7 @@
-import { FaBolt } from "react-icons/fa";
-import CommonButton from "components/common/CommonButton";
-import type { SerializedError } from "@reduxjs/toolkit";
-import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import { FaBolt } from 'react-icons/fa';
+import CommonButton from 'components/common/CommonButton';
+import type { SerializedError } from '@reduxjs/toolkit';
+import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 
 interface GenerateActionProps {
   isLoading: boolean;
@@ -29,7 +29,7 @@ const GenerateAction = ({
         fullWidth={true}
         className="bg-black hover:bg-gray-900 dark:bg-cyan-400 dark:hover:bg-cyan-500 text-white dark:text-black border-0 sm:w-auto"
       >
-        {hasGeneratedLetter ? "Generate Another One" : "Generate Cover Letter"}
+        {hasGeneratedLetter ? 'Generate Another One' : 'Generate Cover Letter'}
       </CommonButton>
       {error && (
         <p className="text-red-500 text-xs mt-2">

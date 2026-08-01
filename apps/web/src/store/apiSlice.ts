@@ -20,9 +20,9 @@ export const apiSlice = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: GROQ_BASE_URL,
     prepareHeaders: (headers) => {
-       headers.set('Content-Type', 'application/json');
-       return headers;
-    }
+      headers.set('Content-Type', 'application/json');
+      return headers;
+    },
   }),
   tagTypes: ['CoverLetter'],
   endpoints: (builder) => ({
@@ -37,19 +37,22 @@ export const apiSlice = createApi({
           model: model,
           messages: [
             {
-               role: 'user',
-               content: prompt
-            }
+              role: 'user',
+              content: prompt,
+            },
           ],
           temperature: 0.7,
           ...(userApiKey && { userApiKey }),
         },
       }),
       transformResponse: (response: GroqResponse) => {
-        return response.choices?.[0]?.message?.content || 'Error: No response generated.';
+        return (
+          response.choices?.[0]?.message?.content ||
+          'Error: No response generated.'
+        );
       },
     }),
-    
+
     // Add future endpoints here...
   }),
 });

@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { type RootState } from 'store';
+import { useSelector } from 'react-redux';
+import { type RootState, useAppDispatch } from 'store';
 import { setAuthModalOpen, logoutUser } from 'store/authSlice';
 import { FaSignInAlt, FaSignOutAlt } from 'react-icons/fa';
 import { clsx } from 'clsx';
@@ -13,14 +13,20 @@ interface ProfileSectionProps {
 }
 
 const ProfileSection = ({ isExpanded }: ProfileSectionProps) => {
-  const dispatch = useDispatch<any>();
-  const { user, isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const dispatch = useAppDispatch();
+  const { user, isAuthenticated } = useSelector(
+    (state: RootState) => state.auth,
+  );
   const [showConfirm, setShowConfirm] = useState(false);
 
   const handleLogout = () => {
     dispatch(logoutUser())
       .unwrap()
-      .then(() => showToast(`You're logged out. We're gonna miss you ${EMOJI_CRY}`, { type: 'info' }))
+      .then(() =>
+        showToast(`You're logged out. We're gonna miss you ${EMOJI_CRY}`, {
+          type: 'info',
+        }),
+      )
       .catch(() => showToast('Sign out failed', { type: 'error' }));
     setShowConfirm(false);
   };
@@ -38,18 +44,24 @@ const ProfileSection = ({ isExpanded }: ProfileSectionProps) => {
   return (
     <div className="flex flex-col shrink-0">
       {isAuthenticated && user ? (
-          <div className={clsx(
-          "flex items-center gap-2.5 h-12 lg:h-12 px-3 transition-all shrink-0",
-          isExpanded
-            ? "lg:hover:bg-gray-50 lg:dark:hover:bg-gray-800/50 w-full lg:w-full"
-            : "justify-center lg:justify-center w-auto lg:w-full"
-        )}>
+        <div
+          className={clsx(
+            'flex items-center gap-2.5 h-12 lg:h-12 px-3 transition-all shrink-0',
+            isExpanded
+              ? 'lg:hover:bg-gray-50 lg:dark:hover:bg-gray-800/50 w-full lg:w-full'
+              : 'justify-center lg:justify-center w-auto lg:w-full',
+          )}
+        >
           <button
             onClick={handleAuthAction}
             className="w-5 h-5 lg:w-7 lg:h-7 rounded-full lg:rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-[9px] lg:text-[11px] shrink-0 shadow-sm cursor-pointer"
           >
             {user.avatarUrl ? (
-              <img src={user.avatarUrl} alt={user.name} className="w-full h-full object-cover rounded-full lg:rounded-lg" />
+              <img
+                src={user.avatarUrl}
+                alt={user.name}
+                className="w-full h-full object-cover rounded-full lg:rounded-lg"
+              />
             ) : (
               initial
             )}
@@ -79,8 +91,8 @@ const ProfileSection = ({ isExpanded }: ProfileSectionProps) => {
         <button
           onClick={handleAuthAction}
           className={clsx(
-            "h-12 flex items-center transition-all duration-300 group shrink-0 text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 justify-center w-auto lg:w-full lg:border-t border-gray-100 dark:border-gray-700 lg:hover:bg-gray-50 lg:dark:hover:bg-gray-700",
-            isExpanded && "lg:gap-3 lg:px-4"
+            'h-12 flex items-center transition-all duration-300 group shrink-0 text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 justify-center w-auto lg:w-full lg:border-t border-gray-100 dark:border-gray-700 lg:hover:bg-gray-50 lg:dark:hover:bg-gray-700',
+            isExpanded && 'lg:gap-3 lg:px-4',
           )}
           title="Sign In"
         >

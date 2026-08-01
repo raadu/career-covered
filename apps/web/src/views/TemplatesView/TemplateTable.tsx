@@ -118,7 +118,15 @@ const TemplateTable = ({
         ),
       },
     ],
-    [selectedIds, allSelected, selectAllIndeterminate, onToggleSelectAll, onToggleSelect, onEdit, onDelete],
+    [
+      selectedIds,
+      allSelected,
+      selectAllIndeterminate,
+      onToggleSelectAll,
+      onToggleSelect,
+      onEdit,
+      onDelete,
+    ],
   );
 
   return (

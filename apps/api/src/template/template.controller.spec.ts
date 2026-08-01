@@ -36,7 +36,12 @@ describe('TemplateController', () => {
 
   it('should findAll templates for a user', async () => {
     const result = await controller.findAll(mockUser);
-    expect(service.findAll).toHaveBeenCalledWith(mockUser.id, undefined, undefined, undefined);
+    expect(service.findAll).toHaveBeenCalledWith(
+      mockUser.id,
+      undefined,
+      undefined,
+      false,
+    );
     expect(result).toEqual([]);
   });
 
@@ -49,7 +54,13 @@ describe('TemplateController', () => {
       totalPages: 0,
     });
     const result = await controller.findAll(mockUser, '1', '10');
-    expect(service.findAll).toHaveBeenCalledWith(mockUser.id, 1, 10);
-    expect(result).toEqual({ data: [], total: 0, page: 1, limit: 10, totalPages: 0 });
+    expect(service.findAll).toHaveBeenCalledWith(mockUser.id, 1, 10, false);
+    expect(result).toEqual({
+      data: [],
+      total: 0,
+      page: 1,
+      limit: 10,
+      totalPages: 0,
+    });
   });
 });

@@ -37,7 +37,9 @@ const Pagination = ({
   return (
     <div className="flex items-center justify-between px-4 py-3 border-t border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50">
       <div className="flex items-center gap-2">
-        <span className="text-xs text-gray-500 dark:text-gray-400">Items per page:</span>
+        <span className="text-xs text-gray-500 dark:text-gray-400">
+          Items per page:
+        </span>
         <select
           value={pageSize}
           onChange={(e) => onPageSizeChange(Number(e.target.value))}

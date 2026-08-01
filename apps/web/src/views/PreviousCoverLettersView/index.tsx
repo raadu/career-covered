@@ -1,7 +1,4 @@
 import { Navigate } from 'react-router-dom';
-import { jsPDF } from 'jspdf';
-import { Document, Packer, Paragraph, TextRun } from 'docx';
-import { saveAs } from 'file-saver';
 import { useSelector } from 'react-redux';
 import { showToast } from 'components/common/Toast';
 import ConfirmModal from 'components/common/ConfirmModal';
@@ -11,6 +8,7 @@ import PreviousCoverLettersTable from './PreviousCoverLettersTable';
 import { usePreviousCoverLetters } from './usePreviousCoverLetters';
 import { useCopy } from 'hooks/useCopy';
 import { buildFileName } from 'utils/fileNameUtils';
+import { generatePdf, generateWord } from 'utils/downloadUtils';
 import type { RootState } from 'store';
 import type { CoverLetterItem } from './types';
 
@@ -47,33 +45,7 @@ const PreviousCoverLettersView = () => {
 
   const handleDownloadPdf = (item: CoverLetterItem) => {
     try {
-      const doc = new jsPDF();
-      const pageWidth = 180;
-      const marginX = 15;
-      const startY = 20;
-      const pageHeightLimit = 280;
-      const lineSpacing = 7;
-
-      doc.setFont('helvetica', 'normal');
-      doc.setFontSize(11);
-
-      const lines: string[] = doc.splitTextToSize(
-        item.generatedText,
-        pageWidth,
-      );
-      let currentY = startY;
-
-      lines.forEach((line) => {
-        if (currentY > pageHeightLimit) {
-          doc.addPage();
-          currentY = startY;
-        }
-        doc.text(line, marginX, currentY);
-        currentY += lineSpacing;
-      });
-
-      const fileName = buildFileName(user?.name);
-      doc.save(`${fileName}.pdf`);
+      generatePdf(item.generatedText, buildFileName(user?.name));
     } catch {
       showToast('Failed to generate PDF', { type: 'error' });
     }
@@ -81,28 +53,7 @@ const PreviousCoverLettersView = () => {
 
   const handleDownloadWord = async (item: CoverLetterItem) => {
     try {
-      const lines = item.generatedText.split('\n');
-      const paragraphs = lines.map(
-        (line) =>
-          new Paragraph({
-            children: [
-              new TextRun({
-                text: line,
-                font: 'Arial',
-                size: 24,
-              }),
-            ],
-            spacing: { after: 120 },
-          }),
-      );
-
-      const doc = new Document({
-        sections: [{ properties: {}, children: paragraphs }],
-      });
-
-      const blob = await Packer.toBlob(doc);
-      const fileName = buildFileName(user?.name);
-      saveAs(blob, `${fileName}.docx`);
+      await generateWord(item.generatedText, buildFileName(user?.name));
     } catch {
       showToast('Failed to generate Word document', { type: 'error' });
     }

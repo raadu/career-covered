@@ -1,4 +1,4 @@
-import { type MouseEvent } from "react";
+import { type MouseEvent } from 'react';
 
 export const useClear = () => {
   const handleClear = (onClear: () => void, e?: MouseEvent) => {

@@ -1,5 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
+import type { MouseEvent } from 'react';
 import TextAreaHeader from '../common/CollapsibleTextArea/TextAreaHeader';
 
 describe('TextAreaHeader', () => {
@@ -9,7 +10,7 @@ describe('TextAreaHeader', () => {
     required: false,
     isExpanded: true,
     onToggleExpand: vi.fn(),
-    handleCopy: vi.fn() as (e: any) => void,
+    handleCopy: vi.fn() as (e: MouseEvent) => void,
   };
 
   it('renders the label', () => {
@@ -65,11 +66,7 @@ describe('TextAreaHeader', () => {
 
   it('disables "Save as Template" button when value is only whitespace', () => {
     render(
-      <TextAreaHeader
-        {...defaultProps}
-        value="   "
-        onAddTemplate={vi.fn()}
-      />,
+      <TextAreaHeader {...defaultProps} value="   " onAddTemplate={vi.fn()} />,
     );
     // Value is trimmed to check - whitespace still truthy, button shown but disabled
     const btn = screen.getByText('Save as Template');
@@ -120,7 +117,9 @@ describe('TextAreaHeader', () => {
   });
 
   it('shows chevron up/down labels based on expanded state', () => {
-    const { rerender } = render(<TextAreaHeader {...defaultProps} isExpanded={true} />);
+    const { rerender } = render(
+      <TextAreaHeader {...defaultProps} isExpanded={true} />,
+    );
     expect(screen.getAllByLabelText('Collapse').length).toBe(2);
 
     rerender(<TextAreaHeader {...defaultProps} isExpanded={false} />);

@@ -5,21 +5,27 @@ import SupportView from 'views/SupportView';
 describe('SupportView', () => {
   it('renders the heading', () => {
     renderWithProviders(<SupportView />);
-    expect(screen.getByText("I'm always here to help you!")).toBeInTheDocument();
+    expect(
+      screen.getByText("I'm always here to help you!"),
+    ).toBeInTheDocument();
   });
 
   it('renders a LinkedIn link', () => {
     renderWithProviders(<SupportView />);
     const linkedinLink = screen.getByText('Connect on LinkedIn');
     expect(linkedinLink).toBeInTheDocument();
-    expect(linkedinLink.closest('a')?.getAttribute('href')).toContain('linkedin.com');
+    expect(linkedinLink.closest('a')?.getAttribute('href')).toContain(
+      'linkedin.com',
+    );
   });
 
   it('renders a Feedback form link', () => {
     renderWithProviders(<SupportView />);
     const feedbackLink = screen.getByText('Feedback Form');
     expect(feedbackLink).toBeInTheDocument();
-    expect(feedbackLink.closest('a')?.getAttribute('href')).toContain('google.com/forms');
+    expect(feedbackLink.closest('a')?.getAttribute('href')).toContain(
+      'google.com/forms',
+    );
   });
 
   it('renders the divider text', () => {
@@ -30,7 +36,9 @@ describe('SupportView', () => {
   it('renders the "suggest new features" text', () => {
     renderWithProviders(<SupportView />);
     expect(
-      screen.getByText(/You can also suggest new features and report bugs anonymously/i),
+      screen.getByText(
+        /You can also suggest new features and report bugs anonymously/i,
+      ),
     ).toBeInTheDocument();
   });
 
