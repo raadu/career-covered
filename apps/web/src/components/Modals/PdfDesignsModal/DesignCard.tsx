@@ -1,0 +1,138 @@
+import { LuLoader } from 'react-icons/lu';
+import type { PdfDesign } from 'utils/pdfDesigns';
+
+interface DesignCardProps {
+  design: PdfDesign;
+  isDownloading: boolean;
+  disabled: boolean;
+  onSelect: () => void;
+}
+
+const PLACEHOLDER_LINE_WIDTHS = ['w-full', 'w-5/6', 'w-full', 'w-2/3'];
+
+const DesignSwatch = ({
+  swatchStyle,
+  accentColor,
+}: {
+  swatchStyle: PdfDesign['swatchStyle'];
+  accentColor: string;
+}) => {
+  const lines = (extraClass = '') => (
+    <div className={`space-y-1.5 ${extraClass}`}>
+      {PLACEHOLDER_LINE_WIDTHS.map((width, i) => (
+        <div
+          key={i}
+          className={`h-1 rounded-full bg-gray-200 dark:bg-gray-600 ${width}`}
+        />
+      ))}
+    </div>
+  );
+
+  if (swatchStyle === 'fullSidebar') {
+    return (
+      <div className="flex h-full w-full overflow-hidden rounded-md">
+        <div
+          className="h-full w-[30%] shrink-0"
+          style={{ backgroundColor: accentColor }}
+        />
+        <div className="flex-1 bg-white dark:bg-gray-800 p-3">{lines()}</div>
+      </div>
+    );
+  }
+
+  if (swatchStyle === 'leftBar') {
+    return (
+      <div className="flex h-full w-full overflow-hidden rounded-md bg-white dark:bg-gray-800">
+        <div
+          className="h-full w-1.5 shrink-0"
+          style={{ backgroundColor: accentColor }}
+        />
+        <div className="flex-1 p-3">{lines()}</div>
+      </div>
+    );
+  }
+
+  if (swatchStyle === 'header') {
+    return (
+      <div className="h-full w-full overflow-hidden rounded-md bg-white dark:bg-gray-800">
+        <div
+          className="h-1/4 w-full"
+          style={{ backgroundColor: accentColor }}
+        />
+        <div className="p-3">{lines()}</div>
+      </div>
+    );
+  }
+
+  if (swatchStyle === 'topBar') {
+    return (
+      <div className="h-full w-full overflow-hidden rounded-md bg-white dark:bg-gray-800">
+        <div
+          className="h-1.5 w-full"
+          style={{ backgroundColor: accentColor }}
+        />
+        <div className="p-3">{lines()}</div>
+      </div>
+    );
+  }
+
+  if (swatchStyle === 'rules') {
+    return (
+      <div className="h-full w-full overflow-hidden rounded-md bg-white dark:bg-gray-800 p-3">
+        <div className="space-y-0.5 mb-3">
+          <div className="h-px w-full bg-gray-400 dark:bg-gray-500" />
+          <div className="h-px w-full bg-gray-300 dark:bg-gray-600" />
+        </div>
+        {lines()}
+      </div>
+    );
+  }
+
+  // 'plain'
+  return (
+    <div className="h-full w-full overflow-hidden rounded-md border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 p-3">
+      {lines()}
+    </div>
+  );
+};
+
+const DesignCard = ({
+  design,
+  isDownloading,
+  disabled,
+  onSelect,
+}: DesignCardProps) => {
+  return (
+    <button
+      type="button"
+      onClick={onSelect}
+      disabled={disabled}
+      className="relative flex flex-col text-left rounded-lg border border-gray-200 dark:border-gray-700 p-3 transition-all hover:border-cyan-400 dark:hover:border-cyan-500 hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-gray-200 dark:disabled:hover:border-gray-700"
+    >
+      <div className="aspect-[210/297] w-full mb-3">
+        <DesignSwatch
+          swatchStyle={design.swatchStyle}
+          accentColor={design.accentColor}
+        />
+      </div>
+
+      <h4 className="text-sm font-bold text-gray-900 dark:text-gray-100">
+        {design.name}
+      </h4>
+      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">
+        {design.description}
+      </p>
+      <span className="mt-2 inline-block w-fit text-[10px] font-semibold px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
+        {design.recommendedFor}
+      </span>
+
+      {isDownloading && (
+        <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-white/80 dark:bg-gray-800/80">
+          <LuLoader className="animate-spin text-cyan-500" size={22} />
+        </div>
+      )}
+    </button>
+  );
+};
+
+export default DesignCard;

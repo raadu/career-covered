@@ -1,9 +1,10 @@
-import { LuCheck, LuCopy } from 'react-icons/lu';
+import { LuCheck, LuCopy, LuPalette } from 'react-icons/lu';
 import { FaFilePdf, FaFileWord } from 'react-icons/fa';
 import CommonButton from 'components/common/CommonButton';
 
 interface ResultHeaderProps {
   isDownloading: 'pdf' | 'word' | null;
+  handleOpenDesigns: () => void;
   handleDownloadPDF: () => void;
   handleDownloadWord: () => void;
   handleCopy: () => void;
@@ -12,6 +13,7 @@ interface ResultHeaderProps {
 
 const ResultHeader = ({
   isDownloading,
+  handleOpenDesigns,
   handleDownloadPDF,
   handleDownloadWord,
   handleCopy,
@@ -23,6 +25,17 @@ const ResultHeader = ({
         Generated Cover Letter
       </h3>
       <div className="flex items-center justify-center sm:justify-end gap-1.5 sm:gap-2 w-full sm:w-auto overflow-x-auto no-scrollbar">
+        <CommonButton
+          variant="outline"
+          onClick={handleOpenDesigns}
+          disabled={!!isDownloading}
+          icon={<LuPalette className="text-violet-500" size={14} />}
+          className="bg-white dark:bg-gray-700 hover:bg-violet-50 dark:hover:bg-violet-900/20 hover:border-violet-200 dark:hover:border-violet-800 hover:text-violet-600 dark:hover:text-violet-400 text-gray-700 dark:text-gray-300 h-7 sm:h-8 px-2 sm:px-3 text-[10px] sm:text-[11px]"
+          title="Choose a PDF design"
+        >
+          Designs
+        </CommonButton>
+
         <CommonButton
           variant="outline"
           onClick={handleDownloadPDF}

@@ -5,6 +5,7 @@ import ResultHeader from '../ResultDisplay/ResultHeader';
 describe('ResultHeader', () => {
   const defaultProps = {
     isDownloading: null as 'pdf' | 'word' | null,
+    handleOpenDesigns: vi.fn(),
     handleDownloadPDF: vi.fn(),
     handleDownloadWord: vi.fn(),
     handleCopy: vi.fn(),
@@ -16,11 +17,18 @@ describe('ResultHeader', () => {
     expect(screen.getByText('Generated Cover Letter')).toBeInTheDocument();
   });
 
-  it('renders PDF, Word, and Copy buttons', () => {
+  it('renders Designs, PDF, Word, and Copy buttons', () => {
     render(<ResultHeader {...defaultProps} />);
+    expect(screen.getByText('Designs')).toBeInTheDocument();
     expect(screen.getByText('PDF')).toBeInTheDocument();
     expect(screen.getByText('Word')).toBeInTheDocument();
     expect(screen.getByText('Copy')).toBeInTheDocument();
+  });
+
+  it('calls handleOpenDesigns when Designs button is clicked', () => {
+    render(<ResultHeader {...defaultProps} />);
+    fireEvent.click(screen.getByText('Designs'));
+    expect(defaultProps.handleOpenDesigns).toHaveBeenCalledOnce();
   });
 
   it('calls handleDownloadPDF when PDF button is clicked', () => {
@@ -41,12 +49,14 @@ describe('ResultHeader', () => {
     expect(defaultProps.handleCopy).toHaveBeenCalledOnce();
   });
 
-  it('disables PDF and Word buttons while downloading PDF', () => {
+  it('disables Designs, PDF, and Word buttons while downloading PDF', () => {
     render(<ResultHeader {...defaultProps} isDownloading="pdf" />);
     const buttons = screen.getAllByRole('button');
-    // PDF and Word disabled, Copy is not disabled
+    // Designs, PDF, and Word disabled, Copy is not disabled
     expect(buttons[0]).toBeDisabled();
     expect(buttons[1]).toBeDisabled();
+    expect(buttons[2]).toBeDisabled();
+    expect(buttons[3]).not.toBeDisabled();
   });
 
   it('shows "Copied!" when copied is true', () => {
