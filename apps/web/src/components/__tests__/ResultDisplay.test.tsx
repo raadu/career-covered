@@ -110,7 +110,7 @@ describe('ResultDisplay', () => {
       });
 
       fireEvent.click(screen.getByRole('button', { name: /Designs/i }));
-      fireEvent.click(screen.getByText('Modern Minimal'));
+      fireEvent.click(screen.getByText('Minimal'));
 
       await waitFor(() => {
         expect(generatePdf).toHaveBeenCalledWith(
@@ -121,7 +121,7 @@ describe('ResultDisplay', () => {
       });
       await waitFor(() => {
         expect(mockShowToast).toHaveBeenCalledWith(
-          expect.stringContaining('Modern Minimal'),
+          expect.stringContaining('Minimal'),
           expect.objectContaining({ type: 'success' }),
         );
       });
@@ -145,7 +145,7 @@ describe('ResultDisplay', () => {
       });
 
       fireEvent.click(screen.getByRole('button', { name: /Designs/i }));
-      fireEvent.click(screen.getByText('Executive Formal'));
+      fireEvent.click(screen.getByText('Executive'));
 
       await waitFor(() => {
         expect(mockShowToast).toHaveBeenCalledWith(

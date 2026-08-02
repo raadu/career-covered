@@ -30,7 +30,7 @@ describe('PdfDesignsModal', () => {
     render(
       <PdfDesignsModal {...defaultProps} onSelectDesign={onSelectDesign} />,
     );
-    fireEvent.click(screen.getByText('Modern Minimal'));
+    fireEvent.click(screen.getByText('Minimal'));
     expect(onSelectDesign).toHaveBeenCalledOnce();
     expect(onSelectDesign).toHaveBeenCalledWith('modern-minimal');
   });
@@ -59,7 +59,7 @@ describe('PdfDesignsModal', () => {
         onSelectDesign={onSelectDesign}
       />,
     );
-    fireEvent.click(screen.getByText('Executive Formal'));
+    fireEvent.click(screen.getByText('Executive'));
     expect(onSelectDesign).not.toHaveBeenCalled();
   });
 

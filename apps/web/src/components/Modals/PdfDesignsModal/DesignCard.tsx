@@ -30,7 +30,7 @@ const DesignSwatch = ({
 
   if (swatchStyle === 'fullSidebar') {
     return (
-      <div className="flex h-full w-full overflow-hidden rounded-md">
+      <div className="flex h-full w-full overflow-hidden rounded-sm">
         <div
           className="h-full w-[30%] shrink-0"
           style={{ backgroundColor: accentColor }}
@@ -42,7 +42,7 @@ const DesignSwatch = ({
 
   if (swatchStyle === 'leftBar') {
     return (
-      <div className="flex h-full w-full overflow-hidden rounded-md bg-white dark:bg-gray-800">
+      <div className="flex h-full w-full overflow-hidden rounded-sm bg-white dark:bg-gray-800">
         <div
           className="h-full w-1.5 shrink-0"
           style={{ backgroundColor: accentColor }}
@@ -54,7 +54,7 @@ const DesignSwatch = ({
 
   if (swatchStyle === 'header') {
     return (
-      <div className="h-full w-full overflow-hidden rounded-md bg-white dark:bg-gray-800">
+      <div className="h-full w-full overflow-hidden rounded-sm bg-white dark:bg-gray-800">
         <div
           className="h-1/4 w-full"
           style={{ backgroundColor: accentColor }}
@@ -66,7 +66,7 @@ const DesignSwatch = ({
 
   if (swatchStyle === 'topBar') {
     return (
-      <div className="h-full w-full overflow-hidden rounded-md bg-white dark:bg-gray-800">
+      <div className="h-full w-full overflow-hidden rounded-sm bg-white dark:bg-gray-800">
         <div
           className="h-1.5 w-full"
           style={{ backgroundColor: accentColor }}
@@ -78,7 +78,7 @@ const DesignSwatch = ({
 
   if (swatchStyle === 'rules') {
     return (
-      <div className="h-full w-full overflow-hidden rounded-md bg-white dark:bg-gray-800 p-3">
+      <div className="h-full w-full overflow-hidden rounded-sm bg-white dark:bg-gray-800 p-3">
         <div className="space-y-0.5 mb-3">
           <div className="h-px w-full bg-gray-400 dark:bg-gray-500" />
           <div className="h-px w-full bg-gray-300 dark:bg-gray-600" />
@@ -90,7 +90,7 @@ const DesignSwatch = ({
 
   // 'plain'
   return (
-    <div className="h-full w-full overflow-hidden rounded-md border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 p-3">
+    <div className="h-full w-full overflow-hidden rounded-sm border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 p-3">
       {lines()}
     </div>
   );
@@ -107,7 +107,7 @@ const DesignCard = ({
       type="button"
       onClick={onSelect}
       disabled={disabled}
-      className="relative flex flex-col text-left rounded-lg border border-gray-200 dark:border-gray-700 p-2.5 sm:p-3 transition-all hover:border-cyan-400 dark:hover:border-cyan-500 hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-gray-200 dark:disabled:hover:border-gray-700"
+      className="relative flex flex-col text-left rounded-sm border border-gray-200 dark:border-gray-700 p-2.5 sm:p-3 transition-all hover:border-cyan-400 dark:hover:border-cyan-500 hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-gray-200 dark:disabled:hover:border-gray-700"
     >
       <div className="h-20 sm:h-24 w-full mb-2 sm:mb-3">
         <DesignSwatch
@@ -122,12 +122,12 @@ const DesignCard = ({
       <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 leading-relaxed line-clamp-2">
         {design.description}
       </p>
-      <span className="mt-1.5 inline-block w-fit text-[10px] font-semibold px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
+      <span className="mt-1.5 inline-block w-fit text-[10px] font-semibold px-2 py-0.5 rounded-sm bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
         {design.recommendedFor}
       </span>
 
       {isDownloading && (
-        <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-white/80 dark:bg-gray-800/80">
+        <div className="absolute inset-0 flex items-center justify-center rounded-sm bg-white/80 dark:bg-gray-800/80">
           <LuLoader className="animate-spin text-cyan-500" size={22} />
         </div>
       )}
