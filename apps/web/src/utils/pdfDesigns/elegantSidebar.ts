@@ -10,10 +10,6 @@ const GUTTER_MM = 12;
 function drawSidebar(doc: jsPDF): void {
   doc.setFillColor(...ACCENT_RGB);
   doc.rect(0, 0, SIDEBAR_WIDTH_MM, PAGE_HEIGHT_MM, 'F');
-  doc.setFont('times', 'italic');
-  doc.setFontSize(10);
-  doc.setTextColor(226, 232, 240); // slate-200
-  doc.text('COVER LETTER', 12, 220, { angle: 90 });
 }
 
 export function renderElegantSidebar(text: string, doc = new jsPDF()): jsPDF {
@@ -26,7 +22,6 @@ export function renderElegantSidebar(text: string, doc = new jsPDF()): jsPDF {
     pageHeightLimit: 280,
     lineSpacing: 7,
     font: { family: 'times', style: 'normal' },
-    textColor: [0, 0, 0],
     onPageStart: (d) => drawSidebar(d),
   });
 

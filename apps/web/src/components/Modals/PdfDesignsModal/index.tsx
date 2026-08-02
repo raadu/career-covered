@@ -21,21 +21,21 @@ const PdfDesignsModal = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30 backdrop-blur-md transition-all overscroll-none"
+      className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/30 backdrop-blur-md transition-all overscroll-none"
       onClick={onClose}
     >
       <div
-        className="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto overflow-x-hidden animate-in fade-in zoom-in duration-300 border border-white/20"
+        className="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-3xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto overflow-x-hidden animate-in fade-in zoom-in duration-300 border border-white/20"
         role="dialog"
         aria-modal="true"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between p-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-700/50 sticky top-0 z-10">
+        <div className="flex items-center justify-between p-3 sm:p-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-700/50 sticky top-0 z-10">
           <div className="flex items-center gap-2">
             <div className="bg-violet-100 dark:bg-violet-900/50 text-violet-600 dark:text-violet-400 p-1.5 rounded-lg">
               <FaPalette size={14} />
             </div>
-            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-800 dark:text-gray-100">
               Choose a PDF Design
             </h3>
           </div>
@@ -48,7 +48,7 @@ const PdfDesignsModal = ({
           </button>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 p-3 sm:p-5">
           {PDF_DESIGNS.map((design) => (
             <DesignCard
               key={design.id}

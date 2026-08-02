@@ -3,8 +3,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 const mockSave = vi.fn();
 const mockDoc = { save: mockSave };
 const mockRender = vi.fn(() => mockDoc);
-const mockGetPdfDesign = vi.fn((_id: string) => ({
-  id: 'classic-professional',
+const mockGetPdfDesign = vi.fn((id: string) => ({
+  id,
   render: mockRender,
 }));
 

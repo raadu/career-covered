@@ -10,10 +10,6 @@ function drawHeaderBand(doc: jsPDF, pageIndex: number): void {
 
   doc.setFillColor(...ACCENT_RGB);
   doc.rect(0, 0, PAGE_WIDTH_MM, BAND_HEIGHT_MM, 'F');
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(13);
-  doc.setTextColor(255, 255, 255);
-  doc.text('COVER LETTER', 16, BAND_HEIGHT_MM / 2 + 4);
 }
 
 export function renderCreativeBold(text: string, doc = new jsPDF()): jsPDF {
@@ -24,7 +20,6 @@ export function renderCreativeBold(text: string, doc = new jsPDF()): jsPDF {
     continuationStartY: 20,
     pageHeightLimit: 280,
     lineSpacing: 7,
-    textColor: [0, 0, 0],
     onPageStart: (d, pageIndex) => drawHeaderBand(d, pageIndex),
   });
 

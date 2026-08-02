@@ -107,22 +107,22 @@ const DesignCard = ({
       type="button"
       onClick={onSelect}
       disabled={disabled}
-      className="relative flex flex-col text-left rounded-lg border border-gray-200 dark:border-gray-700 p-3 transition-all hover:border-cyan-400 dark:hover:border-cyan-500 hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-gray-200 dark:disabled:hover:border-gray-700"
+      className="relative flex flex-col text-left rounded-lg border border-gray-200 dark:border-gray-700 p-2.5 sm:p-3 transition-all hover:border-cyan-400 dark:hover:border-cyan-500 hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-gray-200 dark:disabled:hover:border-gray-700"
     >
-      <div className="aspect-[210/297] w-full mb-3">
+      <div className="h-20 sm:h-24 w-full mb-2 sm:mb-3">
         <DesignSwatch
           swatchStyle={design.swatchStyle}
           accentColor={design.accentColor}
         />
       </div>
 
-      <h4 className="text-sm font-bold text-gray-900 dark:text-gray-100">
+      <h4 className="text-sm font-bold text-gray-900 dark:text-gray-100 truncate">
         {design.name}
       </h4>
-      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">
+      <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 leading-relaxed line-clamp-2">
         {design.description}
       </p>
-      <span className="mt-2 inline-block w-fit text-[10px] font-semibold px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
+      <span className="mt-1.5 inline-block w-fit text-[10px] font-semibold px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
         {design.recommendedFor}
       </span>
 
