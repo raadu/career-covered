@@ -24,7 +24,7 @@ describe('SupportView', () => {
     const feedbackLink = screen.getByText('Feedback Form');
     expect(feedbackLink).toBeInTheDocument();
     expect(feedbackLink.closest('a')?.getAttribute('href')).toContain(
-      'google.com/forms',
+      'forms.gle',
     );
   });
 

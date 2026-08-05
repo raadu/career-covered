@@ -328,7 +328,9 @@ describe('TemplatesView — selection logic', () => {
     const checkboxes = screen.getAllByRole('checkbox');
     fireEvent.click(checkboxes[1]); // first row
 
-    expect(screen.getByText('1 selected')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('1 selected')).toBeInTheDocument();
+    });
     expect(screen.getByText('Delete Selected')).toBeInTheDocument();
     expect(screen.getByText('Clear selection')).toBeInTheDocument();
   });
@@ -344,7 +346,9 @@ describe('TemplatesView — selection logic', () => {
     const checkboxes = screen.getAllByRole('checkbox');
     fireEvent.click(checkboxes[0]); // header
 
-    expect(screen.getByText('3 selected')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('3 selected')).toBeInTheDocument();
+    });
   });
 
   it('clears selection when Clear selection is clicked', async () => {
@@ -357,7 +361,9 @@ describe('TemplatesView — selection logic', () => {
 
     const checkboxes = screen.getAllByRole('checkbox');
     fireEvent.click(checkboxes[1]); // select first row
-    expect(screen.getByText('1 selected')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('1 selected')).toBeInTheDocument();
+    });
 
     fireEvent.click(screen.getByText('Clear selection'));
     expect(screen.queryByText(/selected/)).not.toBeInTheDocument();

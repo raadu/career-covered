@@ -349,7 +349,9 @@ describe('PreviousCoverLettersView — integration', () => {
     const checkboxes = screen.getAllByRole('checkbox');
     fireEvent.click(checkboxes[1]);
 
-    expect(screen.getByText('1 selected')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('1 selected')).toBeInTheDocument();
+    });
     expect(screen.getByText('Delete Selected')).toBeInTheDocument();
     expect(screen.getByText('Clear selection')).toBeInTheDocument();
   });
@@ -367,7 +369,9 @@ describe('PreviousCoverLettersView — integration', () => {
     const checkboxes = screen.getAllByRole('checkbox');
     fireEvent.click(checkboxes[0]);
 
-    expect(screen.getByText('3 selected')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('3 selected')).toBeInTheDocument();
+    });
   });
 
   it('shows single delete confirm modal', async () => {
