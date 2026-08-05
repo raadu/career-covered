@@ -1,7 +1,151 @@
 services:
-  app:
-    build: .
-    container_name: career-covered-app
-    ports:
-      - "8080:80"
+  # ─── PostgreSQL Database ──────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: career-covered-db
     restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-career}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-secret}
+      POSTGRES_DB: ${POSTGRES_DB:-career_covered}
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-career}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─── pgAdmin (DB GUI) ─────────────────────────────────────────────────────
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: career-covered-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@careercovered.dev}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
+    ports:
+      - '5050:80'
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
+  # ─── MinIO (S3-compatible object storage) ────────────────────────────────
+  minio:
+    image: minio/minio:latest
+    container_name: career-covered-minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+    ports:
+      - '9000:9000'   # S3 API
+      - '9001:9001'   # MinIO web console
+    volumes:
+      - minio_data:/data
+
+  # ─── NestJS API (Production) ──────────────────────────────────────────────
+  api:
+    profiles: ["prod"]
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: career-covered-api
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://career:secret@postgres:5432/career_covered
+      PORT: 3000
+      NODE_ENV: production
+      LOG_LEVEL: info
+      WEB_URL: http://localhost:5173
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      GROQ_API_KEY: ${GROQ_API_KEY}
+      GOOGLE_REDIRECT_URI: http://localhost:3000/auth/google/callback
+    ports:
+      - '3000:3000'
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # ─── Vite Frontend (Production — via Nginx) ───────────────────────────────
+  web:
+    profiles: ["prod"]
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    container_name: career-covered-web
+    restart: unless-stopped
+    ports:
+      - '5173:80'
+    depends_on:
+      - api
+
+  # ─── API (Dev mode — hot-reload) ──────────────────────────────────────────
+  api-dev:
+    profiles: ["dev"]
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile.dev
+    container_name: career-covered-api-dev
+    restart: unless-stopped
+    volumes:
+      - ./apps/api/src:/app/apps/api/src
+      - ./apps/api/test:/app/apps/api/test
+      - ./apps/api/nest-cli.json:/app/apps/api/nest-cli.json
+      - ./apps/api/tsconfig.json:/app/apps/api/tsconfig.json
+      - ./apps/api/tsconfig.build.json:/app/apps/api/tsconfig.build.json
+      - ./packages:/app/packages
+      - /app/node_modules
+    environment:
+      DATABASE_URL: postgresql://career:secret@postgres:5432/career_covered
+      PORT: 3000
+      NODE_ENV: development
+      LOG_LEVEL: debug
+      WEB_URL: http://localhost:5173
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      GROQ_API_KEY: ${GROQ_API_KEY}
+      GOOGLE_REDIRECT_URI: http://localhost:3000/auth/google/callback
+    ports:
+      - '3000:3000'
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # ─── Frontend (Dev mode — Vite HMR) ───────────────────────────────────────
+  web-dev:
+    profiles: ["dev"]
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile.dev
+    container_name: career-covered-web-dev
+    restart: unless-stopped
+    volumes:
+      - ./apps/web/src:/app/apps/web/src
+      - ./apps/web/vite.config.ts:/app/apps/web/vite.config.ts
+      - ./apps/web/postcss.config.js:/app/apps/web/postcss.config.js
+      - ./apps/web/tailwind.config.js:/app/apps/web/tailwind.config.js
+      - ./apps/web/index.html:/app/apps/web/index.html
+      - ./apps/web/tsconfig.json:/app/apps/web/tsconfig.json
+      - ./apps/web/tsconfig.app.json:/app/apps/web/tsconfig.app.json
+      - ./apps/web/tsconfig.node.json:/app/apps/web/tsconfig.node.json
+      - ./packages/tsconfig:/app/packages/tsconfig
+      - /app/node_modules
+    environment:
+      VITE_API_URL: http://api-dev:3000
+      DISABLE_CLOUDFLARE: "true"
+    ports:
+      - '5173:5173'
+    depends_on:
+      - api-dev
+
+volumes:
+  postgres_data:
+  pgadmin_data:
+  minio_data:

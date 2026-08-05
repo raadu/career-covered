@@ -1,0 +1,12 @@
+{
+  "name": "@career-covered/eslint-config",
+  "version": "0.0.0",
+  "private": true,
+  "files": [
+    "nest.js",
+    "react.js"
+  ],
+  "peerDependencies": {
+    "eslint": ">=9.0.0"
+  }
+}

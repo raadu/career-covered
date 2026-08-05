@@ -1,0 +1,143 @@
+// ============================================================
+// Career Covered — Prisma Database Schema
+// ============================================================
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ============================================================
+// USERS & AUTHENTICATION
+// ============================================================
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  name         String?
+  avatarUrl    String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Email/password auth (nullable → OAuth-only users don't need a password)
+  passwordHash String?
+
+  // Relations
+  oauthAccounts OAuthAccount[]
+  sessions      Session[]
+  templates     Template[]
+  coverLetters  CoverLetter[]
+
+  // Deferred — will be enabled in future phases
+  resumes      Resume[]
+  applications JobApplication[]
+
+  @@map("users")
+}
+
+// Stores OAuth provider connections (e.g. Google).
+// A user may have multiple OAuth accounts (Google + GitHub in future).
+model OAuthAccount {
+  id             String @id @default(uuid())
+  provider       String // "google"
+  providerUserId String // the user ID returned by the OAuth provider
+  userId         String
+  user           User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerUserId])
+  @@map("oauth_accounts")
+}
+
+// HTTP-only session tokens stored in Postgres.
+// Sessions are created on login and deleted on logout.
+model Session {
+  id        String   @id // random secure token (used as cookie value)
+  userId    String
+  expiresAt DateTime
+  user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
+
+  @@index([expiresAt])
+  @@map("sessions")
+}
+
+// ============================================================
+// CORE APP MODELS
+// ============================================================
+
+model Template {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  coverLetters CoverLetter[]
+
+  @@map("templates")
+}
+
+model CoverLetter {
+  id             String    @id @default(uuid())
+  userId         String
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  templateId     String?
+  template       Template? @relation(fields: [templateId], references: [id], onDelete: SetNull)
+  jobTitle       String    @default("")
+  companyName    String    @default("")
+  jobDescription String
+  generatedText  String
+  model          String    // AI model used for generation (e.g. "llama-3.3-70b-versatile")
+  wordLimit      Int?
+  minimalChanges Boolean?
+  sameLanguage   Boolean?
+  customPrompt   String?
+  jobMarket      String?   @default("international")
+  createdAt      DateTime  @default(now())
+
+  @@map("cover_letters")
+}
+
+// ============================================================
+// DEFERRED MODELS — Defined now so the schema stays coherent,
+// but not wired into API endpoints yet.
+// ============================================================
+
+model Resume {
+  id         String   @id @default(uuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fileName   String
+  fileUrl    String   // Points to S3/MinIO object URL
+  parsedText String?  // Extracted plain text from document
+  createdAt  DateTime @default(now())
+
+  @@map("resumes")
+}
+
+model JobApplication {
+  id          String            @id @default(uuid())
+  userId      String
+  user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jobTitle    String
+  companyName String
+  jobUrl      String?
+  status      ApplicationStatus @default(APPLIED)
+  appliedAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  @@map("job_applications")
+}
+
+enum ApplicationStatus {
+  WISHLIST
+  APPLIED
+  INTERVIEWING
+  OFFERED
+  REJECTED
+}

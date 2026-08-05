@@ -1,0 +1,18 @@
+FROM node:20-alpine
+WORKDIR /app
+
+COPY package.json package-lock.json turbo.json ./
+COPY packages/db/package.json ./packages/db/
+COPY packages/tsconfig/package.json ./packages/tsconfig/
+COPY apps/api/package.json ./apps/api/
+
+RUN npm ci
+
+COPY packages/db/prisma ./packages/db/prisma
+RUN npm run -w @career-covered/db db:generate
+
+EXPOSE 3000
+
+WORKDIR /app/apps/api
+
+CMD ["npm", "run", "start:dev"]
