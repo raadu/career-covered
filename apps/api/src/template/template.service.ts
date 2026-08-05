@@ -72,21 +72,29 @@ export class TemplateService {
     userId: string,
     dto: UpdateTemplateDto,
   ): Promise<db.Template> {
-    await this.findOne(id, userId); // Ensure template exists and belongs to user
-    return this.prisma.template.update({
-      where: { id },
+    // updateMany scopes by userId in the same query as the mutation itself,
+    // so ownership is enforced atomically rather than by a separate check
+    // beforehand (which a future refactor could otherwise decouple).
+    const { count } = await this.prisma.template.updateMany({
+      where: { id, userId },
       data: {
         name: dto.name,
         content: dto.content,
       },
     });
+    if (count === 0) {
+      throw new NotFoundException(`Template with ID ${id} not found`);
+    }
+    return this.findOne(id, userId);
   }
 
   async remove(id: string, userId: string): Promise<void> {
-    await this.findOne(id, userId); // Ensure template exists and belongs to user
-    await this.prisma.template.delete({
-      where: { id },
+    const { count } = await this.prisma.template.deleteMany({
+      where: { id, userId },
     });
+    if (count === 0) {
+      throw new NotFoundException(`Template with ID ${id} not found`);
+    }
   }
 
   async removeBatch(ids: string[], userId: string): Promise<void> {

@@ -5,7 +5,7 @@ import { setAuthModalOpen, setUser } from 'store/authSlice';
 import { showToast } from 'components/common/Toast';
 import { EMOJI_SERIOUS } from 'utils/emojiUtils';
 
-const PASSWORD_RULES = /^(?=.*[A-Z])(?=.*\d).{6,}$/;
+const PASSWORD_RULES = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export interface FormErrors {
@@ -51,7 +51,7 @@ export function useAuthForm() {
       errs.password = 'Password is required';
     } else if (isRegister && !PASSWORD_RULES.test(password)) {
       errs.password =
-        'Password should have minimum 6 characters, 1 capital letter and 1 number.';
+        'Password should have minimum 8 characters, 1 capital letter and 1 number.';
     }
     setErrors(errs);
     return Object.keys(errs).length === 0;

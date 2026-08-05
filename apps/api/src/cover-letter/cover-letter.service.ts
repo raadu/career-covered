@@ -90,9 +90,11 @@ export class CoverLetterService {
     userId: string,
     dto: UpdateCoverLetterDto,
   ): Promise<db.CoverLetter> {
-    await this.findOne(id, userId);
-    return this.prisma.coverLetter.update({
-      where: { id },
+    // updateMany scopes by userId in the same query as the mutation itself,
+    // so ownership is enforced atomically rather than by a separate check
+    // beforehand (which a future refactor could otherwise decouple).
+    const { count } = await this.prisma.coverLetter.updateMany({
+      where: { id, userId },
       data: {
         ...(dto.jobTitle !== undefined && { jobTitle: dto.jobTitle }),
         ...(dto.companyName !== undefined && { companyName: dto.companyName }),
@@ -115,15 +117,20 @@ export class CoverLetterService {
         }),
         ...(dto.jobMarket !== undefined && { jobMarket: dto.jobMarket }),
       },
-      include: { template: { select: { name: true, id: true } } },
     });
+    if (count === 0) {
+      throw new NotFoundException(`Cover letter with ID ${id} not found`);
+    }
+    return this.findOne(id, userId);
   }
 
   async remove(id: string, userId: string): Promise<void> {
-    await this.findOne(id, userId);
-    await this.prisma.coverLetter.delete({
-      where: { id },
+    const { count } = await this.prisma.coverLetter.deleteMany({
+      where: { id, userId },
     });
+    if (count === 0) {
+      throw new NotFoundException(`Cover letter with ID ${id} not found`);
+    }
   }
 
   async removeBatch(ids: string[], userId: string): Promise<void> {

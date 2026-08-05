@@ -12,7 +12,11 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiCookieAuth } from '@nestjs/swagger';
 import { TemplateService } from './template.service';
-import { CreateTemplateDto, UpdateTemplateDto } from './dto/template.dto';
+import {
+  CreateTemplateDto,
+  UpdateTemplateDto,
+  BatchDeleteTemplateDto,
+} from './dto/template.dto';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import * as db from '@career-covered/db';
 
@@ -81,7 +85,7 @@ export class TemplateController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiOperation({ summary: 'Delete multiple templates by IDs' })
   async removeBatch(
-    @Body() body: { ids: string[] },
+    @Body() body: BatchDeleteTemplateDto,
     @CurrentUser() user: db.User,
   ): Promise<void> {
     return this.templateService.removeBatch(body.ids, user.id);

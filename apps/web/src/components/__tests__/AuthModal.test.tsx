@@ -165,7 +165,7 @@ describe('AuthModal', () => {
 
     expect(
       screen.getByText(
-        'Password should have minimum 6 characters, 1 capital letter and 1 number.',
+        'Password should have minimum 8 characters, 1 capital letter and 1 number.',
       ),
     ).toBeInTheDocument();
   });
@@ -195,7 +195,7 @@ describe('AuthModal', () => {
         target: { value: 'test@test.com' },
       });
       fireEvent.change(screen.getByPlaceholderText('Password'), {
-        target: { value: 'Strong1' },
+        target: { value: 'Strong123' },
       });
       fireEvent.click(screen.getAllByText('Create account')[1]);
 
@@ -224,7 +224,7 @@ describe('AuthModal', () => {
         target: { value: 'test@test.com' },
       });
       fireEvent.change(screen.getByPlaceholderText('Password'), {
-        target: { value: 'Strong1' },
+        target: { value: 'Strong123' },
       });
       fireEvent.click(screen.getAllByText('Sign in')[1]);
 
@@ -256,7 +256,7 @@ describe('AuthModal', () => {
         target: { value: 'test@test.com' },
       });
       fireEvent.change(screen.getByPlaceholderText('Password'), {
-        target: { value: 'Strong1' },
+        target: { value: 'Strong123' },
       });
       fireEvent.click(screen.getAllByText('Sign in')[1]);
 
@@ -290,7 +290,7 @@ describe('AuthModal', () => {
         target: { value: 'test@test.com' },
       });
       fireEvent.change(screen.getByPlaceholderText('Password'), {
-        target: { value: 'Strong1' },
+        target: { value: 'Strong123' },
       });
       fireEvent.click(screen.getAllByText('Create account')[1]);
 

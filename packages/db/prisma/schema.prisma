@@ -60,6 +60,7 @@ model Session {
   expiresAt DateTime
   user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
 
+  @@index([expiresAt])
   @@map("sessions")
 }
 

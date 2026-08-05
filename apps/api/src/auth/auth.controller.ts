@@ -20,19 +20,38 @@ import { CurrentUser } from './decorators/current-user.decorator';
 import * as db from '@career-covered/db';
 
 const SESSION_COOKIE = 'session';
+// Fail closed: only skip `Secure` for the explicit local-dev case (running
+// over plain http://localhost). Any other/missing NODE_ENV value defaults to
+// secure — a forgotten env var should never silently produce an insecure
+// cookie on a real deployment.
 const COOKIE_OPTIONS = {
   httpOnly: true,
-  secure: process.env.NODE_ENV === 'production',
+  secure:
+    process.env.NODE_ENV !== 'development' && process.env.NODE_ENV !== 'test',
   sameSite: 'lax' as const,
   maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days in ms
   path: '/',
 };
 
-// Temporary store for OAuth state & code verifier (use Redis in production)
+const OAUTH_STATE_TTL_MS = 10 * 60 * 1000;
+
+// Temporary store for OAuth state & code verifier (use Redis in production).
+// Entries are only ever removed on successful callback completion, so an
+// abandoned /auth/google flow (bot, closed tab) would otherwise leak forever
+// — sweep expired entries periodically to bound memory growth.
 const oauthStateStore = new Map<
   string,
   { codeVerifier: string; expiresAt: number }
 >();
+
+setInterval(() => {
+  const now = Date.now();
+  for (const [state, entry] of oauthStateStore) {
+    if (entry.expiresAt < now) {
+      oauthStateStore.delete(state);
+    }
+  }
+}, OAUTH_STATE_TTL_MS).unref();
 
 @ApiTags('Auth')
 @Controller('auth')

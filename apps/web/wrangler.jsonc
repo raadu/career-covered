@@ -12,5 +12,16 @@
   },
   "compatibility_flags": [
     "nodejs_compat"
+  ],
+  // BACKEND_URL is not sensitive (it's a public API hostname), so it's a
+  // plain var here rather than a wrangler secret.
+  "vars": {
+    "BACKEND_URL": "https://api.careercovered.com"
+  },
+  // Binds this Worker directly to the apex domain. Requires the
+  // careercovered.com zone to already be on this Cloudflare account.
+  "routes": [
+    { "pattern": "careercovered.com", "custom_domain": true },
+    { "pattern": "www.careercovered.com", "custom_domain": true }
   ]
 }

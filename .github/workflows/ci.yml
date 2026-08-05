@@ -1,0 +1,148 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [development, main]
+  pull_request:
+    branches: [main]
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  # ─── Phase A: verification — runs on every push to development/main and every PR into main ───
+  lint-test-build-api:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: career
+          POSTGRES_PASSWORD: secret
+          POSTGRES_DB: career_covered
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U career"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DATABASE_URL: postgresql://career:secret@localhost:5432/career_covered
+      NODE_ENV: test
+      WEB_URL: http://localhost:5173
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - run: npm ci
+
+      - name: Generate Prisma client
+        run: npm run -w @career-covered/db db:generate
+
+      - name: Apply migrations to the test database
+        run: npx prisma migrate deploy --schema packages/db/prisma/schema.prisma
+
+      - name: Cache turbo
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: turbo-api-${{ github.job }}-${{ github.sha }}
+          restore-keys: turbo-api-${{ github.job }}-
+
+      - name: Lint, build, unit test
+        run: npx turbo run lint build test --filter=@career-covered/api...
+
+      - name: E2E test
+        run: npx turbo run test:e2e --filter=@career-covered/api
+
+      - name: Smoke-test the production Dockerfile
+        run: docker build -f apps/api/Dockerfile -t career-covered-api-smoke .
+
+  lint-test-build-web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - run: npm ci
+
+      - name: Cache turbo
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: turbo-web-${{ github.job }}-${{ github.sha }}
+          restore-keys: turbo-web-${{ github.job }}-
+
+      - name: Lint, build, unit test
+        run: npx turbo run lint build test --filter=web
+
+  # ─── Phase B: deploy — only when development is merged/pushed into main ───
+  migrate-db:
+    needs: [lint-test-build-api, lint-test-build-web]
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - run: npm ci
+
+      - name: Generate Prisma client
+        run: npm run -w @career-covered/db db:generate
+
+      - name: Apply migrations to Neon (direct connection, with retry)
+        env:
+          DATABASE_URL: ${{ secrets.NEON_DIRECT_DATABASE_URL }}
+        run: |
+          for attempt in 1 2 3; do
+            npx prisma migrate deploy --schema packages/db/prisma/schema.prisma && exit 0
+            echo "Migration attempt $attempt failed, retrying in 10s..."
+            sleep 10
+          done
+          exit 1
+
+  deploy-api:
+    needs: migrate-db
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Render deploy hook
+        run: curl -fsS -X POST "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"
+
+  deploy-worker:
+    needs: lint-test-build-web
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build web app
+        run: npx turbo run build --filter=web
+
+      - name: Deploy Worker
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: apps/web
