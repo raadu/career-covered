@@ -16,6 +16,11 @@ export default {
           method: request.method,
           headers: request.headers,
           body: request.body,
+          // Without this, fetch() follows redirects itself (e.g. the
+          // Google OAuth 302) and returns the followed-to response body
+          // under this origin instead of forwarding the redirect to the
+          // browser, breaking the /auth/google flow.
+          redirect: "manual",
         },
       );
       return fetch(backendReq);
