@@ -20,8 +20,10 @@ RUN npm run -w web build
 # ─── Stage 2: Nginx static server ─────────────────────────────────────────────
 FROM nginx:alpine AS runner
 
-# Copy compiled assets
-COPY --from=builder /app/apps/web/dist /usr/share/nginx/html
+# Copy compiled assets (the Cloudflare Vite plugin splits build output into
+# dist/client — the SPA — and dist/<worker-name> — the Worker script this
+# Nginx-based image doesn't use)
+COPY --from=builder /app/apps/web/dist/client /usr/share/nginx/html
 
 # Copy custom nginx config for SPA routing
 COPY apps/web/nginx.conf /etc/nginx/conf.d/default.conf
