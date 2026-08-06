@@ -400,6 +400,10 @@ describe('TemplatesView — selection logic', () => {
 
     const checkboxes = screen.getAllByRole('checkbox');
     fireEvent.click(checkboxes[0]); // select all
+
+    await waitFor(() => {
+      expect(screen.getByText('Delete Selected')).toBeInTheDocument();
+    });
     fireEvent.click(screen.getByText('Delete Selected'));
 
     expect(screen.getByText('Delete 3 templates')).toBeInTheDocument();
@@ -502,7 +506,15 @@ describe('TemplatesView — CRUD operations', () => {
 
     const checkboxes = screen.getAllByRole('checkbox');
     fireEvent.click(checkboxes[0]); // select all
+
+    await waitFor(() => {
+      expect(screen.getByText('Delete Selected')).toBeInTheDocument();
+    });
     fireEvent.click(screen.getByText('Delete Selected'));
+
+    await waitFor(() => {
+      expect(screen.getByText('Delete All')).toBeInTheDocument();
+    });
     fireEvent.click(screen.getByText('Delete All'));
 
     await waitFor(() => {

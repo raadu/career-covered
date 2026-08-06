@@ -401,6 +401,10 @@ describe('PreviousCoverLettersView — integration', () => {
 
     const checkboxes = screen.getAllByRole('checkbox');
     fireEvent.click(checkboxes[0]);
+
+    await waitFor(() => {
+      expect(screen.getByText('Delete Selected')).toBeInTheDocument();
+    });
     fireEvent.click(screen.getByText('Delete Selected'));
 
     expect(screen.getByText('Delete 3 cover letters')).toBeInTheDocument();

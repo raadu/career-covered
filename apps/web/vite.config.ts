@@ -17,6 +17,13 @@ export default defineConfig(({ mode }) => {
       VitePWA({
         registerType: 'autoUpdate',
         includeAssets: ['favicon.svg', 'robots.txt', 'sitemap.xml'],
+        workbox: {
+          // Without this, Workbox's default NavigationRoute intercepts every
+          // full-page navigation — including window.location.href = '/auth/google'
+          // — and serves the cached SPA shell instead of letting it reach the
+          // Worker/backend, silently breaking the Google OAuth redirect.
+          navigateFallbackDenylist: [/^\/auth\//, /^\/api\//],
+        },
         manifest: {
           name: 'Career Covered - Create Free Cover Letters',
           short_name: 'CareerCovered',
