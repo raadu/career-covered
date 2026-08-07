@@ -54,6 +54,13 @@ async function bootstrap() {
 
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
 
+  // Requests reach this app through the Cloudflare Worker and Render's own
+  // front door, both proxies we control — without this, Express ignores
+  // X-Forwarded-For and req.ip resolves to the proxy's address for every
+  // request, collapsing ThrottlerGuard's per-IP rate limits (e.g.
+  // /api/generate) into one bucket shared by all visitors.
+  app.getHttpAdapter().getInstance().set('trust proxy', true);
+
   // Use Pino as the application logger
   app.useLogger(app.get(Logger));
 
