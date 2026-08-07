@@ -20,18 +20,31 @@ import { CurrentUser } from './decorators/current-user.decorator';
 import * as db from '@career-covered/db';
 
 const SESSION_COOKIE = 'session';
-// Fail closed: only skip `Secure` for the explicit local-dev case (running
-// over plain http://localhost). Any other/missing NODE_ENV value defaults to
-// secure — a forgotten env var should never silently produce an insecure
-// cookie on a real deployment.
-const COOKIE_OPTIONS = {
-  httpOnly: true,
-  secure:
-    process.env.NODE_ENV !== 'development' && process.env.NODE_ENV !== 'test',
-  sameSite: 'lax' as const,
-  maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days in ms
-  path: '/',
-};
+
+// Google's OAuth callback lands the browser directly on the API's own host
+// (api.careercovered.com) rather than going through the Worker like every
+// other request, so a host-only cookie set there never reaches the web
+// app's origin — the browser silently drops it on the next same-site
+// request. Setting COOKIE_DOMAIN (e.g. ".careercovered.com") in prod shares
+// the cookie across subdomains; left unset locally, since a Domain that
+// doesn't match the response host (e.g. "localhost") is rejected outright.
+export function buildCookieOptions(cookieDomain = process.env.COOKIE_DOMAIN) {
+  return {
+    httpOnly: true,
+    // Fail closed: only skip `Secure` for the explicit local-dev case
+    // (running over plain http://localhost). Any other/missing NODE_ENV
+    // value defaults to secure — a forgotten env var should never silently
+    // produce an insecure cookie on a real deployment.
+    secure:
+      process.env.NODE_ENV !== 'development' && process.env.NODE_ENV !== 'test',
+    sameSite: 'lax' as const,
+    maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days in ms
+    path: '/',
+    ...(cookieDomain ? { domain: cookieDomain } : {}),
+  };
+}
+
+const COOKIE_OPTIONS = buildCookieOptions();
 
 const OAUTH_STATE_TTL_MS = 10 * 60 * 1000;
 
@@ -118,7 +131,10 @@ export class AuthController {
     if (token) {
       await this.authService.deleteSession(token);
     }
-    res.clearCookie(SESSION_COOKIE, { path: '/' });
+    res.clearCookie(SESSION_COOKIE, {
+      path: COOKIE_OPTIONS.path,
+      ...(COOKIE_OPTIONS.domain ? { domain: COOKIE_OPTIONS.domain } : {}),
+    });
   }
 
   // ─── Google OAuth ───────────────────────────────────────────────────────────
