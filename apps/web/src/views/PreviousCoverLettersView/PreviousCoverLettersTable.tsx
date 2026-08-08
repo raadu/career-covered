@@ -20,7 +20,7 @@ interface PreviousCoverLettersTableProps {
   onToggleSelect: (id: string) => void;
   onPageChange: (page: number) => void;
   onPageSizeChange: (size: number) => void;
-  onDownloadPdf: (item: CoverLetterItem) => void;
+  onOpenDesigns: (item: CoverLetterItem) => void;
   onDownloadWord: (item: CoverLetterItem) => void;
   onCopy: (item: CoverLetterItem) => void;
   onDelete: (id: string | null) => void;
@@ -40,7 +40,7 @@ const PreviousCoverLettersTable = ({
   onToggleSelect,
   onPageChange,
   onPageSizeChange,
-  onDownloadPdf,
+  onOpenDesigns,
   onDownloadWord,
   onCopy,
   onDelete,
@@ -100,9 +100,9 @@ const PreviousCoverLettersTable = ({
         cell: ({ row }) => (
           <div className="border border-gray-200 dark:border-gray-600 rounded px-2 py-1 flex items-center gap-1 w-fit">
             <button
-              onClick={() => onDownloadPdf(row.original)}
+              onClick={() => onOpenDesigns(row.original)}
               className="p-1.5 text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-sm transition-colors"
-              title="Download as PDF"
+              title="Choose a PDF design"
             >
               <FaFilePdf size={12} />
             </button>
@@ -138,7 +138,7 @@ const PreviousCoverLettersTable = ({
       selectAllIndeterminate,
       onToggleSelectAll,
       onToggleSelect,
-      onDownloadPdf,
+      onOpenDesigns,
       onDownloadWord,
       onCopy,
       onDelete,

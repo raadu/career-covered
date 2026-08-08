@@ -24,9 +24,7 @@ const ResultDisplay = () => {
   const [generate] = useGenerateCoverLetterMutation();
   const { copied, handleCopy } = useCopy();
 
-  const [isDownloading, setIsDownloading] = useState<'pdf' | 'word' | null>(
-    null,
-  );
+  const [isDownloading, setIsDownloading] = useState<'word' | null>(null);
   const [extractedName, setExtractedName] = useState<string | null>(null);
   const [isDesignsModalOpen, setIsDesignsModalOpen] = useState(false);
   const [downloadingDesignId, setDownloadingDesignId] =
@@ -72,32 +70,9 @@ const ResultDisplay = () => {
   };
 
   /**
-   * Professionally handles PDF generation and download.
-   */
-  const handleDownloadPDF = async () => {
-    if (!isAuthenticated) {
-      showToast(
-        'Oops! You should login to do that. Creating an account is so easy.',
-        { type: 'info', duration: 6000 },
-      );
-      dispatch(setAuthModalOpen(true));
-      return;
-    }
-    setIsDownloading('pdf');
-    try {
-      const fileName = await extractNameFromTemplate();
-      generatePdf(generatedLetter, fileName);
-    } catch (err) {
-      console.error('PDF generation failed', err);
-      showToast('Failed to generate PDF. Please try again.', { type: 'error' });
-    } finally {
-      setIsDownloading(null);
-    }
-  };
-
-  /**
-   * Opens the PDF design picker, gated behind login exactly like the plain
-   * PDF download button.
+   * Opens the PDF design picker, gated behind login. This is the only way
+   * to download a PDF now — the plain "PDF" button was removed in favor of
+   * always choosing a design first.
    */
   const handleOpenDesigns = () => {
     if (!isAuthenticated) {
@@ -158,7 +133,6 @@ const ResultDisplay = () => {
       <ResultHeader
         isDownloading={isDownloading}
         handleOpenDesigns={handleOpenDesigns}
-        handleDownloadPDF={handleDownloadPDF}
         handleDownloadWord={handleDownloadWord}
         handleCopy={() => handleCopy(generatedLetter, 'Result')}
         copied={copied}

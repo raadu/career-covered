@@ -11,9 +11,17 @@ import PreviousCoverLettersView from 'views/PreviousCoverLettersView/index';
 import type { CoverLetterItem } from 'views/PreviousCoverLettersView/types';
 
 vi.mock('jspdf', () => {
+  // Stubs every jsPDF method used across the PDF designs (not just Classic),
+  // since choosing any design in the picker now has to render for real here.
   class FakeJsPDF {
     setFont() {}
     setFontSize() {}
+    setTextColor() {}
+    setDrawColor() {}
+    setFillColor() {}
+    setLineWidth() {}
+    line() {}
+    rect() {}
     addPage() {}
     text() {}
     splitTextToSize(text: string) {
@@ -95,10 +103,15 @@ describe('PreviousCoverLettersView — downloads', () => {
   it('names the PDF file using the user full name', async () => {
     renderWithUser('Helena Mann Dzousa');
     await waitFor(() => {
-      expect(screen.getByTitle('Download as PDF')).toBeInTheDocument();
+      expect(screen.getByTitle('Choose a PDF design')).toBeInTheDocument();
     });
-    fireEvent.click(screen.getAllByTitle('Download as PDF')[0]);
-    expect(saveSpy).toHaveBeenCalledWith('Cover_Letter_Helena_Mann_Dzousa.pdf');
+    fireEvent.click(screen.getAllByTitle('Choose a PDF design')[0]);
+    fireEvent.click(screen.getByText('Classic'));
+    await waitFor(() => {
+      expect(saveSpy).toHaveBeenCalledWith(
+        'Cover_Letter_Helena_Mann_Dzousa.pdf',
+      );
+    });
   });
 
   it('names the Word file using the user full name', async () => {
@@ -118,10 +131,13 @@ describe('PreviousCoverLettersView — downloads', () => {
   it('falls back to Cover_Letter.pdf when user name is blank', async () => {
     renderWithUser('');
     await waitFor(() => {
-      expect(screen.getByTitle('Download as PDF')).toBeInTheDocument();
+      expect(screen.getByTitle('Choose a PDF design')).toBeInTheDocument();
     });
-    fireEvent.click(screen.getAllByTitle('Download as PDF')[0]);
-    expect(saveSpy).toHaveBeenCalledWith('Cover_Letter.pdf');
+    fireEvent.click(screen.getAllByTitle('Choose a PDF design')[0]);
+    fireEvent.click(screen.getByText('Classic'));
+    await waitFor(() => {
+      expect(saveSpy).toHaveBeenCalledWith('Cover_Letter.pdf');
+    });
   });
 
   it('falls back to Cover_Letter.docx when user is null', async () => {
@@ -141,11 +157,59 @@ describe('PreviousCoverLettersView — downloads', () => {
   it('separates every word of a four-word name in the PDF file name', async () => {
     renderWithUser('Mary Jane Watson Parker');
     await waitFor(() => {
-      expect(screen.getByTitle('Download as PDF')).toBeInTheDocument();
+      expect(screen.getByTitle('Choose a PDF design')).toBeInTheDocument();
     });
-    fireEvent.click(screen.getAllByTitle('Download as PDF')[0]);
-    expect(saveSpy).toHaveBeenCalledWith(
-      'Cover_Letter_Mary_Jane_Watson_Parker.pdf',
-    );
+    fireEvent.click(screen.getAllByTitle('Choose a PDF design')[0]);
+    fireEvent.click(screen.getByText('Classic'));
+    await waitFor(() => {
+      expect(saveSpy).toHaveBeenCalledWith(
+        'Cover_Letter_Mary_Jane_Watson_Parker.pdf',
+      );
+    });
+  });
+
+  it('opens the design picker instead of downloading immediately', async () => {
+    renderWithUser('Helena Mann Dzousa');
+    await waitFor(() => {
+      expect(screen.getByTitle('Choose a PDF design')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getAllByTitle('Choose a PDF design')[0]);
+
+    expect(screen.getByText('Choose a PDF Design')).toBeInTheDocument();
+    expect(saveSpy).not.toHaveBeenCalled();
+  });
+
+  it('downloads the PDF in whichever design is chosen from the picker', async () => {
+    renderWithUser('Helena Mann Dzousa');
+    await waitFor(() => {
+      expect(screen.getByTitle('Choose a PDF design')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getAllByTitle('Choose a PDF design')[0]);
+    fireEvent.click(screen.getByText('Executive'));
+
+    await waitFor(() => {
+      expect(saveSpy).toHaveBeenCalledWith(
+        'Cover_Letter_Helena_Mann_Dzousa.pdf',
+      );
+    });
+    await waitFor(() => {
+      expect(
+        screen.queryByText('Choose a PDF Design'),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  it('closes the design picker without downloading when dismissed', async () => {
+    renderWithUser('Helena Mann Dzousa');
+    await waitFor(() => {
+      expect(screen.getByTitle('Choose a PDF design')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getAllByTitle('Choose a PDF design')[0]);
+    expect(screen.getByText('Choose a PDF Design')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByLabelText('Close modal'));
+
+    expect(screen.queryByText('Choose a PDF Design')).not.toBeInTheDocument();
+    expect(saveSpy).not.toHaveBeenCalled();
   });
 });

@@ -76,7 +76,7 @@ const emptyProps = {
   onToggleSelect: vi.fn(),
   onPageChange: vi.fn(),
   onPageSizeChange: vi.fn(),
-  onDownloadPdf: vi.fn(),
+  onOpenDesigns: vi.fn(),
   onDownloadWord: vi.fn(),
   onCopy: vi.fn(),
   onDelete: vi.fn(),
@@ -166,7 +166,7 @@ describe('PreviousCoverLettersTable', () => {
 
   it('renders action buttons with correct titles', () => {
     render(<PreviousCoverLettersTable {...withDataProps} />);
-    const pdfButtons = screen.getAllByTitle('Download as PDF');
+    const pdfButtons = screen.getAllByTitle('Choose a PDF design');
     const wordButtons = screen.getAllByTitle('Download as Word');
     const copyButtons = screen.getAllByTitle('Copy to clipboard');
     const deleteButtons = screen.getAllByTitle('Delete');
@@ -177,17 +177,17 @@ describe('PreviousCoverLettersTable', () => {
     expect(deleteButtons.length).toBe(3);
   });
 
-  it('calls onDownloadPdf when PDF button clicked', () => {
-    const onDownloadPdf = vi.fn();
+  it('calls onOpenDesigns when PDF button clicked', () => {
+    const onOpenDesigns = vi.fn();
     render(
       <PreviousCoverLettersTable
         {...withDataProps}
-        onDownloadPdf={onDownloadPdf}
+        onOpenDesigns={onOpenDesigns}
       />,
     );
-    const pdfButtons = screen.getAllByTitle('Download as PDF');
+    const pdfButtons = screen.getAllByTitle('Choose a PDF design');
     fireEvent.click(pdfButtons[0]);
-    expect(onDownloadPdf).toHaveBeenCalledWith(mockItems[0]);
+    expect(onOpenDesigns).toHaveBeenCalledWith(mockItems[0]);
   });
 
   it('calls onDownloadWord when Word button clicked', () => {

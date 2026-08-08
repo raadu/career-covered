@@ -1,11 +1,10 @@
 import { LuCheck, LuCopy, LuPalette } from 'react-icons/lu';
-import { FaFilePdf, FaFileWord } from 'react-icons/fa';
+import { FaFileWord } from 'react-icons/fa';
 import CommonButton from 'components/common/CommonButton';
 
 interface ResultHeaderProps {
-  isDownloading: 'pdf' | 'word' | null;
+  isDownloading: 'word' | null;
   handleOpenDesigns: () => void;
-  handleDownloadPDF: () => void;
   handleDownloadWord: () => void;
   handleCopy: () => void;
   copied: boolean;
@@ -14,7 +13,6 @@ interface ResultHeaderProps {
 const ResultHeader = ({
   isDownloading,
   handleOpenDesigns,
-  handleDownloadPDF,
   handleDownloadWord,
   handleCopy,
   copied,
@@ -33,23 +31,7 @@ const ResultHeader = ({
           className="bg-white dark:bg-gray-700 hover:bg-violet-50 dark:hover:bg-violet-900/20 hover:border-violet-200 dark:hover:border-violet-800 hover:text-violet-600 dark:hover:text-violet-400 text-gray-700 dark:text-gray-300 h-7 sm:h-8 px-2 sm:px-3 text-[10px] sm:text-[11px]"
           title="Choose a PDF design"
         >
-          Designs
-        </CommonButton>
-
-        <CommonButton
-          variant="outline"
-          onClick={handleDownloadPDF}
-          isLoading={isDownloading === 'pdf'}
-          disabled={!!isDownloading}
-          icon={
-            isDownloading !== 'pdf' && (
-              <FaFilePdf className="text-rose-500" size={14} />
-            )
-          }
-          className="bg-white dark:bg-gray-700 hover:bg-rose-50 dark:hover:bg-rose-900/20 hover:border-rose-200 dark:hover:border-rose-800 hover:text-rose-600 dark:hover:text-rose-400 text-gray-700 dark:text-gray-300 h-7 sm:h-8 px-2 sm:px-3 text-[10px] sm:text-[11px]"
-          title="Download as PDF"
-        >
-          {isDownloading === 'pdf' ? 'Preparing PDF...' : 'PDF'}
+          PDF
         </CommonButton>
 
         <CommonButton

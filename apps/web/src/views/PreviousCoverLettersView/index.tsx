@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { showToast } from 'components/common/Toast';
 import ConfirmModal from 'components/common/ConfirmModal';
+import PdfDesignsModal from 'components/Modals/PdfDesignsModal';
 import Header from './Header';
 import BatchActionBar from './BatchActionBar';
 import PreviousCoverLettersTable from './PreviousCoverLettersTable';
@@ -9,6 +11,7 @@ import { usePreviousCoverLetters } from './usePreviousCoverLetters';
 import { useCopy } from 'hooks/useCopy';
 import { buildFileName } from 'utils/fileNameUtils';
 import { generatePdf, generateWord } from 'utils/downloadUtils';
+import { getPdfDesign, type PdfDesignId } from 'utils/pdfDesigns';
 import type { RootState } from 'store';
 import type { CoverLetterItem } from './types';
 
@@ -40,14 +43,37 @@ const PreviousCoverLettersView = () => {
   const { handleCopy } = useCopy();
   const { user } = useSelector((state: RootState) => state.auth);
 
+  const [designsItem, setDesignsItem] = useState<CoverLetterItem | null>(
+    null,
+  );
+  const [downloadingDesignId, setDownloadingDesignId] =
+    useState<PdfDesignId | null>(null);
+
   if (authLoading) return null;
   if (!isAuthenticated) return <Navigate to="/" replace />;
 
-  const handleDownloadPdf = (item: CoverLetterItem) => {
+  const handleOpenDesigns = (item: CoverLetterItem) => {
+    setDesignsItem(item);
+  };
+
+  const handleSelectDesign = (designId: PdfDesignId) => {
+    if (!designsItem) return;
+    setDownloadingDesignId(designId);
     try {
-      generatePdf(item.generatedText, buildFileName(user?.name));
+      generatePdf(
+        designsItem.generatedText,
+        buildFileName(user?.name),
+        designId,
+      );
+      showToast(`Downloaded as ${getPdfDesign(designId).name}!`, {
+        type: 'success',
+        duration: 3000,
+      });
+      setDesignsItem(null);
     } catch {
       showToast('Failed to generate PDF', { type: 'error' });
+    } finally {
+      setDownloadingDesignId(null);
     }
   };
 
@@ -91,10 +117,17 @@ const PreviousCoverLettersView = () => {
         onToggleSelect={toggleSelect}
         onPageChange={handlePageChange}
         onPageSizeChange={handlePageSizeChange}
-        onDownloadPdf={handleDownloadPdf}
+        onOpenDesigns={handleOpenDesigns}
         onDownloadWord={handleDownloadWord}
         onCopy={handleCopyItem}
         onDelete={setDeletingId}
+      />
+
+      <PdfDesignsModal
+        isOpen={designsItem !== null}
+        onClose={() => setDesignsItem(null)}
+        downloadingDesignId={downloadingDesignId}
+        onSelectDesign={handleSelectDesign}
       />
 
       <ConfirmModal
