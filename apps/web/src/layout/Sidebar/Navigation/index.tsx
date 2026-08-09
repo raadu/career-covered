@@ -1,5 +1,6 @@
 import {
   FaFileAlt,
+  FaFileUpload,
   FaLifeRing,
   FaQuestionCircle,
   FaChevronDown,
@@ -47,6 +48,16 @@ const SidebarNavigation = ({ isExpanded }: SidebarNavigationProps) => {
           : []),
       ],
     },
+    ...(isAuthenticated
+      ? [
+          {
+            path: '/resume',
+            label: 'Resumes',
+            icon: FaFileUpload,
+            title: 'Manage your resumes',
+          },
+        ]
+      : []),
     {
       path: '/faq',
       label: 'FAQ',

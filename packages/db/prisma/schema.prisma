@@ -109,14 +109,20 @@ model CoverLetter {
 // ============================================================
 
 model Resume {
-  id         String   @id @default(uuid())
-  userId     String
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  fileName   String
-  fileUrl    String   // Points to S3/MinIO object URL
-  parsedText String?  // Extracted plain text from document
-  createdAt  DateTime @default(now())
+  id               String   @id @default(uuid())
+  userId           String
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name             String   // user-editable display name (the rename target)
+  originalFileName String   // immutable, from the uploaded file
+  storageKey       String   // private object key — never exposed to the client as a URL
+  mimeType         String   // "application/pdf" today; stored for forward-compat
+  fileSize         Int      // bytes, of the stored (compressed) file
+  parsedText       String?  // extracted text; null if extraction failed — never blocks upload
+  order            Int      // 0-based position for drag-reorder
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
+  @@index([userId, order])
   @@map("resumes")
 }
 

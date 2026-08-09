@@ -12,6 +12,7 @@ import SupportView from 'views/SupportView';
 import FaqView from 'views/FaqView';
 import TemplatesView from 'views/TemplatesView';
 import PreviousCoverLettersView from 'views/PreviousCoverLettersView';
+import ResumeView from 'views/ResumeView';
 import ogImage from 'assets/og-image.png';
 import { fetchCurrentUser } from 'store/authSlice';
 import { useAppDispatch } from 'store';
@@ -74,6 +75,7 @@ const App = () => {
           path="/cover-letter/previous"
           element={<PreviousCoverLettersView />}
         />
+        <Route path="/resume" element={<ResumeView />} />
         <Route
           path="/"
           element={
