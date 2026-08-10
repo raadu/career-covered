@@ -2,8 +2,8 @@ import { useMemo } from 'react';
 import { type ColumnDef } from '@tanstack/react-table';
 import { FaFilePdf, FaFileWord, FaCopy, FaTrash } from 'react-icons/fa';
 import DataTable from 'components/common/DataTable';
+import formatDate from 'utils/dateUtils';
 import Checkbox from 'views/TemplatesView/Checkbox';
-import formatDate from './formatDate';
 import type { CoverLetterItem } from './types';
 
 interface PreviousCoverLettersTableProps {

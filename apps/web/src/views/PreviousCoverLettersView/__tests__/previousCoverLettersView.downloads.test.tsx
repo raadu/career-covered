@@ -193,9 +193,7 @@ describe('PreviousCoverLettersView — downloads', () => {
       );
     });
     await waitFor(() => {
-      expect(
-        screen.queryByText('Choose a PDF Design'),
-      ).not.toBeInTheDocument();
+      expect(screen.queryByText('Choose a PDF Design')).not.toBeInTheDocument();
     });
   });
 

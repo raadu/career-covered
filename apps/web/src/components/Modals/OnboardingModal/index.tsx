@@ -3,6 +3,7 @@ import { useAppDispatch } from 'store';
 import { setApiKey } from 'store/coverLetterSlice';
 import CommonButton from 'components/common/CommonButton';
 import { PROVIDER_NAME } from 'utils/AIModelUtils';
+import { setLocalStorageItem } from 'utils/localStorageUtils';
 import { FaKey, FaTimes } from 'react-icons/fa';
 import PrimaryOnboardingUI from './PrimaryOnboardingUI';
 import DetailedOnboardingUI from './DetailedOnboardingUI';
@@ -27,7 +28,7 @@ const OnboardingModal = ({
   const handleStart = () => {
     if (tempKey.trim()) {
       dispatch(setApiKey(tempKey.trim()));
-      localStorage.setItem('cl_visited_before', 'true');
+      setLocalStorageItem('visited_before', 'true');
       onComplete();
     }
   };

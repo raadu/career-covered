@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { type RootState, useAppDispatch } from 'store';
 import { fetchCurrentUser } from 'store/authSlice';
 import { showToast } from 'components/common/Toast';
 import { EMOJI_SERIOUS } from 'utils/emojiUtils';
+import { useLocalStorageState } from 'hooks/useLocalStorageState';
 import Sidebar from 'layout/Sidebar';
 import Footer from 'layout/Footer';
 import OnboardingModal from 'components/Modals/OnboardingModal';
@@ -12,10 +13,8 @@ import AuthModal from 'components/Modals/AuthModal';
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const dispatch = useAppDispatch();
-  const [isSidebarExpanded, setIsSidebarExpanded] = useState(() => {
-    const saved = localStorage.getItem('cl_sidebar_expanded');
-    return saved !== null ? JSON.parse(saved) : true;
-  });
+  const [isSidebarExpanded, setIsSidebarExpanded] =
+    useLocalStorageState<boolean>('sidebar_expanded', true);
 
   useEffect(() => {
     dispatch(fetchCurrentUser())
@@ -35,9 +34,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   }, [dispatch]);
 
   const handleToggle = () => {
-    const newState = !isSidebarExpanded;
-    setIsSidebarExpanded(newState);
-    localStorage.setItem('cl_sidebar_expanded', JSON.stringify(newState));
+    setIsSidebarExpanded(!isSidebarExpanded);
   };
 
   const { apiKey, generationCount } = useSelector(

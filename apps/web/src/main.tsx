@@ -6,8 +6,9 @@ import { HelmetProvider } from 'react-helmet-async';
 import App from './App';
 import './index.css';
 import { store } from 'store';
+import { getLocalStorageItem } from 'utils/localStorageUtils';
 
-const storedDark = localStorage.getItem('cl_darkMode');
+const storedDark = getLocalStorageItem('darkMode');
 if (storedDark === 'true') {
   document.documentElement.classList.add('dark');
 }

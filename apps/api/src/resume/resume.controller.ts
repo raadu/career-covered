@@ -27,6 +27,7 @@ import { ResumeService } from './resume.service';
 import {
   RenameResumeDto,
   ReorderResumesDto,
+  BatchDeleteResumeDto,
   type ResumeResponseDto,
 } from './dto/resume.dto';
 import { MulterExceptionFilter } from './multer-exception.filter';
@@ -104,6 +105,16 @@ export class ResumeController {
     @CurrentUser() user: db.User,
   ): Promise<ResumeResponseDto> {
     return this.resumeService.rename(id, user.id, dto.name);
+  }
+
+  @Delete('batch')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: 'Delete multiple resumes by IDs' })
+  async removeBatch(
+    @Body() dto: BatchDeleteResumeDto,
+    @CurrentUser() user: db.User,
+  ): Promise<void> {
+    return this.resumeService.removeBatch(dto.ids, user.id);
   }
 
   @Delete(':id')

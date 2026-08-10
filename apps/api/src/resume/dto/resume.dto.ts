@@ -27,6 +27,14 @@ export class ReorderResumesDto {
   ids: string[];
 }
 
+export class BatchDeleteResumeDto {
+  @ApiProperty({ type: [String] })
+  @IsArray()
+  @ArrayMaxSize(MAX_RESUMES_PER_USER)
+  @IsString({ each: true })
+  ids: string[];
+}
+
 export interface ResumeResponseDto {
   id: string;
   name: string;

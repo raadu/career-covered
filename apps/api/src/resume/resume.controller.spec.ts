@@ -25,6 +25,7 @@ describe('ResumeController', () => {
     replace: jest.fn(),
     rename: jest.fn(),
     remove: jest.fn(),
+    removeBatch: jest.fn(),
     reorder: jest.fn(),
     getFileStream: jest.fn(),
   };
@@ -100,6 +101,11 @@ describe('ResumeController', () => {
   it('remove delegates to the service', async () => {
     await controller.remove('r1', mockUser);
     expect(service.remove).toHaveBeenCalledWith('r1', 'user-1');
+  });
+
+  it('removeBatch delegates to the service with the ids and user id', async () => {
+    await controller.removeBatch({ ids: ['a', 'b'] }, mockUser);
+    expect(service.removeBatch).toHaveBeenCalledWith(['a', 'b'], 'user-1');
   });
 
   describe('streaming (preview / download)', () => {

@@ -85,9 +85,10 @@ describe('Resumes (e2e)', () => {
     it.each([
       ['GET', '/api/resumes'],
       ['POST', '/api/resumes/reorder'],
+      ['DELETE', '/api/resumes/batch'],
     ])('%s %s returns 401 with no session cookie', async (method, path) => {
       await request(app.getHttpServer())
-        [method.toLowerCase() as 'get' | 'post'](path)
+        [method.toLowerCase() as 'get' | 'post' | 'delete'](path)
         .expect(401);
     });
 
@@ -173,6 +174,32 @@ describe('Resumes (e2e)', () => {
         .get(`/api/resumes/${resumeId}/preview`)
         .set('Cookie', sessionCookie)
         .expect(404);
+    });
+  });
+
+  describe('batch delete', () => {
+    it('deletes multiple resumes and their storage objects in one call', async () => {
+      const pdf = await buildRealPdf('Batch delete test');
+      const ids: string[] = [];
+      for (let i = 0; i < 2; i++) {
+        const res = await request(app.getHttpServer())
+          .post('/api/resumes')
+          .set('Cookie', sessionCookie)
+          .attach('file', pdf, `batch-${i}.pdf`)
+          .expect(201);
+        ids.push((res.body as { id: string }).id);
+      }
+
+      await request(app.getHttpServer())
+        .delete('/api/resumes/batch')
+        .set('Cookie', sessionCookie)
+        .send({ ids })
+        .expect(204);
+
+      const remaining = await prisma.resume.findMany({
+        where: { id: { in: ids } },
+      });
+      expect(remaining).toHaveLength(0);
     });
   });
 

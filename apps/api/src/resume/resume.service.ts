@@ -264,6 +264,31 @@ export class ResumeService {
       );
   }
 
+  async removeBatch(ids: string[], userId: string): Promise<void> {
+    // Read the rows first (scoped by userId, same as every other batch
+    // ownership check) so their storageKeys are known for cleanup — the
+    // deleteMany below can't tell us which keys it deleted.
+    const resumes = await this.prisma.resume.findMany({
+      where: { id: { in: ids }, userId },
+    });
+
+    await this.prisma.resume.deleteMany({
+      where: { id: { in: ids }, userId },
+    });
+
+    await Promise.all(
+      resumes.map((resume) =>
+        this.storage
+          .deleteObject(resume.storageKey)
+          .catch((err) =>
+            this.logger.warn(
+              `Failed to delete object "${resume.storageKey}" for removed resume ${resume.id}: ${(err as Error).message}`,
+            ),
+          ),
+      ),
+    );
+  }
+
   async reorder(userId: string, ids: string[]): Promise<ResumeResponseDto[]> {
     const current = await this.prisma.resume.findMany({
       where: { userId },

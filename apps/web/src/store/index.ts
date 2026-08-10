@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import coverLetterReducer from 'store/coverLetterSlice';
 import authReducer from 'store/authSlice';
 import { apiSlice } from 'store/apiSlice';
+import { setLocalStorageItem } from 'utils/localStorageUtils';
 
 // Middleware to persist state
 const persistenceMiddleware: Middleware = (store) => (next) => (action) => {
@@ -15,8 +16,8 @@ const persistenceMiddleware: Middleware = (store) => (next) => (action) => {
       type.startsWith('coverLetter/setTemplate') ||
       type.startsWith('coverLetter/setApiKey')
     ) {
-      localStorage.setItem('cl_template', state.coverLetter.template);
-      localStorage.setItem('cl_apiKey', state.coverLetter.apiKey);
+      setLocalStorageItem('template', state.coverLetter.template);
+      setLocalStorageItem('apiKey', state.coverLetter.apiKey);
     }
   }
 

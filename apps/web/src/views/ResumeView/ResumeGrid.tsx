@@ -1,23 +1,17 @@
-import {
-  DndContext,
-  closestCenter,
-  type DragEndEvent,
-} from '@dnd-kit/core';
-import {
-  SortableContext,
-  rectSortingStrategy,
-  arrayMove,
-} from '@dnd-kit/sortable';
+import { DndContext, closestCenter } from '@dnd-kit/core';
+import { SortableContext, rectSortingStrategy } from '@dnd-kit/sortable';
 import UploadSlot from './UploadSlot';
 import ResumeCard from './ResumeCard';
 import type { Resume } from './types';
 import { MAX_RESUMES } from './resumeConstants';
+import { useReorderDnd } from './useReorderDnd';
 
 interface ResumeGridProps {
   resumes: Resume[];
   isUploading: boolean;
   busyId: string | null;
   onUpload: (file: File) => void;
+  onCapReached: () => void;
   onReorder: (newOrder: Resume[]) => void;
   onRename: (id: string, name: string) => void;
   onPreview: (id: string) => void;
@@ -31,6 +25,7 @@ const ResumeGrid = ({
   isUploading,
   busyId,
   onUpload,
+  onCapReached,
   onReorder,
   onRename,
   onPreview,
@@ -38,23 +33,15 @@ const ResumeGrid = ({
   onReplace,
   onDelete,
 }: ResumeGridProps) => {
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
-    if (!over || active.id === over.id) return;
-
-    const oldIndex = resumes.findIndex((r) => r.id === active.id);
-    const newIndex = resumes.findIndex((r) => r.id === over.id);
-    if (oldIndex === -1 || newIndex === -1) return;
-
-    onReorder(arrayMove(resumes, oldIndex, newIndex));
-  };
+  const { handleDragEnd } = useReorderDnd(resumes, onReorder);
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
       <UploadSlot
-        disabled={resumes.length >= MAX_RESUMES}
+        atCap={resumes.length >= MAX_RESUMES}
         isUploading={isUploading}
         onUpload={onUpload}
+        onCapReached={onCapReached}
       />
 
       <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>

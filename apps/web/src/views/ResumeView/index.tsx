@@ -1,9 +1,13 @@
 import { Navigate } from 'react-router-dom';
 import ConfirmModal from 'components/common/ConfirmModal';
+import BatchActionBar from 'views/TemplatesView/BatchActionBar';
 import Header from './Header';
 import ResumeGrid from './ResumeGrid';
+import ResumeTable from './ResumeTable';
 import PreviewModal from './PreviewModal';
 import { useResume } from './useResume';
+import { useResumeViewMode } from './useResumeViewMode';
+import { MAX_RESUMES } from './resumeConstants';
 
 const ResumeView = () => {
   const {
@@ -21,29 +25,92 @@ const ResumeView = () => {
     renameResume,
     handleDelete,
     reorderResumes,
+    notifyMaxResumesReached,
+    pagedData,
+    pageIndex,
+    pageSize,
+    pageCount,
+    handlePageChange,
+    handlePageSizeChange,
+    reorderPagedResumes,
+    selectedIds,
+    allSelected,
+    someSelected,
+    toggleSelectAll,
+    toggleSelect,
+    clearSelection,
+    showBatchConfirm,
+    setShowBatchConfirm,
+    handleBatchDelete,
   } = useResume();
+  const { viewMode, setViewMode } = useResumeViewMode();
 
   if (authLoading) return null;
   if (!isAuthenticated) return <Navigate to="/" replace />;
 
   const previewResume = data.find((r) => r.id === previewId) ?? null;
+  const atCap = data.length >= MAX_RESUMES;
+  const downloadResume = (id: string) =>
+    window.open(`/api/resumes/${id}/download`, '_blank');
 
   return (
     <div className="py-6 md:py-8 px-1 sm:px-2">
-      <Header />
-
-      <ResumeGrid
-        resumes={data}
+      <Header
+        viewMode={viewMode}
+        onViewModeChange={setViewMode}
+        atCap={atCap}
         isUploading={isUploading}
-        busyId={busyId}
         onUpload={uploadResume}
-        onReorder={reorderResumes}
-        onRename={renameResume}
-        onPreview={setPreviewId}
-        onDownload={(id) => window.open(`/api/resumes/${id}/download`, '_blank')}
-        onReplace={replaceResume}
-        onDelete={setDeletingId}
+        onCapReached={notifyMaxResumesReached}
       />
+
+      {viewMode === 'grid' ? (
+        <ResumeGrid
+          resumes={data}
+          isUploading={isUploading}
+          busyId={busyId}
+          onUpload={uploadResume}
+          onCapReached={notifyMaxResumesReached}
+          onReorder={reorderResumes}
+          onRename={renameResume}
+          onPreview={setPreviewId}
+          onDownload={downloadResume}
+          onReplace={replaceResume}
+          onDelete={setDeletingId}
+        />
+      ) : (
+        <>
+          {someSelected && (
+            <BatchActionBar
+              selectedCount={selectedIds.size}
+              onDelete={() => setShowBatchConfirm(true)}
+              onClear={clearSelection}
+            />
+          )}
+
+          <ResumeTable
+            resumes={pagedData}
+            busyId={busyId}
+            selectedIds={selectedIds}
+            allSelected={allSelected}
+            someSelected={someSelected}
+            onToggleSelectAll={toggleSelectAll}
+            onToggleSelect={toggleSelect}
+            onReorder={reorderPagedResumes}
+            onRename={renameResume}
+            onPreview={setPreviewId}
+            onDownload={downloadResume}
+            onReplace={replaceResume}
+            onDelete={setDeletingId}
+            pageIndex={pageIndex}
+            pageSize={pageSize}
+            pageCount={pageCount}
+            total={data.length}
+            onPageChange={handlePageChange}
+            onPageSizeChange={handlePageSizeChange}
+          />
+        </>
+      )}
 
       <PreviewModal
         isOpen={previewId !== null}
@@ -60,6 +127,16 @@ const ResumeView = () => {
         cancelLabel="Nope"
         onConfirm={handleDelete}
         onCancel={() => setDeletingId(null)}
+      />
+
+      <ConfirmModal
+        isOpen={showBatchConfirm}
+        title={`Delete ${selectedIds.size} resume${selectedIds.size > 1 ? 's' : ''}`}
+        message={`Are you sure you want to delete ${selectedIds.size} selected resume${selectedIds.size > 1 ? 's' : ''}? This action cannot be undone.`}
+        confirmLabel="Delete All"
+        cancelLabel="Cancel"
+        onConfirm={handleBatchDelete}
+        onCancel={() => setShowBatchConfirm(false)}
       />
     </div>
   );

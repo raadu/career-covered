@@ -35,6 +35,7 @@ describe('ResumeView', () => {
   afterEach(() => {
     vi.unstubAllGlobals();
     mockShowToast.mockClear();
+    localStorage.clear();
   });
 
   const stubFetch = (impl: (...args: Parameters<typeof fetch>) => unknown) => {
@@ -111,9 +112,9 @@ describe('ResumeView', () => {
       await waitFor(() => {
         expect(calls.filter((c) => c === 'POST /api/resumes')).toHaveLength(1);
       });
-      const [, init] = vi.mocked(fetch).mock.calls.find(
-        ([, i]) => i?.method === 'POST',
-      )!;
+      const [, init] = vi
+        .mocked(fetch)
+        .mock.calls.find(([, i]) => i?.method === 'POST')!;
       expect(init?.body).toBeInstanceOf(FormData);
     });
 
@@ -122,9 +123,7 @@ describe('ResumeView', () => {
       renderWithProviders(<ResumeView />, {
         preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
       });
-      await waitFor(() =>
-        expect(fetch).toHaveBeenCalledWith('/api/resumes'),
-      );
+      await waitFor(() => expect(fetch).toHaveBeenCalledWith('/api/resumes'));
       vi.mocked(fetch).mockClear();
 
       const input = document.querySelector(
@@ -142,7 +141,7 @@ describe('ResumeView', () => {
       expect(fetch).not.toHaveBeenCalled();
     });
 
-    it('disables the upload slot once 8 resumes exist', async () => {
+    it('keeps the upload slot enabled once 8 resumes exist, but shows an error toast on click instead of opening the file picker', async () => {
       const eight = Array.from({ length: 8 }, (_, i) =>
         mockResume({ id: `r${i}`, name: `Resume ${i}`, order: i }),
       );
@@ -154,7 +153,19 @@ describe('ResumeView', () => {
       await waitFor(() => {
         expect(screen.getByText('Resume 0')).toBeInTheDocument();
       });
-      expect(screen.getByTitle('You can have up to 8 resumes')).toBeDisabled();
+      const uploadSlot = screen.getByTitle('You can have up to 8 resumes');
+      expect(uploadSlot).not.toBeDisabled();
+
+      fireEvent.click(uploadSlot);
+
+      expect(mockShowToast).toHaveBeenCalledWith(
+        'You can only upload maximum 8 resumes. Please delete one resume to upload.',
+        expect.objectContaining({ type: 'error', duration: 4000 }),
+      );
+      expect(fetch).not.toHaveBeenCalledWith(
+        '/api/resumes',
+        expect.objectContaining({ method: 'POST' }),
+      );
     });
   });
 
@@ -285,9 +296,73 @@ describe('ResumeView', () => {
       fireEvent.click(screen.getByTitle('Delete'));
       fireEvent.click(screen.getByText('Nope'));
 
-      expect(
-        calls.some((c) => c.init?.method === 'DELETE'),
-      ).toBe(false);
+      expect(calls.some((c) => c.init?.method === 'DELETE')).toBe(false);
+    });
+  });
+
+  describe('view mode toggle', () => {
+    it('defaults to grid view', async () => {
+      stubFetch(async () => ({ ok: true, json: async () => [] }));
+      renderWithProviders(<ResumeView />, {
+        preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
+      });
+
+      await waitFor(() => expect(fetch).toHaveBeenCalledWith('/api/resumes'));
+      expect(screen.getByTitle('Upload a resume')).toBeInTheDocument();
+      expect(screen.queryByText('Name')).not.toBeInTheDocument();
+    });
+
+    it('switches to the table when List View is clicked', async () => {
+      stubFetch(async () => ({
+        ok: true,
+        json: async () => [mockResume()],
+      }));
+      renderWithProviders(<ResumeView />, {
+        preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
+      });
+      await waitFor(() => screen.getByText('My Resume'));
+
+      fireEvent.click(screen.getByTitle('List View'));
+
+      expect(screen.getByText('Name')).toBeInTheDocument();
+      expect(screen.getByText('Size')).toBeInTheDocument();
+      expect(screen.queryByTitle('Upload a resume')).not.toBeInTheDocument();
+    });
+
+    it('persists the chosen view across a remount', async () => {
+      stubFetch(async () => ({ ok: true, json: async () => [] }));
+      const { unmount } = renderWithProviders(<ResumeView />, {
+        preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
+      });
+      await waitFor(() => expect(fetch).toHaveBeenCalledWith('/api/resumes'));
+      fireEvent.click(screen.getByTitle('List View'));
+      expect(screen.getByText('Name')).toBeInTheDocument();
+      unmount();
+
+      renderWithProviders(<ResumeView />, {
+        preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
+      });
+      await waitFor(() => expect(fetch).toHaveBeenCalledWith('/api/resumes'));
+      expect(screen.getByText('Name')).toBeInTheDocument();
+    });
+
+    it('shows the header Upload Resume button in list view and toasts at the 8-resume cap', async () => {
+      const eight = Array.from({ length: 8 }, (_, i) =>
+        mockResume({ id: `r${i}`, name: `Resume ${i}`, order: i }),
+      );
+      stubFetch(async () => ({ ok: true, json: async () => eight }));
+      renderWithProviders(<ResumeView />, {
+        preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
+      });
+      await waitFor(() => screen.getByText('Resume 0'));
+      fireEvent.click(screen.getByTitle('List View'));
+
+      fireEvent.click(screen.getByText('Upload Resume'));
+
+      expect(mockShowToast).toHaveBeenCalledWith(
+        'You can only upload maximum 8 resumes. Please delete one resume to upload.',
+        expect.objectContaining({ type: 'error', duration: 4000 }),
+      );
     });
   });
 });

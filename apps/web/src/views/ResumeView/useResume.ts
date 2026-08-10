@@ -3,7 +3,11 @@ import { useSelector } from 'react-redux';
 import type { RootState } from 'store';
 import { showToast } from 'components/common/Toast';
 import type { Resume } from './types';
-import { MAX_RESUMES, MAX_FILE_BYTES } from './resumeConstants';
+import {
+  MAX_RESUMES,
+  MAX_FILE_BYTES,
+  MAX_RESUMES_MESSAGE,
+} from './resumeConstants';
 
 async function extractErrorMessage(
   res: Response,
@@ -25,6 +29,18 @@ export function useResume() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [previewId, setPreviewId] = useState<string | null>(null);
 
+  // List view only — Grid view has no pagination/selection concept.
+  const [pageIndex, setPageIndex] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const pageCount = Math.max(1, Math.ceil(data.length / pageSize));
+  const pagedData = data.slice(
+    pageIndex * pageSize,
+    pageIndex * pageSize + pageSize,
+  );
+
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [showBatchConfirm, setShowBatchConfirm] = useState(false);
+
   const fetchResumes = useCallback(async () => {
     setIsLoading(true);
     try {
@@ -43,10 +59,27 @@ export function useResume() {
     if (isAuthenticated) fetchResumes();
   }, [isAuthenticated, fetchResumes]);
 
-  const validateFile = (file: File): string | null => {
-    if (data.length >= MAX_RESUMES) {
-      return `You can only have up to ${MAX_RESUMES} resumes`;
+  // Clamp back onto the last valid page if it shrinks out from under us
+  // (e.g. deleting the only resume on the last page).
+  useEffect(() => {
+    if (pageIndex > 0 && pageIndex >= pageCount) {
+      setPageIndex(pageCount - 1);
     }
+  }, [pageIndex, pageCount]);
+
+  // Selection is page-scoped, same as the Templates/PreviousCoverLetters
+  // tables (whose selection resets on every page change too, just as a
+  // side effect of those pages being server-refetched — here it's explicit
+  // since resumes are all fetched at once).
+  useEffect(() => {
+    setSelectedIds(new Set());
+  }, [data, pageIndex]);
+
+  const notifyMaxResumesReached = useCallback(() => {
+    showToast(MAX_RESUMES_MESSAGE, { type: 'error', duration: 4000 });
+  }, []);
+
+  const validateFile = (file: File): string | null => {
     if (file.type !== 'application/pdf') {
       return 'Only PDF files are supported';
     }
@@ -57,6 +90,10 @@ export function useResume() {
   };
 
   const uploadResume = async (file: File) => {
+    if (data.length >= MAX_RESUMES) {
+      notifyMaxResumesReached();
+      return;
+    }
     const error = validateFile(file);
     if (error) {
       showToast(error, { type: 'error' });
@@ -72,14 +109,19 @@ export function useResume() {
         body: formData,
       });
       if (!res.ok) {
-        throw new Error(await extractErrorMessage(res, 'Failed to upload resume'));
+        throw new Error(
+          await extractErrorMessage(res, 'Failed to upload resume'),
+        );
       }
       showToast('Resume uploaded', { duration: 2000 });
       await fetchResumes();
     } catch (err) {
-      showToast(err instanceof Error ? err.message : 'Failed to upload resume', {
-        type: 'error',
-      });
+      showToast(
+        err instanceof Error ? err.message : 'Failed to upload resume',
+        {
+          type: 'error',
+        },
+      );
     } finally {
       setIsUploading(false);
     }
@@ -111,9 +153,12 @@ export function useResume() {
       showToast('Resume replaced', { duration: 2000 });
       await fetchResumes();
     } catch (err) {
-      showToast(err instanceof Error ? err.message : 'Failed to replace resume', {
-        type: 'error',
-      });
+      showToast(
+        err instanceof Error ? err.message : 'Failed to replace resume',
+        {
+          type: 'error',
+        },
+      );
     } finally {
       setBusyId(null);
     }
@@ -167,6 +212,69 @@ export function useResume() {
     }
   };
 
+  // Dragging only ever reorders within the visible page (rows on other
+  // pages aren't in the DOM to drag to/from), so the reordered page slice
+  // is merged back into its original position in the full list before
+  // being sent to the server as the authoritative new order.
+  const reorderPagedResumes = (newPagedOrder: Resume[]) => {
+    const start = pageIndex * pageSize;
+    const newFullOrder = [
+      ...data.slice(0, start),
+      ...newPagedOrder,
+      ...data.slice(start + newPagedOrder.length),
+    ];
+    reorderResumes(newFullOrder);
+  };
+
+  const allSelected =
+    pagedData.length > 0 && pagedData.every((r) => selectedIds.has(r.id));
+  const someSelected = pagedData.some((r) => selectedIds.has(r.id));
+
+  const toggleSelectAll = () => {
+    if (allSelected) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(pagedData.map((r) => r.id)));
+    }
+  };
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const clearSelection = () => setSelectedIds(new Set());
+
+  const handleBatchDelete = async () => {
+    try {
+      const res = await fetch('/api/resumes/batch', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: Array.from(selectedIds) }),
+      });
+      if (!res.ok) throw new Error('Failed to delete resumes');
+      showToast(
+        `${selectedIds.size} resume${selectedIds.size > 1 ? 's' : ''} removed`,
+        { duration: 2000 },
+      );
+      setShowBatchConfirm(false);
+      setSelectedIds(new Set());
+      await fetchResumes();
+    } catch {
+      showToast('Failed to delete resumes', { type: 'error' });
+    }
+  };
+
+  const handlePageChange = (page: number) => setPageIndex(page);
+  const handlePageSizeChange = (size: number) => {
+    setPageSize(size);
+    setPageIndex(0);
+  };
+
   return {
     authLoading,
     isAuthenticated,
@@ -183,5 +291,22 @@ export function useResume() {
     renameResume,
     handleDelete,
     reorderResumes,
+    notifyMaxResumesReached,
+    pagedData,
+    pageIndex,
+    pageSize,
+    pageCount,
+    handlePageChange,
+    handlePageSizeChange,
+    reorderPagedResumes,
+    selectedIds,
+    allSelected,
+    someSelected,
+    toggleSelectAll,
+    toggleSelect,
+    clearSelection,
+    showBatchConfirm,
+    setShowBatchConfirm,
+    handleBatchDelete,
   };
 }

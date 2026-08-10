@@ -42,6 +42,7 @@ describe('ResumeService', () => {
       update: jest.fn(),
       updateMany: jest.fn(),
       delete: jest.fn(),
+      deleteMany: jest.fn(),
       count: jest.fn(),
     },
     $executeRaw: jest.fn(),
@@ -363,6 +364,50 @@ describe('ResumeService', () => {
       mockStorageService.deleteObject.mockRejectedValue(new Error('boom'));
 
       await expect(service.remove('r1', 'user-1')).resolves.toBeUndefined();
+    });
+  });
+
+  describe('removeBatch', () => {
+    it('deletes only the rows matching the ids and owned by the user, then their storage objects', async () => {
+      const matched = [
+        { id: 'a', storageKey: 'resumes/user-1/a.pdf' },
+        { id: 'b', storageKey: 'resumes/user-1/b.pdf' },
+      ];
+      mockPrismaService.resume.findMany.mockResolvedValue(matched);
+
+      await service.removeBatch(['a', 'b', 'foreign-id'], 'user-1');
+
+      expect(mockPrismaService.resume.findMany).toHaveBeenCalledWith({
+        where: { id: { in: ['a', 'b', 'foreign-id'] }, userId: 'user-1' },
+      });
+      expect(mockPrismaService.resume.deleteMany).toHaveBeenCalledWith({
+        where: { id: { in: ['a', 'b', 'foreign-id'] }, userId: 'user-1' },
+      });
+      expect(mockStorageService.deleteObject).toHaveBeenCalledWith(
+        'resumes/user-1/a.pdf',
+      );
+      expect(mockStorageService.deleteObject).toHaveBeenCalledWith(
+        'resumes/user-1/b.pdf',
+      );
+    });
+
+    it('does not throw when a storage object fails to delete', async () => {
+      mockPrismaService.resume.findMany.mockResolvedValue([
+        { id: 'a', storageKey: 'resumes/user-1/a.pdf' },
+      ]);
+      mockStorageService.deleteObject.mockRejectedValue(new Error('boom'));
+
+      await expect(
+        service.removeBatch(['a'], 'user-1'),
+      ).resolves.toBeUndefined();
+    });
+
+    it('deletes no storage objects when none of the ids belong to the user', async () => {
+      mockPrismaService.resume.findMany.mockResolvedValue([]);
+
+      await service.removeBatch(['not-mine'], 'user-1');
+
+      expect(mockStorageService.deleteObject).not.toHaveBeenCalled();
     });
   });
 
