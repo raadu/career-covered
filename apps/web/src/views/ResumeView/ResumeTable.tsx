@@ -1,5 +1,8 @@
 import { DndContext, closestCenter } from '@dnd-kit/core';
-import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
 import Pagination from 'components/common/DataTable/Pagination';
 import Checkbox from 'views/TemplatesView/Checkbox';
 import ResumeTableRow from './ResumeTableRow';

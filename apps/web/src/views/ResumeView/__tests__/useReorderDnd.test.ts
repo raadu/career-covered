@@ -29,9 +29,7 @@ describe('useReorderDnd', () => {
     const c = mockResume({ id: 'c', order: 2 });
     const onReorder = vi.fn();
 
-    const { result } = renderHook(() =>
-      useReorderDnd([a, b, c], onReorder),
-    );
+    const { result } = renderHook(() => useReorderDnd([a, b, c], onReorder));
 
     result.current.handleDragEnd(dragEvent('a', 'c'));
 

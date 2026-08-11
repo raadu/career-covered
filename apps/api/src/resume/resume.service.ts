@@ -10,7 +10,10 @@ import { PDFDocument } from 'pdf-lib';
 import { extractText } from 'unpdf';
 import { PrismaService } from '../prisma/prisma.service';
 import { StorageService, type StoredObject } from '../storage/storage.service';
-import type { ResumeResponseDto } from './dto/resume.dto';
+import type {
+  ResumeResponseDto,
+  ResumeContentResponseDto,
+} from './dto/resume.dto';
 import { MAX_RESUME_BYTES, MAX_RESUMES_PER_USER } from './resume.constants';
 import * as db from '@career-covered/db';
 
@@ -98,6 +101,23 @@ export class ResumeService {
       orderBy: { order: 'asc' },
     });
     return resumes.map((r) => this.toResponse(r));
+  }
+
+  // Deliberately not included in findAll/toResponse — parsedText can be
+  // large and is only ever needed for the one resume a user has selected
+  // for prompt personalization, not for every row in a list view.
+  async getContent(
+    id: string,
+    userId: string,
+  ): Promise<ResumeContentResponseDto> {
+    const resume = await this.prisma.resume.findFirst({
+      where: { id, userId },
+      select: { parsedText: true },
+    });
+    if (!resume) {
+      throw new NotFoundException(`Resume with ID ${id} not found`);
+    }
+    return { parsedText: resume.parsedText };
   }
 
   async create(

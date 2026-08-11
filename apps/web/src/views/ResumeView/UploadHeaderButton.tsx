@@ -1,6 +1,6 @@
 import { FaPlus } from 'react-icons/fa';
 import CommonButton from 'components/common/CommonButton';
-import { useHiddenFileInput } from './useHiddenFileInput';
+import { useHiddenFileInput } from 'hooks/useHiddenFileInput';
 
 interface UploadHeaderButtonProps {
   atCap: boolean;

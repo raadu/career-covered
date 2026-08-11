@@ -97,6 +97,12 @@ describe('Resumes (e2e)', () => {
         .get('/api/resumes/00000000-0000-0000-0000-000000000000/preview')
         .expect(401);
     });
+
+    it('GET /api/resumes/:id/content returns 401 with no session cookie', async () => {
+      await request(app.getHttpServer())
+        .get('/api/resumes/00000000-0000-0000-0000-000000000000/content')
+        .expect(401);
+    });
   });
 
   describe('upload → preview/download → delete round trip', () => {
@@ -157,6 +163,26 @@ describe('Resumes (e2e)', () => {
         .expect(200);
 
       expect(res.headers['content-disposition']).toContain('attachment');
+    });
+
+    it('returns the parsed text via the content endpoint', async () => {
+      const res = await request(app.getHttpServer())
+        .get(`/api/resumes/${resumeId}/content`)
+        .set('Cookie', sessionCookie)
+        .expect(200);
+
+      // parsedText is null under Jest here (see the extraction comment
+      // above) — this proves the endpoint is wired, ownership-scoped, and
+      // returns whatever the DB actually holds, not that extraction ran.
+      const row = await prisma.resume.findUnique({ where: { id: resumeId } });
+      expect(res.body).toEqual({ parsedText: row?.parsedText ?? null });
+    });
+
+    it('404s on the content endpoint for a resume the user does not own', async () => {
+      await request(app.getHttpServer())
+        .get('/api/resumes/00000000-0000-0000-0000-000000000000/content')
+        .set('Cookie', sessionCookie)
+        .expect(404);
     });
 
     it('deletes the resume and its storage object', async () => {

@@ -29,6 +29,7 @@ import {
   ReorderResumesDto,
   BatchDeleteResumeDto,
   type ResumeResponseDto,
+  type ResumeContentResponseDto,
 } from './dto/resume.dto';
 import { MulterExceptionFilter } from './multer-exception.filter';
 import { buildContentDisposition } from './content-disposition';
@@ -125,6 +126,17 @@ export class ResumeController {
     @CurrentUser() user: db.User,
   ): Promise<void> {
     return this.resumeService.remove(id, user.id);
+  }
+
+  @Get(':id/content')
+  @ApiOperation({
+    summary: "Get a resume's extracted text, for prompt personalization",
+  })
+  async getContent(
+    @Param('id') id: string,
+    @CurrentUser() user: db.User,
+  ): Promise<ResumeContentResponseDto> {
+    return this.resumeService.getContent(id, user.id);
   }
 
   @Get(':id/preview')

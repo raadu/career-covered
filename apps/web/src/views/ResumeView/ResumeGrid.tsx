@@ -3,7 +3,7 @@ import { SortableContext, rectSortingStrategy } from '@dnd-kit/sortable';
 import UploadSlot from './UploadSlot';
 import ResumeCard from './ResumeCard';
 import type { Resume } from './types';
-import { MAX_RESUMES } from './resumeConstants';
+import { MAX_RESUMES } from 'utils/resumeConstants';
 import { useReorderDnd } from './useReorderDnd';
 
 interface ResumeGridProps {

@@ -497,4 +497,37 @@ describe('ResumeService', () => {
       });
     });
   });
+
+  describe('getContent', () => {
+    it('throws NotFoundException when the resume is not owned/missing', async () => {
+      mockPrismaService.resume.findFirst.mockResolvedValue(null);
+      await expect(service.getContent('r1', 'user-1')).rejects.toThrow(
+        NotFoundException,
+      );
+    });
+
+    it('returns the parsed text for an owned resume', async () => {
+      mockPrismaService.resume.findFirst.mockResolvedValue({
+        parsedText: 'Extracted resume text',
+      });
+
+      await expect(service.getContent('r1', 'user-1')).resolves.toEqual({
+        parsedText: 'Extracted resume text',
+      });
+      expect(mockPrismaService.resume.findFirst).toHaveBeenCalledWith({
+        where: { id: 'r1', userId: 'user-1' },
+        select: { parsedText: true },
+      });
+    });
+
+    it('returns null parsedText when extraction previously failed', async () => {
+      mockPrismaService.resume.findFirst.mockResolvedValue({
+        parsedText: null,
+      });
+
+      await expect(service.getContent('r1', 'user-1')).resolves.toEqual({
+        parsedText: null,
+      });
+    });
+  });
 });

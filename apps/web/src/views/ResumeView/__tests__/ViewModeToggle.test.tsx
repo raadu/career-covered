@@ -11,8 +11,14 @@ describe('ViewModeToggle', () => {
 
   it('marks the active view as pressed', () => {
     render(<ViewModeToggle viewMode="grid" onChange={vi.fn()} />);
-    expect(screen.getByTitle('Grid View')).toHaveAttribute('aria-pressed', 'true');
-    expect(screen.getByTitle('List View')).toHaveAttribute('aria-pressed', 'false');
+    expect(screen.getByTitle('Grid View')).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    expect(screen.getByTitle('List View')).toHaveAttribute(
+      'aria-pressed',
+      'false',
+    );
   });
 
   it('calls onChange with "list" when the List button is clicked', () => {

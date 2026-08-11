@@ -45,3 +45,7 @@ export interface ResumeResponseDto {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface ResumeContentResponseDto {
+  parsedText: string | null;
+}

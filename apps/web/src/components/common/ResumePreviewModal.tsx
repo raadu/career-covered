@@ -1,18 +1,18 @@
 import { FaTimes, FaFilePdf } from 'react-icons/fa';
 
-interface PreviewModalProps {
+interface ResumePreviewModalProps {
   isOpen: boolean;
   resumeId: string | null;
   resumeName?: string;
   onClose: () => void;
 }
 
-const PreviewModal = ({
+const ResumePreviewModal = ({
   isOpen,
   resumeId,
   resumeName,
   onClose,
-}: PreviewModalProps) => {
+}: ResumePreviewModalProps) => {
   if (!isOpen || !resumeId) return null;
 
   return (
@@ -53,4 +53,4 @@ const PreviewModal = ({
   );
 };
 
-export default PreviewModal;
+export default ResumePreviewModal;

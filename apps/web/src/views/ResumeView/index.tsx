@@ -1,13 +1,13 @@
 import { Navigate } from 'react-router-dom';
 import ConfirmModal from 'components/common/ConfirmModal';
+import ResumePreviewModal from 'components/common/ResumePreviewModal';
 import BatchActionBar from 'views/TemplatesView/BatchActionBar';
+import { MAX_RESUMES } from 'utils/resumeConstants';
 import Header from './Header';
 import ResumeGrid from './ResumeGrid';
 import ResumeTable from './ResumeTable';
-import PreviewModal from './PreviewModal';
 import { useResume } from './useResume';
 import { useResumeViewMode } from './useResumeViewMode';
-import { MAX_RESUMES } from './resumeConstants';
 
 const ResumeView = () => {
   const {
@@ -112,7 +112,7 @@ const ResumeView = () => {
         </>
       )}
 
-      <PreviewModal
+      <ResumePreviewModal
         isOpen={previewId !== null}
         resumeId={previewId}
         resumeName={previewResume?.name}

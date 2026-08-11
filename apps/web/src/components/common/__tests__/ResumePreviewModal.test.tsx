@@ -1,25 +1,25 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import PreviewModal from '../PreviewModal';
+import ResumePreviewModal from '../ResumePreviewModal';
 
-describe('PreviewModal', () => {
+describe('ResumePreviewModal', () => {
   it('renders nothing when closed', () => {
     const { container } = render(
-      <PreviewModal isOpen={false} resumeId="r1" onClose={vi.fn()} />,
+      <ResumePreviewModal isOpen={false} resumeId="r1" onClose={vi.fn()} />,
     );
     expect(container.firstChild).toBeNull();
   });
 
   it('renders nothing when there is no resumeId, even if isOpen is true', () => {
     const { container } = render(
-      <PreviewModal isOpen={true} resumeId={null} onClose={vi.fn()} />,
+      <ResumePreviewModal isOpen={true} resumeId={null} onClose={vi.fn()} />,
     );
     expect(container.firstChild).toBeNull();
   });
 
   it('points the iframe at the preview endpoint for the given resume id', () => {
     render(
-      <PreviewModal
+      <ResumePreviewModal
         isOpen={true}
         resumeId="abc-123"
         resumeName="My Resume"
@@ -34,7 +34,7 @@ describe('PreviewModal', () => {
   it('closes on backdrop click', () => {
     const onClose = vi.fn();
     const { container } = render(
-      <PreviewModal isOpen={true} resumeId="r1" onClose={onClose} />,
+      <ResumePreviewModal isOpen={true} resumeId="r1" onClose={onClose} />,
     );
     fireEvent.click(container.firstChild as HTMLElement);
     expect(onClose).toHaveBeenCalledOnce();
@@ -42,14 +42,18 @@ describe('PreviewModal', () => {
 
   it('does not close when clicking inside the modal body', () => {
     const onClose = vi.fn();
-    render(<PreviewModal isOpen={true} resumeId="r1" onClose={onClose} />);
+    render(
+      <ResumePreviewModal isOpen={true} resumeId="r1" onClose={onClose} />,
+    );
     fireEvent.click(screen.getByRole('dialog'));
     expect(onClose).not.toHaveBeenCalled();
   });
 
   it('closes on the close button', () => {
     const onClose = vi.fn();
-    render(<PreviewModal isOpen={true} resumeId="r1" onClose={onClose} />);
+    render(
+      <ResumePreviewModal isOpen={true} resumeId="r1" onClose={onClose} />,
+    );
     fireEvent.click(screen.getByLabelText('Close modal'));
     expect(onClose).toHaveBeenCalledOnce();
   });

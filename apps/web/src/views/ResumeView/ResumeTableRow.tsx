@@ -1,13 +1,19 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { FaEye, FaDownload, FaSyncAlt, FaTrash, FaGripVertical } from 'react-icons/fa';
+import {
+  FaEye,
+  FaDownload,
+  FaSyncAlt,
+  FaTrash,
+  FaGripVertical,
+} from 'react-icons/fa';
 import { LuLoader } from 'react-icons/lu';
 import InlineEditableText from 'components/common/InlineEditableText';
 import TableActions, { type TableAction } from 'components/common/TableActions';
 import Checkbox from 'views/TemplatesView/Checkbox';
 import formatDate from 'utils/dateUtils';
 import { formatFileSize } from 'utils/fileSizeUtils';
-import { useHiddenFileInput } from './useHiddenFileInput';
+import { useHiddenFileInput } from 'hooks/useHiddenFileInput';
 import type { Resume } from './types';
 
 interface ResumeTableRowProps {
@@ -49,7 +55,12 @@ const ResumeTableRow = ({
   };
 
   const actions: TableAction[] = [
-    { key: 'view', label: 'View', icon: <FaEye size={12} />, onClick: onPreview },
+    {
+      key: 'view',
+      label: 'View',
+      icon: <FaEye size={12} />,
+      onClick: onPreview,
+    },
     {
       key: 'download',
       label: 'Download',

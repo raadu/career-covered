@@ -28,6 +28,7 @@ describe('ResumeController', () => {
     removeBatch: jest.fn(),
     reorder: jest.fn(),
     getFileStream: jest.fn(),
+    getContent: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -96,6 +97,12 @@ describe('ResumeController', () => {
     mockResumeService.rename.mockResolvedValue({ id: 'r1' });
     await controller.rename('r1', { name: 'New Name' }, mockUser);
     expect(service.rename).toHaveBeenCalledWith('r1', 'user-1', 'New Name');
+  });
+
+  it('getContent delegates to the service with the id and user id', async () => {
+    mockResumeService.getContent.mockResolvedValue({ parsedText: 'text' });
+    await controller.getContent('r1', mockUser);
+    expect(service.getContent).toHaveBeenCalledWith('r1', 'user-1');
   });
 
   it('remove delegates to the service', async () => {

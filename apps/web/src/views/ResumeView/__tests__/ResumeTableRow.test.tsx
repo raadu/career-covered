@@ -15,7 +15,9 @@ const mockResume = (overrides: Partial<Resume> = {}): Resume => ({
   ...overrides,
 });
 
-function renderRow(props: Partial<React.ComponentProps<typeof ResumeTableRow>> = {}) {
+function renderRow(
+  props: Partial<React.ComponentProps<typeof ResumeTableRow>> = {},
+) {
   const defaultProps: React.ComponentProps<typeof ResumeTableRow> = {
     resume: mockResume(),
     isBusy: false,

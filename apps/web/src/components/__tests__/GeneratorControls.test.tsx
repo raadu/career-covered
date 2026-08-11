@@ -144,4 +144,139 @@ describe('GeneratorControls', () => {
       expect(saveCall?.body).toMatchObject({ model: DEFAULT_MODEL });
     });
   });
+
+  describe('resume personalization', () => {
+    const buildFetchMock = (
+      resumeResponse: { ok: boolean; parsedText?: string } = {
+        ok: true,
+        parsedText: 'Extracted resume text',
+      },
+    ) => {
+      const fetchCalls: Array<{ url: string; body?: unknown }> = [];
+      const mockFetch = vi.fn(
+        async (input: RequestInfo | URL, init?: RequestInit) => {
+          let url: string;
+          let body: unknown;
+          if (typeof input === 'string') {
+            url = input;
+            body = init?.body ? JSON.parse(String(init.body)) : undefined;
+          } else {
+            const request = input as Request;
+            url = request.url;
+            const cloned = request.clone();
+            body = await cloned.json().catch(() => undefined);
+          }
+          fetchCalls.push({ url, body });
+
+          if (url.includes('/resumes/') && url.includes('/content')) {
+            return new Response(
+              JSON.stringify({ parsedText: resumeResponse.parsedText ?? null }),
+              { status: resumeResponse.ok ? 200 : 500 },
+            );
+          }
+          if (url.includes('/api/generate')) {
+            return new Response(
+              JSON.stringify({
+                choices: [{ message: { content: 'Generated letter' } }],
+              }),
+              { status: 200 },
+            );
+          }
+          return new Response(JSON.stringify({}), { status: 200 });
+        },
+      );
+      return { mockFetch, fetchCalls };
+    };
+
+    it('fetches the resume content and includes it in the prompt when selectedResumeId is set', async () => {
+      const { mockFetch, fetchCalls } = buildFetchMock({
+        ok: true,
+        parsedText: 'Extracted resume text',
+      });
+      vi.stubGlobal('fetch', mockFetch);
+
+      renderWithProviders(<GeneratorControls selectedResumeId="r1" />, {
+        preloadedState: {
+          coverLetter: {
+            jobDescription: 'Software Engineer',
+            apiKey: 'gsk-test',
+          },
+        },
+      });
+
+      fireEvent.click(
+        screen.getByRole('button', { name: /Generate Cover Letter/i }),
+      );
+
+      await waitFor(() => {
+        expect(
+          fetchCalls.some((c) => c.url === '/api/resumes/r1/content'),
+        ).toBe(true);
+      });
+      await waitFor(() => {
+        const generateCall = fetchCalls.find((c) =>
+          c.url.includes('/api/generate'),
+        );
+        expect(generateCall).toBeDefined();
+        const message = (
+          generateCall!.body as { messages: { content: string }[] }
+        ).messages[0].content;
+        expect(message).toContain('Extracted resume text');
+      });
+    });
+
+    it('does not fetch resume content when selectedResumeId is not set', async () => {
+      const { mockFetch, fetchCalls } = buildFetchMock();
+      vi.stubGlobal('fetch', mockFetch);
+
+      renderWithProviders(<GeneratorControls />, {
+        preloadedState: {
+          coverLetter: {
+            jobDescription: 'Software Engineer',
+            apiKey: 'gsk-test',
+          },
+        },
+      });
+
+      fireEvent.click(
+        screen.getByRole('button', { name: /Generate Cover Letter/i }),
+      );
+
+      await waitFor(() => {
+        expect(fetchCalls.some((c) => c.url.includes('/api/generate'))).toBe(
+          true,
+        );
+      });
+      expect(fetchCalls.some((c) => c.url.includes('/content'))).toBe(false);
+    });
+
+    it('generates without resume text and shows a toast when the resume fetch fails', async () => {
+      const { mockFetch, fetchCalls } = buildFetchMock({ ok: false });
+      vi.stubGlobal('fetch', mockFetch);
+
+      renderWithProviders(<GeneratorControls selectedResumeId="r1" />, {
+        preloadedState: {
+          coverLetter: {
+            jobDescription: 'Software Engineer',
+            apiKey: 'gsk-test',
+          },
+        },
+      });
+
+      fireEvent.click(
+        screen.getByRole('button', { name: /Generate Cover Letter/i }),
+      );
+
+      await waitFor(() => {
+        const generateCall = fetchCalls.find((c) =>
+          c.url.includes('/api/generate'),
+        );
+        expect(generateCall).toBeDefined();
+        const message = (
+          generateCall!.body as { messages: { content: string }[] }
+        ).messages[0].content;
+        expect(message).not.toContain('Candidate Resume:');
+      });
+    });
+  });
 });

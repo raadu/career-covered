@@ -99,6 +99,37 @@ const buildLanguageRule = (sameLanguage: boolean): string =>
     ? `CRITICAL: The cover letter MUST be written in the SAME LANGUAGE as the job description below. Analyze the job description's language and write the entire cover letter in that language. Do NOT default to English.`
     : `Write in professional English unless instructed otherwise.`;
 
+// Covers all four combinations of (template present?, resume present?) —
+// the resume is the candidate's real background when there's no template
+// to work from, and a supplementary source of facts/skills when there is.
+const buildBackgroundSection = (
+  template: string,
+  resumeText: string | null,
+): string => {
+  if (template && resumeText) {
+    return `Candidate Background / Existing Cover Letter:
+${template}
+
+Candidate Resume:
+${resumeText}
+
+The existing cover letter above should still drive the overall voice and structure. Use the resume only to add factual details, skills or achievements the cover letter doesn't already mention — do not contradict anything already stated in the cover letter.`;
+  }
+
+  if (resumeText) {
+    return `Candidate Resume:
+${resumeText}
+
+The candidate did not provide a previous cover letter. Write a highly personalized cover letter from scratch, using the resume above to match the candidate's real skills and experience to the job description.`;
+  }
+
+  if (template) {
+    return `Candidate Background / Existing Cover Letter:\n${template}`;
+  }
+
+  return `The candidate did not provide a previous cover letter. Create one from scratch.`;
+};
+
 // ────────────────────────────────
 // Public Helpers
 // ────────────────────────────────
@@ -128,18 +159,21 @@ export const buildCoverLetterPrompt = (
   sameLanguage: boolean = false,
   customPrompt?: string,
   jobMarket: import('./marketPrompts').JobMarket = 'international',
+  resumeText?: string | null,
 ): string => {
   const sanitizedJD = sanitize(jobDescription);
   const sanitizedTemplate = sanitize(template);
+  const sanitizedResumeText = resumeText ? sanitize(resumeText) : null;
 
   const wordRule = buildWordRule(wordCountLimit);
   const changesRule = buildChangesRule(minimalChanges);
   const languageRule = buildLanguageRule(sameLanguage);
   const marketRules = getMarketRules(jobMarket);
 
-  const templateSection = sanitizedTemplate
-    ? `Candidate Background / Existing Cover Letter:\n${sanitizedTemplate}`
-    : `The candidate did not provide a previous cover letter. Create one from scratch.`;
+  const backgroundSection = buildBackgroundSection(
+    sanitizedTemplate,
+    sanitizedResumeText,
+  );
 
   return [
     SYSTEM_ROLE,
@@ -147,7 +181,7 @@ export const buildCoverLetterPrompt = (
     'Job Description:',
     sanitizedJD,
     '',
-    templateSection,
+    backgroundSection,
     '',
     marketRules,
     '',

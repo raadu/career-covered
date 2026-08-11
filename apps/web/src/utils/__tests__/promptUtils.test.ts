@@ -68,5 +68,99 @@ describe('promptUtils', () => {
       const result = buildCoverLetterPrompt(specialChars, template);
       expect(result).toContain('!@#$%^&*()_+{}|:');
     });
+
+    describe('resume personalization', () => {
+      const resumeText = 'Built scalable systems at Acme Corp for 5 years.';
+
+      it('creates from scratch when neither template nor resume is provided', () => {
+        const result = buildCoverLetterPrompt(
+          jobDescription,
+          '',
+          null,
+          true,
+          false,
+          undefined,
+          'international',
+          null,
+        );
+        expect(result).toContain(
+          'The candidate did not provide a previous cover letter. Create one from scratch.',
+        );
+        expect(result).not.toContain('Candidate Resume:');
+      });
+
+      it('keeps existing template-only behavior when no resume is selected', () => {
+        const result = buildCoverLetterPrompt(
+          jobDescription,
+          template,
+          null,
+          true,
+          false,
+          undefined,
+          'international',
+          null,
+        );
+        expect(result).toContain(
+          'Candidate Background / Existing Cover Letter:',
+        );
+        expect(result).toContain(template);
+        expect(result).not.toContain('Candidate Resume:');
+      });
+
+      it('uses the resume as the background source when only a resume is selected', () => {
+        const result = buildCoverLetterPrompt(
+          jobDescription,
+          '',
+          null,
+          true,
+          false,
+          undefined,
+          'international',
+          resumeText,
+        );
+        expect(result).toContain('Candidate Resume:');
+        expect(result).toContain(resumeText);
+        expect(result).toContain('personalized cover letter from scratch');
+        expect(result).not.toContain(
+          'The candidate did not provide a previous cover letter. Create one from scratch.',
+        );
+      });
+
+      it('includes both the template and the resume, with a precedence note, when both are selected', () => {
+        const result = buildCoverLetterPrompt(
+          jobDescription,
+          template,
+          null,
+          true,
+          false,
+          undefined,
+          'international',
+          resumeText,
+        );
+        expect(result).toContain(
+          'Candidate Background / Existing Cover Letter:',
+        );
+        expect(result).toContain(template);
+        expect(result).toContain('Candidate Resume:');
+        expect(result).toContain(resumeText);
+        expect(result).toContain('do not contradict');
+      });
+
+      it('sanitizes malicious content in the resume text', () => {
+        const maliciousResume = 'Skilled engineer <script>alert(1)</script>';
+        const result = buildCoverLetterPrompt(
+          jobDescription,
+          '',
+          null,
+          true,
+          false,
+          undefined,
+          'international',
+          maliciousResume,
+        );
+        expect(result).not.toContain('<script>');
+        expect(result).toContain('Skilled engineer');
+      });
+    });
   });
 });

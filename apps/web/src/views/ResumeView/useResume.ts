@@ -2,12 +2,9 @@ import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import type { RootState } from 'store';
 import { showToast } from 'components/common/Toast';
+import { useResumeUpload } from 'hooks/useResumeUpload';
+import { MAX_FILE_BYTES } from 'utils/resumeConstants';
 import type { Resume } from './types';
-import {
-  MAX_RESUMES,
-  MAX_FILE_BYTES,
-  MAX_RESUMES_MESSAGE,
-} from './resumeConstants';
 
 async function extractErrorMessage(
   res: Response,
@@ -24,7 +21,6 @@ export function useResume() {
 
   const [data, setData] = useState<Resume[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isUploading, setIsUploading] = useState(false);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [previewId, setPreviewId] = useState<string | null>(null);
@@ -75,57 +71,12 @@ export function useResume() {
     setSelectedIds(new Set());
   }, [data, pageIndex]);
 
-  const notifyMaxResumesReached = useCallback(() => {
-    showToast(MAX_RESUMES_MESSAGE, { type: 'error', duration: 4000 });
-  }, []);
-
-  const validateFile = (file: File): string | null => {
-    if (file.type !== 'application/pdf') {
-      return 'Only PDF files are supported';
-    }
-    if (file.size > MAX_FILE_BYTES) {
-      return 'File exceeds the 10MB size limit';
-    }
-    return null;
-  };
-
-  const uploadResume = async (file: File) => {
-    if (data.length >= MAX_RESUMES) {
-      notifyMaxResumesReached();
-      return;
-    }
-    const error = validateFile(file);
-    if (error) {
-      showToast(error, { type: 'error' });
-      return;
-    }
-
-    setIsUploading(true);
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
-      const res = await fetch('/api/resumes', {
-        method: 'POST',
-        body: formData,
-      });
-      if (!res.ok) {
-        throw new Error(
-          await extractErrorMessage(res, 'Failed to upload resume'),
-        );
-      }
-      showToast('Resume uploaded', { duration: 2000 });
-      await fetchResumes();
-    } catch (err) {
-      showToast(
-        err instanceof Error ? err.message : 'Failed to upload resume',
-        {
-          type: 'error',
-        },
-      );
-    } finally {
-      setIsUploading(false);
-    }
-  };
+  const {
+    uploadResume: uploadResumeFile,
+    isUploading,
+    notifyMaxResumesReached,
+  } = useResumeUpload(fetchResumes);
+  const uploadResume = (file: File) => uploadResumeFile(file, data.length);
 
   const replaceResume = async (id: string, file: File) => {
     if (file.type !== 'application/pdf') {

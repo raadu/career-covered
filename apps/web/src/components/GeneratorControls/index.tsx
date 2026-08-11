@@ -22,7 +22,25 @@ import ApiKeySection from './ApiKeySection';
 import ControlActions from './ControlActions';
 import GenerateAction from './GenerateAction';
 
-const GeneratorControls = () => {
+interface GeneratorControlsProps {
+  selectedResumeId?: string | null;
+}
+
+async function fetchResumeText(resumeId: string): Promise<string | null> {
+  try {
+    const res = await fetch(`/api/resumes/${resumeId}/content`);
+    if (!res.ok) throw new Error('Failed to load resume');
+    const { parsedText } = (await res.json()) as { parsedText: string | null };
+    return parsedText;
+  } catch {
+    showToast('Could not load the selected resume — generating without it', {
+      type: 'error',
+    });
+    return null;
+  }
+}
+
+const GeneratorControls = ({ selectedResumeId }: GeneratorControlsProps) => {
   const dispatch = useAppDispatch();
   const {
     apiKey,
@@ -72,6 +90,10 @@ const GeneratorControls = () => {
       ? activeCustomization.wordCount
       : null;
 
+    const resumeText = selectedResumeId
+      ? await fetchResumeText(selectedResumeId)
+      : null;
+
     // Construct prompt
     const prompt = buildCoverLetterPrompt(
       jobDescription,
@@ -80,6 +102,8 @@ const GeneratorControls = () => {
       activeCustomization?.minimalChanges,
       activeCustomization?.sameLanguage,
       customPrompt,
+      undefined,
+      resumeText,
     );
 
     try {
