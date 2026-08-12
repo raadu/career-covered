@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest';
+import { act } from '@testing-library/react';
 import {
   renderWithProviders,
   screen,
@@ -89,5 +90,66 @@ describe('HomeView', () => {
     fireEvent.click(screen.getByText('My Resume'));
 
     expect(localStorage.getItem('cl_selected_resume_id')).toBe('"r1"');
+  });
+
+  it('feeds the measured Template box height to the resume panel as a CSS variable, even with resumes listed', async () => {
+    let capturedCallback: ResizeObserverCallback | null = null;
+    class MockResizeObserver {
+      constructor(callback: ResizeObserverCallback) {
+        capturedCallback = callback;
+      }
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+    }
+    const originalResizeObserver = globalThis.ResizeObserver;
+    globalThis.ResizeObserver =
+      MockResizeObserver as unknown as typeof ResizeObserver;
+
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (input: RequestInfo | URL) => {
+        const url = String(input);
+        if (url === '/api/resumes') {
+          return {
+            ok: true,
+            json: async () => [
+              {
+                id: 'r1',
+                name: 'My Resume',
+                originalFileName: 'r.pdf',
+                mimeType: 'application/pdf',
+                fileSize: 100,
+                order: 0,
+                createdAt: '2026-01-01T00:00:00.000Z',
+                updatedAt: '2026-01-01T00:00:00.000Z',
+              },
+            ],
+          };
+        }
+        return { ok: true, json: async () => [] };
+      }),
+    );
+    renderWithProviders(<HomeView />, {
+      preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
+    });
+
+    await waitFor(() => screen.getByText('My Resume'));
+
+    act(() => {
+      capturedCallback?.(
+        [{ contentRect: { height: 180 } } as ResizeObserverEntry],
+        {} as ResizeObserver,
+      );
+    });
+
+    await waitFor(() => {
+      const panel = screen
+        .getByText('Your Resumes')
+        .closest('div[style]') as HTMLElement;
+      expect(panel.style.getPropertyValue('--template-height')).toBe('180px');
+    });
+
+    globalThis.ResizeObserver = originalResizeObserver;
   });
 });

@@ -33,4 +33,18 @@ describe('ResumeUploadTile', () => {
     );
     expect(screen.getByText('Upload More Resumes')).toBeInTheDocument();
   });
+
+  it('uses shorter vertical padding when compact is set', () => {
+    render(
+      <ResumeUploadTile label="Upload Resume" onClick={vi.fn()} compact />,
+    );
+    expect(screen.getByRole('button')).toHaveClass('py-0.5');
+    expect(screen.getByRole('button')).not.toHaveClass('py-1');
+  });
+
+  it('defaults to the taller padding when compact is not set', () => {
+    render(<ResumeUploadTile label="Upload Resume" onClick={vi.fn()} />);
+    expect(screen.getByRole('button')).toHaveClass('py-1');
+    expect(screen.getByRole('button')).not.toHaveClass('py-0.5');
+  });
 });

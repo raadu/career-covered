@@ -1,3 +1,4 @@
+import { createRef } from 'react';
 import {
   renderWithProviders,
   screen,
@@ -129,6 +130,31 @@ describe('TemplateInput', () => {
       await waitFor(() => {
         expect(screen.getByText('Template 1')).toBeInTheDocument();
       });
+    });
+
+    it('attaches boxRef to the template card only, excluding the saved templates row above it', async () => {
+      const boxRef = createRef<HTMLDivElement>();
+      renderWithProviders(<TemplateInput boxRef={boxRef} />, {
+        preloadedState: {
+          ...authState,
+          coverLetter: {
+            template: '',
+            savedTemplates,
+            activeTemplateId: 't1',
+            isLoadingTemplates: false,
+          },
+        },
+      });
+
+      await waitFor(() => {
+        expect(screen.getByText('Template 1')).toBeInTheDocument();
+      });
+
+      expect(boxRef.current).not.toBeNull();
+      expect(
+        boxRef.current?.textContent?.includes('Your Cover Letter Template'),
+      ).toBe(true);
+      expect(boxRef.current?.textContent?.includes('Template 1')).toBe(false);
     });
 
     it('does not show auth modal on save template click when authenticated', async () => {

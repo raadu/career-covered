@@ -49,7 +49,7 @@ describe('ResumeSelector', () => {
     );
     expect(screen.getByText('Your Resumes')).toBeInTheDocument();
     expect(
-      screen.getByText('Select your resume to make cover letter based on that'),
+      screen.getByText('Select your resume to create better cover letter'),
     ).toBeInTheDocument();
   });
 
@@ -68,6 +68,22 @@ describe('ResumeSelector', () => {
 
       expect(screen.getByText('Login to add resume')).toBeInTheDocument();
       expect(fetchMock).not.toHaveBeenCalled();
+    });
+
+    it('renders the login tile with compact height', () => {
+      stubFetch(async () => ({ ok: true, json: async () => [] }));
+      renderWithProviders(
+        <ResumeSelector selectedResumeId={null} onSelectResume={vi.fn()} />,
+        {
+          preloadedState: {
+            auth: { isAuthenticated: false, isLoading: false },
+          },
+        },
+      );
+
+      expect(screen.getByText('Login to add resume').closest('button')).toHaveClass(
+        'py-0.5',
+      );
     });
 
     it('opens the auth modal when the login tile is clicked', () => {
@@ -199,6 +215,64 @@ describe('ResumeSelector', () => {
         'You can only upload maximum 8 resumes. Please delete one resume to upload.',
         expect.objectContaining({ type: 'error', duration: 4000 }),
       );
+    });
+
+    it('applies the measured height as a CSS variable with resumes present', async () => {
+      stubFetch(async () => ({ ok: true, json: async () => [mockResume()] }));
+      const { container } = renderWithProviders(
+        <ResumeSelector
+          selectedResumeId={null}
+          onSelectResume={vi.fn()}
+          maxHeight={240}
+        />,
+        {
+          preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
+        },
+      );
+
+      await waitFor(() => screen.getByText('My Resume'));
+
+      const panel = container.firstChild as HTMLElement;
+      expect(panel.style.getPropertyValue('--template-height')).toBe(
+        '240px',
+      );
+    });
+  });
+
+  describe('height matching', () => {
+    it('applies the measured height as a CSS variable', () => {
+      const { container } = renderWithProviders(
+        <ResumeSelector
+          selectedResumeId={null}
+          onSelectResume={vi.fn()}
+          maxHeight={240}
+        />,
+        {
+          preloadedState: { auth: { isAuthenticated: false, isLoading: false } },
+        },
+      );
+
+      const panel = container.firstChild as HTMLElement;
+      expect(panel.style.getPropertyValue('--template-height')).toBe(
+        '240px',
+      );
+    });
+
+    it('leaves the CSS variable unset when maxHeight has not been measured yet', () => {
+      stubFetch(async () => ({ ok: true, json: async () => [] }));
+      const { container } = renderWithProviders(
+        <ResumeSelector
+          selectedResumeId={null}
+          onSelectResume={vi.fn()}
+          maxHeight={null}
+        />,
+        {
+          preloadedState: { auth: { isAuthenticated: false, isLoading: false } },
+        },
+      );
+
+      const panel = container.firstChild as HTMLElement;
+      expect(panel.style.getPropertyValue('--template-height')).toBe('');
     });
   });
 });

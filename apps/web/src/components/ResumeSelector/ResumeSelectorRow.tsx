@@ -16,13 +16,13 @@ const ResumeSelectorRow = ({
 }: ResumeSelectorRowProps) => (
   <div
     onClick={onToggleSelect}
-    className={`flex items-center gap-2 px-2 py-1.5 border cursor-pointer transition-all text-sm ${
+    className={`flex items-center gap-2 p-1 border cursor-pointer transition-all text-sm shrink-0 ${
       isSelected
         ? 'bg-blue-50/80 dark:bg-blue-900/30 border-blue-300 dark:border-blue-600'
         : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-blue-200 dark:hover:border-blue-700'
     }`}
   >
-    <span className="flex-1 min-w-0 truncate font-medium text-gray-800 dark:text-gray-200">
+    <span className="flex-1 min-w-0 truncate text-xs text-gray-800 dark:text-gray-200">
       {resume.name}
     </span>
     <button
