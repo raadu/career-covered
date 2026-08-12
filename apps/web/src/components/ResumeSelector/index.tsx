@@ -43,7 +43,7 @@ const ResumeSelector = ({
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-3 sm:p-4 flex flex-col gap-2">
+    <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 p-2 sm:p-2.5 flex flex-col gap-1.5">
       <div>
         <h2 className="text-sm font-bold text-gray-900 dark:text-gray-100">
           Your Resumes

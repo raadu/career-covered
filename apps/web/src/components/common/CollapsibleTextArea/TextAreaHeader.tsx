@@ -39,7 +39,7 @@ const TextAreaHeader = ({
 
   return (
     <div
-      className="py-2 px-3 md:py-2.5 md:px-4 cursor-pointer bg-gray-50/80 dark:bg-gray-700/80 backdrop-blur-sm border-b border-gray-100 dark:border-gray-600 hover:bg-gray-100/50 dark:hover:bg-gray-600/50 transition-all duration-200 group"
+      className="py-1.5 px-2 md:py-2 md:px-3 cursor-pointer bg-gray-50/80 dark:bg-gray-700/80 backdrop-blur-sm border-b border-gray-100 dark:border-gray-600 hover:bg-gray-100/50 dark:hover:bg-gray-600/50 transition-all duration-200 group"
       onClick={onToggleExpand}
     >
       <div className="sm:flex sm:items-center sm:justify-between">

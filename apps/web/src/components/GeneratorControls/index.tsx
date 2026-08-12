@@ -165,7 +165,7 @@ const GeneratorControls = ({ selectedResumeId }: GeneratorControlsProps) => {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-3 flex flex-col items-start gap-2">
+    <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 p-2 flex flex-col items-start gap-2">
       <div className="flex flex-col lg:flex-row w-full gap-3 lg:items-center justify-between">
         <ApiKeySection
           apiKey={apiKey}

@@ -16,7 +16,7 @@ const ResumeSelectorRow = ({
 }: ResumeSelectorRowProps) => (
   <div
     onClick={onToggleSelect}
-    className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-all text-sm ${
+    className={`flex items-center gap-2 px-2 py-1.5 border cursor-pointer transition-all text-sm ${
       isSelected
         ? 'bg-blue-50/80 dark:bg-blue-900/30 border-blue-300 dark:border-blue-600'
         : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-blue-200 dark:hover:border-blue-700'
