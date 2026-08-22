@@ -217,6 +217,62 @@ describe('ResumeSelector', () => {
       );
     });
 
+    it('does not show "See All" with 0 or 1 resume', async () => {
+      stubFetch(async () => ({ ok: true, json: async () => [mockResume()] }));
+      renderWithProviders(
+        <ResumeSelector selectedResumeId={null} onSelectResume={vi.fn()} />,
+        {
+          preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
+        },
+      );
+
+      await waitFor(() => screen.getByText('My Resume'));
+      expect(screen.queryByText('See All')).not.toBeInTheDocument();
+    });
+
+    it('shows "See All" with more than 1 resume and toggles to "Show Less"', async () => {
+      const two = [
+        mockResume({ id: 'r1', name: 'Resume One' }),
+        mockResume({ id: 'r2', name: 'Resume Two', order: 1 }),
+      ];
+      stubFetch(async () => ({ ok: true, json: async () => two }));
+      renderWithProviders(
+        <ResumeSelector selectedResumeId={null} onSelectResume={vi.fn()} />,
+        {
+          preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
+        },
+      );
+
+      await waitFor(() => screen.getByText('Resume One'));
+      const seeAll = screen.getByText('See All');
+      expect(seeAll).toBeInTheDocument();
+
+      fireEvent.click(seeAll);
+      expect(screen.getByText('Show Less')).toBeInTheDocument();
+      expect(screen.queryByText('See All')).not.toBeInTheDocument();
+    });
+
+    it('expands the Template box (via toggleTemplateExpanded) when "See All" is clicked', async () => {
+      const two = [
+        mockResume({ id: 'r1', name: 'Resume One' }),
+        mockResume({ id: 'r2', name: 'Resume Two', order: 1 }),
+      ];
+      stubFetch(async () => ({ ok: true, json: async () => two }));
+      const { store } = renderWithProviders(
+        <ResumeSelector selectedResumeId={null} onSelectResume={vi.fn()} />,
+        {
+          preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
+        },
+      );
+
+      await waitFor(() => screen.getByText('Resume One'));
+      expect(store.getState().coverLetter.isTemplateExpanded).toBe(false);
+
+      fireEvent.click(screen.getByText('See All'));
+
+      expect(store.getState().coverLetter.isTemplateExpanded).toBe(true);
+    });
+
     it('applies the measured height as a CSS variable with resumes present', async () => {
       stubFetch(async () => ({ ok: true, json: async () => [mockResume()] }));
       const { container } = renderWithProviders(
