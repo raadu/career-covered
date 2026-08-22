@@ -26,7 +26,7 @@ const ResultEditor = ({ value, onChange }: ResultEditorProps) => {
         ref={textareaRef}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full min-h-[400px] border-0 focus:ring-0 rounded-lg p-2 text-gray-800 dark:text-gray-100 whitespace-pre-wrap font-serif text-lg leading-relaxed bg-transparent transition-all outline-none resize-none"
+        className="w-full min-h-[400px] border-0 focus:ring-0 rounded-none p-2 text-gray-800 dark:text-gray-100 whitespace-pre-wrap font-serif text-lg leading-relaxed bg-transparent transition-all outline-none resize-none"
         spellCheck="false"
         placeholder="Your generated cover letter will appear here..."
       />
