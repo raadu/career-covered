@@ -13,7 +13,7 @@ vi.mock('utils/pdfDesigns', () => ({
   getPdfDesign: (id: string) => mockGetPdfDesign(id),
 }));
 
-import { generatePdf } from '../downloadUtils';
+import { generatePdf, sanitizeForPdf } from '../downloadUtils';
 
 describe('generatePdf', () => {
   beforeEach(() => {
@@ -35,5 +35,60 @@ describe('generatePdf', () => {
     generatePdf('My letter text', 'My_File');
     expect(mockRender).toHaveBeenCalledWith('My letter text');
     expect(mockSave).toHaveBeenCalledWith('My_File.pdf');
+  });
+
+  it('sanitizes smart typography before rendering', () => {
+    generatePdf('“Dear” Sir—Madam… it’s a pleasure•', 'My_File');
+    expect(mockRender).toHaveBeenCalledWith('"Dear" Sir-Madam... it\'s a pleasure-');
+  });
+});
+
+describe('sanitizeForPdf', () => {
+  it('normalizes curly quotes to straight quotes', () => {
+    expect(sanitizeForPdf('‘hi’ “there”')).toBe(`'hi' "there"`);
+  });
+
+  it('normalizes en and em dashes to a hyphen', () => {
+    expect(sanitizeForPdf('a–b c—d')).toBe('a-b c-d');
+  });
+
+  it('normalizes an ellipsis to three dots', () => {
+    expect(sanitizeForPdf('wait…')).toBe('wait...');
+  });
+
+  it('normalizes a bullet to a hyphen', () => {
+    expect(sanitizeForPdf('• item')).toBe('- item');
+  });
+
+  it('leaves plain ASCII text unchanged', () => {
+    expect(sanitizeForPdf('Dear Hiring Manager, thanks!')).toBe(
+      'Dear Hiring Manager, thanks!',
+    );
+  });
+
+  it('normalizes arrows, checkmarks, and stars to ASCII', () => {
+    expect(sanitizeForPdf('Growth → 40% ✓ Done ★ Great')).toBe(
+      'Growth -> 40% v Done * Great',
+    );
+  });
+
+  it('normalizes the trademark symbol', () => {
+    expect(sanitizeForPdf('Acme™ Corp')).toBe('Acme(TM) Corp');
+  });
+
+  it('leaves Latin-1 characters (accents, euro, pound, degree, ®, ©) untouched', () => {
+    expect(sanitizeForPdf('café résumé € 50,000 £100 98.6° ® ©')).toBe(
+      'café résumé € 50,000 £100 98.6° ® ©',
+    );
+  });
+
+  it('drops characters outside WinAnsi (CJK, emoji) instead of corrupting the line', () => {
+    expect(sanitizeForPdf('Skills: 你好 🚀 React')).toBe('Skills:   React');
+  });
+
+  it('preserves paragraph breaks (newlines and tabs)', () => {
+    expect(sanitizeForPdf('Line one\n\nLine two\tindented')).toBe(
+      'Line one\n\nLine two\tindented',
+    );
   });
 });
