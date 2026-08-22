@@ -6,6 +6,7 @@ import {
   setLocalStorageItem,
   removeLocalStorageItem,
 } from 'utils/localStorageUtils';
+import { AVAILABLE_MODELS, DEFAULT_MODEL } from 'utils/AIModelUtils';
 
 export interface SavedTemplate {
   id: string;
@@ -31,6 +32,7 @@ export interface CoverLetterState {
   generationCount: number;
   savedTemplates: SavedTemplate[];
   activeTemplateId: string | null;
+  selectedModel: string;
 }
 
 export function restoreSessionStorage(): {
@@ -53,6 +55,10 @@ const fallbackCount = parseInt(
   getLocalStorageItem('generation_count') || '0',
   10,
 );
+const savedModel = getLocalStorageItem('model');
+const initialSelectedModel = AVAILABLE_MODELS.some((m) => m.id === savedModel)
+  ? (savedModel as string)
+  : DEFAULT_MODEL;
 
 const {
   jobDescription: restoredJobDescription,
@@ -77,6 +83,7 @@ const initialState: CoverLetterState = {
   generationCount: fallbackCount,
   savedTemplates: [],
   activeTemplateId: null,
+  selectedModel: initialSelectedModel,
 };
 
 export const fetchTemplates = createApiThunk<SavedTemplate[]>(
@@ -195,6 +202,10 @@ export const coverLetterSlice = createSlice({
       setLocalStorageItem('generation_count', String(newFallbackCount));
       state.generationCount = newFallbackCount;
     },
+    setSelectedModel: (state, action: PayloadAction<string>) => {
+      state.selectedModel = action.payload;
+      setLocalStorageItem('model', action.payload);
+    },
     selectTemplate: (state, action: PayloadAction<string>) => {
       const id = action.payload;
       const tpl = state.savedTemplates.find((t) => t.id === id);
@@ -286,6 +297,7 @@ export const {
   setCustomization,
   incrementGenerationCount,
   selectTemplate,
+  setSelectedModel,
 } = coverLetterSlice.actions;
 
 export default coverLetterSlice.reducer;

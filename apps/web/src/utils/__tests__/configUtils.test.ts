@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { PROVIDER_NAME, PROVIDER_URL, DEFAULT_MODEL } from '../AIModelUtils';
+import {
+  PROVIDER_NAME,
+  PROVIDER_URL,
+  DEFAULT_MODEL,
+  AVAILABLE_MODELS,
+} from '../AIModelUtils';
 import { GROQ_BASE_URL, API_ENDPOINTS } from '../apiConfigUtils';
 
 describe('Config Utilities', () => {
@@ -10,8 +15,15 @@ describe('Config Utilities', () => {
       expect(PROVIDER_URL).toContain('http');
     });
 
-    it('should default to the Llama 3.3 70B model', () => {
-      expect(DEFAULT_MODEL).toBe('llama-3.3-70b-versatile');
+    it('should default to the GPT-OSS 120B model', () => {
+      expect(DEFAULT_MODEL).toBe('openai/gpt-oss-120b');
+    });
+
+    it('should expose exactly 4 selectable models with unique ids', () => {
+      expect(AVAILABLE_MODELS).toHaveLength(4);
+      const ids = AVAILABLE_MODELS.map((m) => m.id);
+      expect(new Set(ids).size).toBe(ids.length);
+      expect(ids).toContain(DEFAULT_MODEL);
     });
   });
 

@@ -14,6 +14,7 @@ import coverLetterReducer, {
   setCustomization,
   incrementGenerationCount,
   selectTemplate,
+  setSelectedModel,
   fetchTemplates,
   createTemplate,
   updateTemplate,
@@ -21,6 +22,7 @@ import coverLetterReducer, {
   type SavedTemplate,
   type CoverLetterState,
 } from 'store/coverLetterSlice';
+import { DEFAULT_MODEL } from 'utils/AIModelUtils';
 
 const createBlankState = (
   overrides?: Partial<CoverLetterState>,
@@ -42,6 +44,7 @@ const createBlankState = (
   generationCount: 0,
   savedTemplates: [],
   activeTemplateId: null,
+  selectedModel: DEFAULT_MODEL,
   ...overrides,
 });
 
@@ -304,6 +307,24 @@ describe('coverLetterSlice', () => {
         minimalChanges: false,
         sameLanguage: false,
       });
+    });
+  });
+
+  describe('setSelectedModel', () => {
+    it('updates the selected model', () => {
+      const state = coverLetterReducer(
+        createBlankState(),
+        setSelectedModel('groq/compound'),
+      );
+      expect(state.selectedModel).toBe('groq/compound');
+    });
+
+    it('persists the choice to localStorage', () => {
+      coverLetterReducer(
+        createBlankState(),
+        setSelectedModel('qwen/qwen3.6-27b'),
+      );
+      expect(localStorage.getItem('cl_model')).toBe('qwen/qwen3.6-27b');
     });
   });
 
@@ -579,7 +600,7 @@ describe('coverLetterSlice', () => {
       expect(created).toHaveProperty('jobDescription');
       expect(created).toHaveProperty('generatedLetter');
       expect(created).toHaveProperty('apiKey');
-      expect(created).not.toHaveProperty('model');
+      expect(created).toHaveProperty('selectedModel');
       expect(created).toHaveProperty('isTemplateExpanded');
       expect(created).toHaveProperty('isJobDescExpanded');
       expect(created).toHaveProperty('isGenerating');
@@ -599,6 +620,11 @@ describe('coverLetterSlice', () => {
     it('activeTemplateId starts null', () => {
       const created = coverLetterReducer(undefined, { type: '@@INIT' });
       expect(created.activeTemplateId).toBeNull();
+    });
+
+    it('selectedModel defaults to DEFAULT_MODEL when nothing is persisted', () => {
+      const created = coverLetterReducer(undefined, { type: '@@INIT' });
+      expect(created.selectedModel).toBe(DEFAULT_MODEL);
     });
   });
 

@@ -33,7 +33,7 @@ describe('AiService', () => {
     mockConfigService.get.mockReturnValueOnce(null);
     await expect(
       service.generate({
-        model: 'llama-3.3-70b-versatile',
+        model: 'openai/gpt-oss-120b',
         messages: [{ role: 'user', content: 'test' }],
       }),
     ).rejects.toThrow(InternalServerErrorException);
@@ -49,7 +49,7 @@ describe('AiService', () => {
     global.fetch = fetchMock;
 
     const result = await service.generate({
-      model: 'llama-3.3-70b-versatile',
+      model: 'openai/gpt-oss-120b',
       messages: [{ role: 'user', content: 'test' }],
       wordLimit: 100,
       jobTitle: 'Software Engineer',
@@ -80,7 +80,7 @@ describe('AiService', () => {
     global.fetch = fetchMock;
 
     await service.generate({
-      model: 'llama-3.3-70b-versatile',
+      model: 'openai/gpt-oss-120b',
       messages: [{ role: 'user', content: 'test' }],
       userApiKey: 'user-supplied-key',
     });

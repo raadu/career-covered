@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { showToast } from 'components/common/Toast';
 import { useSelector } from 'react-redux';
 import { buildCoverLetterPrompt } from 'utils/promptUtils';
-import { DEFAULT_MODEL } from 'utils/AIModelUtils';
 import { type RootState, useAppDispatch } from 'store';
 import {
   setApiKey,
@@ -11,6 +10,7 @@ import {
   setAllCollapsed,
   setCustomization,
   incrementGenerationCount,
+  setSelectedModel,
 } from 'store/coverLetterSlice';
 import { useGenerateCoverLetterMutation } from 'store/apiSlice';
 import OnboardingModal from 'components/Modals/OnboardingModal';
@@ -21,6 +21,7 @@ import CustomizeModal, {
 import ApiKeySection from './ApiKeySection';
 import ControlActions from './ControlActions';
 import GenerateAction from './GenerateAction';
+import ModelSelect from './ModelSelect';
 
 interface GeneratorControlsProps {
   selectedResumeId?: string | null;
@@ -50,6 +51,7 @@ const GeneratorControls = ({ selectedResumeId }: GeneratorControlsProps) => {
     customization,
     generationCount,
     activeTemplateId,
+    selectedModel,
   } = useSelector((state: RootState) => state.coverLetter);
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
   const [generate, { isLoading, error }] = useGenerateCoverLetterMutation();
@@ -110,7 +112,7 @@ const GeneratorControls = ({ selectedResumeId }: GeneratorControlsProps) => {
       dispatch(setAllCollapsed()); // Collapse inputs for better view
       const result = await generate({
         prompt,
-        model: DEFAULT_MODEL,
+        model: selectedModel,
         ...(apiKey && { userApiKey: apiKey }),
       }).unwrap();
       dispatch(setGeneratedLetter(result));
@@ -125,7 +127,7 @@ const GeneratorControls = ({ selectedResumeId }: GeneratorControlsProps) => {
             templateId: activeTemplateId || undefined,
             jobDescription,
             generatedText: result,
-            model: DEFAULT_MODEL,
+            model: selectedModel,
             wordLimit: activeCustomization?.limitWords
               ? activeCustomization.wordCount
               : undefined,
@@ -176,6 +178,11 @@ const GeneratorControls = ({ selectedResumeId }: GeneratorControlsProps) => {
         />
 
         <div className="flex flex-col sm:flex-row w-full lg:w-auto items-stretch lg:items-center gap-1.5">
+          <ModelSelect
+            selectedModel={selectedModel}
+            onChange={(id) => dispatch(setSelectedModel(id))}
+          />
+
           <ControlActions
             isFilterOn={isFilterOn}
             setShowCustomizeModal={setShowCustomizeModal}

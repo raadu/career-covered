@@ -8,10 +8,12 @@ import {
   ArrayMaxSize,
   ValidateNested,
   IsBoolean,
+  IsIn,
   MaxLength,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ALLOWED_MODEL_IDS } from '../allowed-models';
 
 export class ChatMessageDto {
   @ApiProperty({ example: 'user', enum: ['system', 'user', 'assistant'] })
@@ -32,9 +34,11 @@ export class GenerateDto {
   @Type(() => ChatMessageDto)
   messages: ChatMessageDto[];
 
-  @ApiProperty({ example: 'llama-3.3-70b-versatile' })
-  @IsString()
-  @MaxLength(200)
+  @ApiProperty({
+    example: 'openai/gpt-oss-120b',
+    enum: ALLOWED_MODEL_IDS,
+  })
+  @IsIn(ALLOWED_MODEL_IDS)
   model: string;
 
   @ApiPropertyOptional({ example: 1024, minimum: 64, maximum: 8192 })
