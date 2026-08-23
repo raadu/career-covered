@@ -193,10 +193,15 @@ const GeneratorControls = ({ selectedResumeId }: GeneratorControlsProps) => {
             hasJobDescription={!!jobDescription}
             hasGeneratedLetter={!!generatedLetter}
             onGenerate={() => handleGenerate()}
-            error={error}
           />
         </div>
       </div>
+
+      {error && (
+        <p className="w-full text-center text-red-500 text-xs">
+          Error generating. Check API Key.
+        </p>
+      )}
 
       <OnboardingModal
         isOpen={showHelpModal}

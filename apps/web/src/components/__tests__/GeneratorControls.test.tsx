@@ -28,7 +28,7 @@ describe('GeneratorControls', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders the AI model selector with all 4 selectable models', () => {
+  it('renders the AI model selector with all selectable models', () => {
     renderWithProviders(<GeneratorControls />);
     const select = screen.getByLabelText(/AI Model/i);
     expect(select).toBeInTheDocument();
@@ -219,6 +219,33 @@ describe('GeneratorControls', () => {
       expect(saveCall).toBeDefined();
       expect(saveCall?.body).toMatchObject({ model: chosenModel });
     });
+  });
+
+  it('shows the generation error below the whole controls row, not beside the button', async () => {
+    const mockFetch = vi.fn(async () => new Response('{}', { status: 500 }));
+    vi.stubGlobal('fetch', mockFetch);
+
+    renderWithProviders(<GeneratorControls />, {
+      preloadedState: {
+        coverLetter: {
+          jobDescription: 'Software Engineer',
+          apiKey: 'gsk-test',
+        },
+      },
+    });
+
+    fireEvent.click(
+      screen.getByRole('button', { name: /Generate Cover Letter/i }),
+    );
+
+    const errorMessage = await screen.findByText(/Error generating/i);
+    const generateButton = screen.getByRole('button', {
+      name: /Generate Cover Letter/i,
+    });
+
+    expect(errorMessage).toBeInTheDocument();
+    // The error sits outside the button's own row, not as its sibling.
+    expect(generateButton.parentElement).not.toContainElement(errorMessage);
   });
 
   describe('resume personalization', () => {
