@@ -3,6 +3,4 @@
 export const ALLOWED_MODEL_IDS = [
   'openai/gpt-oss-120b',
   'openai/gpt-oss-20b',
-  'groq/compound',
-  'qwen/qwen3.6-27b',
 ] as const;

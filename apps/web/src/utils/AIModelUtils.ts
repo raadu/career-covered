@@ -20,16 +20,6 @@ export const AVAILABLE_MODELS: AiModelOption[] = [
     label: 'GPT-OSS 20B',
     description: 'Fastest, lighter-weight',
   },
-  {
-    id: 'groq/compound',
-    label: 'Compound',
-    description: "Groq's agentic model with web search",
-  },
-  {
-    id: 'qwen/qwen3.6-27b',
-    label: 'Qwen 3.6 27B',
-    description: 'Strong reasoning (preview)',
-  },
 ];
 
 export const DEFAULT_MODEL = AVAILABLE_MODELS[0].id;

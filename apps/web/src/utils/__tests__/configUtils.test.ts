@@ -19,8 +19,8 @@ describe('Config Utilities', () => {
       expect(DEFAULT_MODEL).toBe('openai/gpt-oss-120b');
     });
 
-    it('should expose exactly 4 selectable models with unique ids', () => {
-      expect(AVAILABLE_MODELS).toHaveLength(4);
+    it('should expose exactly 2 selectable models with unique ids', () => {
+      expect(AVAILABLE_MODELS).toHaveLength(2);
       const ids = AVAILABLE_MODELS.map((m) => m.id);
       expect(new Set(ids).size).toBe(ids.length);
       expect(ids).toContain(DEFAULT_MODEL);

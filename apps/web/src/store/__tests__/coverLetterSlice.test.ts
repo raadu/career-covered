@@ -314,17 +314,17 @@ describe('coverLetterSlice', () => {
     it('updates the selected model', () => {
       const state = coverLetterReducer(
         createBlankState(),
-        setSelectedModel('groq/compound'),
+        setSelectedModel('openai/gpt-oss-20b'),
       );
-      expect(state.selectedModel).toBe('groq/compound');
+      expect(state.selectedModel).toBe('openai/gpt-oss-20b');
     });
 
     it('persists the choice to localStorage', () => {
       coverLetterReducer(
         createBlankState(),
-        setSelectedModel('qwen/qwen3.6-27b'),
+        setSelectedModel('openai/gpt-oss-20b'),
       );
-      expect(localStorage.getItem('cl_model')).toBe('qwen/qwen3.6-27b');
+      expect(localStorage.getItem('cl_model')).toBe('openai/gpt-oss-20b');
     });
   });
 
