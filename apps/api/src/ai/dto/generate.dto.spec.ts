@@ -22,4 +22,36 @@ describe('GenerateDto', () => {
     const errors = await validate(dto);
     expect(errors.some((e) => e.property === 'model')).toBe(true);
   });
+
+  it.each(['low', 'medium', 'high'])(
+    'accepts reasoning_effort %s',
+    async (reasoning_effort) => {
+      const dto = plainToInstance(GenerateDto, {
+        ...baseDto,
+        model: ALLOWED_MODEL_IDS[0],
+        reasoning_effort,
+      });
+      const errors = await validate(dto);
+      expect(errors).toHaveLength(0);
+    },
+  );
+
+  it('is valid without reasoning_effort (optional)', async () => {
+    const dto = plainToInstance(GenerateDto, {
+      ...baseDto,
+      model: ALLOWED_MODEL_IDS[0],
+    });
+    const errors = await validate(dto);
+    expect(errors).toHaveLength(0);
+  });
+
+  it('rejects an unsupported reasoning_effort value', async () => {
+    const dto = plainToInstance(GenerateDto, {
+      ...baseDto,
+      model: ALLOWED_MODEL_IDS[0],
+      reasoning_effort: 'extreme',
+    });
+    const errors = await validate(dto);
+    expect(errors.some((e) => e.property === 'reasoning_effort')).toBe(true);
+  });
 });

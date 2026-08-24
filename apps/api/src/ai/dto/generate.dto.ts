@@ -54,6 +54,20 @@ export class GenerateDto {
   temperature?: number;
 
   @ApiPropertyOptional({
+    example: 'low',
+    enum: ['low', 'medium', 'high'],
+    description:
+      'GPT-OSS reasoning depth. Cover letter generation defaults to "low" ' +
+      'client-side — this is a writing task, not a complex reasoning one, ' +
+      'and Groq\'s own default of "medium" leaves less of the token ' +
+      'budget for the actual letter, which can come back as an empty ' +
+      'completion under a tight length limit.',
+  })
+  @IsOptional()
+  @IsIn(['low', 'medium', 'high'])
+  reasoning_effort?: string;
+
+  @ApiPropertyOptional({
     description: 'Caller can supply their own Groq API key',
   })
   @IsOptional()

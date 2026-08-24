@@ -70,6 +70,61 @@ describe('AiService', () => {
     });
   });
 
+  it('should forward reasoning_effort through to the Groq request body', async () => {
+    const fetchMock = jest.fn().mockResolvedValue({
+      ok: true,
+      json: jest.fn().mockResolvedValue({
+        choices: [{ message: { content: 'hello' } }],
+      }),
+    });
+    global.fetch = fetchMock;
+
+    await service.generate({
+      model: 'openai/gpt-oss-120b',
+      messages: [{ role: 'user', content: 'test' }],
+      reasoning_effort: 'low',
+    });
+
+    const [, options] = fetchMock.mock.calls[0] as [string, RequestInit];
+    const sentBody = JSON.parse(options.body as string) as Record<
+      string,
+      unknown
+    >;
+    expect(sentBody.reasoning_effort).toBe('low');
+  });
+
+  it('should throw when Groq returns 200 with no completion content', async () => {
+    const fetchMock = jest.fn().mockResolvedValue({
+      ok: true,
+      json: jest.fn().mockResolvedValue({
+        choices: [{ message: {} }],
+      }),
+    });
+    global.fetch = fetchMock;
+
+    await expect(
+      service.generate({
+        model: 'openai/gpt-oss-120b',
+        messages: [{ role: 'user', content: 'test' }],
+      }),
+    ).rejects.toThrow(InternalServerErrorException);
+  });
+
+  it('should throw when Groq returns 200 with an empty choices array', async () => {
+    const fetchMock = jest.fn().mockResolvedValue({
+      ok: true,
+      json: jest.fn().mockResolvedValue({ choices: [] }),
+    });
+    global.fetch = fetchMock;
+
+    await expect(
+      service.generate({
+        model: 'openai/gpt-oss-120b',
+        messages: [{ role: 'user', content: 'test' }],
+      }),
+    ).rejects.toThrow(InternalServerErrorException);
+  });
+
   it('should use the caller-supplied API key over the configured fallback', async () => {
     const fetchMock = jest.fn().mockResolvedValue({
       ok: true,
