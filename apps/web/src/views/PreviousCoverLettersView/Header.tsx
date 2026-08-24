@@ -1,6 +1,7 @@
 import { FaPlus } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import CommonButton from 'components/common/CommonButton';
+import { MAX_SAVED_COVER_LETTERS } from 'utils/coverLetterConstants';
 
 interface HeaderProps {
   total: number;
@@ -17,6 +18,10 @@ const Header = ({ total }: HeaderProps) => {
         </h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
           You have {total} saved cover letter{total !== 1 ? 's' : ''}
+        </p>
+        <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
+          Only the latest {MAX_SAVED_COVER_LETTERS} entries are saved and
+          shown.
         </p>
       </div>
       <CommonButton

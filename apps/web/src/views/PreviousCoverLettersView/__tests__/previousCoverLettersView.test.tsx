@@ -300,6 +300,9 @@ describe('PreviousCoverLettersView — integration', () => {
     expect(
       screen.getByText('You have 3 saved cover letters'),
     ).toBeInTheDocument();
+    expect(
+      screen.getByText('Only the latest 100 entries are saved and shown.'),
+    ).toBeInTheDocument();
   });
 
   it('renders all rows after fetch', async () => {
