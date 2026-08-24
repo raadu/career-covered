@@ -71,6 +71,7 @@ const GeneratorControls = ({ selectedResumeId }: GeneratorControlsProps) => {
 
   const isFilterOn = !!(
     customization?.limitWords ||
+    customization?.limitCharacters ||
     customization?.minimalChanges ||
     customization?.sameLanguage
   );
@@ -91,6 +92,9 @@ const GeneratorControls = ({ selectedResumeId }: GeneratorControlsProps) => {
     const wordCountLimit = activeCustomization?.limitWords
       ? activeCustomization.wordCount
       : null;
+    const characterCountLimit = activeCustomization?.limitCharacters
+      ? activeCustomization.charCount
+      : null;
 
     const resumeText = selectedResumeId
       ? await fetchResumeText(selectedResumeId)
@@ -106,6 +110,7 @@ const GeneratorControls = ({ selectedResumeId }: GeneratorControlsProps) => {
       customPrompt,
       undefined,
       resumeText,
+      characterCountLimit,
     );
 
     try {
@@ -130,6 +135,9 @@ const GeneratorControls = ({ selectedResumeId }: GeneratorControlsProps) => {
             model: selectedModel,
             wordLimit: activeCustomization?.limitWords
               ? activeCustomization.wordCount
+              : undefined,
+            characterLimit: activeCustomization?.limitCharacters
+              ? activeCustomization.charCount
               : undefined,
             minimalChanges: activeCustomization?.minimalChanges || undefined,
             sameLanguage: activeCustomization?.sameLanguage || undefined,

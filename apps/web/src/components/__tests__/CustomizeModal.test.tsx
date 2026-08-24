@@ -5,6 +5,8 @@ import CustomizeModal from '../Modals/CustomizeModal';
 const initialOptions = {
   limitWords: false,
   wordCount: 400,
+  limitCharacters: false,
+  charCount: 0,
   minimalChanges: true,
   sameLanguage: false,
 };
@@ -88,6 +90,69 @@ describe('CustomizeModal', () => {
       screen.getByText(/Numbers should be between 50 - 1000/i),
     ).toBeInTheDocument();
     expect(onSave).not.toHaveBeenCalled();
+  });
+
+  it('shows validation error and blocks save when limitCharacters is enabled with invalid count', () => {
+    render(
+      <CustomizeModal
+        isOpen={true}
+        onClose={onClose}
+        initialOptions={{ ...initialOptions, limitCharacters: true }}
+        onSave={onSave}
+        hasTemplate={true}
+      />,
+    );
+
+    const input = screen.getByPlaceholderText(/e\.g\. 2000 \(200 - 5000\)/i);
+    fireEvent.change(input, { target: { value: '100' } });
+    fireEvent.click(screen.getByRole('button', { name: /Save Options/i }));
+
+    expect(
+      screen.getByText(/Numbers should be between 200 - 5000/i),
+    ).toBeInTheDocument();
+    expect(onSave).not.toHaveBeenCalled();
+  });
+
+  it('blocks save when limitCharacters is enabled but left empty (no silent default)', () => {
+    render(
+      <CustomizeModal
+        isOpen={true}
+        onClose={onClose}
+        initialOptions={{ ...initialOptions, limitCharacters: true }}
+        onSave={onSave}
+        hasTemplate={true}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: /Save Options/i }));
+
+    expect(
+      screen.getByText(/Numbers should be between 200 - 5000/i),
+    ).toBeInTheDocument();
+    expect(onSave).not.toHaveBeenCalled();
+  });
+
+  it('unchecking limitWords when limitCharacters is checked, and vice versa', () => {
+    render(
+      <CustomizeModal
+        isOpen={true}
+        onClose={onClose}
+        initialOptions={initialOptions}
+        onSave={onSave}
+        hasTemplate={true}
+      />,
+    );
+
+    const wordsCheckbox = screen.getByLabelText(/Limit words/i);
+    const charsCheckbox = screen.getByLabelText(/Limit characters/i);
+
+    fireEvent.click(wordsCheckbox);
+    expect(wordsCheckbox).toBeChecked();
+    expect(charsCheckbox).not.toBeChecked();
+
+    fireEvent.click(charsCheckbox);
+    expect(charsCheckbox).toBeChecked();
+    expect(wordsCheckbox).not.toBeChecked();
   });
 
   it('handles malicious custom prompt safely (passes raw value to parent, sanitized at logic layer)', () => {

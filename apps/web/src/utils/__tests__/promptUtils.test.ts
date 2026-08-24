@@ -42,6 +42,66 @@ describe('promptUtils', () => {
       expect(result).toContain('Word limit: 200 words maximum');
     });
 
+    it('should include a character limit when provided, and not the default fallback', () => {
+      const result = buildCoverLetterPrompt(
+        jobDescription,
+        template,
+        null,
+        true,
+        false,
+        undefined,
+        'international',
+        null,
+        2000,
+      );
+      expect(result).toContain(
+        'Character limit: 2000 characters maximum, including spaces',
+      );
+      expect(result).not.toContain('Write between 250 and 400 words.');
+      expect(result).not.toContain('Word limit:');
+    });
+
+    it('tells the model the length limit outranks the paragraph structure rules', () => {
+      const wordResult = buildCoverLetterPrompt(jobDescription, template, 60);
+      expect(wordResult).toContain('takes priority over the paragraph structure below');
+
+      const charResult = buildCoverLetterPrompt(
+        jobDescription,
+        template,
+        null,
+        true,
+        false,
+        undefined,
+        'international',
+        null,
+        200,
+      );
+      expect(charResult).toContain(
+        'takes priority over the paragraph structure below',
+      );
+    });
+
+    it('falls back to the default word-range guidance when neither limit is set', () => {
+      const result = buildCoverLetterPrompt(jobDescription, template);
+      expect(result).toContain('Write between 250 and 400 words.');
+    });
+
+    it('prefers the word limit over the character limit if both are somehow passed', () => {
+      const result = buildCoverLetterPrompt(
+        jobDescription,
+        template,
+        200,
+        true,
+        false,
+        undefined,
+        'international',
+        null,
+        2000,
+      );
+      expect(result).toContain('Word limit: 200 words maximum');
+      expect(result).not.toContain('Character limit:');
+    });
+
     it('should handle missing template correctly', () => {
       const result = buildCoverLetterPrompt(jobDescription, '');
       expect(result).toContain(

@@ -38,6 +38,8 @@ const createBlankState = (
   customization: {
     limitWords: false,
     wordCount: 400,
+    limitCharacters: false,
+    charCount: 0,
     minimalChanges: false,
     sameLanguage: false,
   },
@@ -258,6 +260,8 @@ describe('coverLetterSlice', () => {
         setCustomization({
           limitWords: true,
           wordCount: 500,
+          limitCharacters: false,
+          charCount: 0,
           minimalChanges: true,
           sameLanguage: true,
         }),
@@ -268,12 +272,30 @@ describe('coverLetterSlice', () => {
       expect(state.customization.sameLanguage).toBe(true);
     });
 
+    it('updates character-limit options', () => {
+      const state = coverLetterReducer(
+        createBlankState(),
+        setCustomization({
+          limitWords: false,
+          wordCount: 400,
+          limitCharacters: true,
+          charCount: 2000,
+          minimalChanges: false,
+          sameLanguage: false,
+        }),
+      );
+      expect(state.customization.limitCharacters).toBe(true);
+      expect(state.customization.charCount).toBe(2000);
+    });
+
     it('persists to localStorage', () => {
       coverLetterReducer(
         createBlankState(),
         setCustomization({
           limitWords: true,
           wordCount: 300,
+          limitCharacters: false,
+          charCount: 0,
           minimalChanges: false,
           sameLanguage: true,
         }),
@@ -284,12 +306,30 @@ describe('coverLetterSlice', () => {
       expect(localStorage.getItem('cl_sameLanguage')).toBe('true');
     });
 
+    it('persists character-limit options to localStorage', () => {
+      coverLetterReducer(
+        createBlankState(),
+        setCustomization({
+          limitWords: false,
+          wordCount: 400,
+          limitCharacters: true,
+          charCount: 1500,
+          minimalChanges: false,
+          sameLanguage: false,
+        }),
+      );
+      expect(localStorage.getItem('cl_limitCharacters')).toBe('true');
+      expect(localStorage.getItem('cl_charCount')).toBe('1500');
+    });
+
     it('resets customization to defaults', () => {
       const state = coverLetterReducer(
         createBlankState({
           customization: {
             limitWords: true,
             wordCount: 500,
+            limitCharacters: true,
+            charCount: 2000,
             minimalChanges: true,
             sameLanguage: true,
           },
@@ -297,6 +337,8 @@ describe('coverLetterSlice', () => {
         setCustomization({
           limitWords: false,
           wordCount: 400,
+          limitCharacters: false,
+          charCount: 0,
           minimalChanges: false,
           sameLanguage: false,
         }),
@@ -304,6 +346,8 @@ describe('coverLetterSlice', () => {
       expect(state.customization).toEqual({
         limitWords: false,
         wordCount: 400,
+        limitCharacters: false,
+        charCount: 0,
         minimalChanges: false,
         sameLanguage: false,
       });

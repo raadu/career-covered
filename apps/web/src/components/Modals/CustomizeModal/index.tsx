@@ -1,6 +1,7 @@
 import { useState, type ChangeEvent } from 'react';
 import Header from './Header';
 import WordLimitSection from './WordLimitSection';
+import CharacterLimitSection from './CharacterLimitSection';
 import MinimalChangesSection from './MinimalChangesSection';
 import CustomPromptSection from './CustomPromptSection';
 import SameLanguageSection from './SameLanguageSection';
@@ -9,6 +10,8 @@ import Footer from './Footer';
 export interface CustomizationOptions {
   limitWords: boolean;
   wordCount: number;
+  limitCharacters: boolean;
+  charCount: number;
   minimalChanges: boolean;
   sameLanguage: boolean;
 }
@@ -33,11 +36,17 @@ const CustomizeModal = ({
   onSave,
   hasTemplate,
 }: CustomizeModalProps) => {
-  const [limitWords, setLimitWords] = useState<boolean>(
+  const [limitWords, setLimitWordsState] = useState<boolean>(
     initialOptions.limitWords,
   );
   const [wordCountStr, setWordCountStr] = useState<string>(
     String(initialOptions.wordCount),
+  );
+  const [limitCharacters, setLimitCharactersState] = useState<boolean>(
+    initialOptions.limitCharacters,
+  );
+  const [charCountStr, setCharCountStr] = useState<string>(
+    initialOptions.charCount ? String(initialOptions.charCount) : '',
   );
   const [minimalChanges, setMinimalChanges] = useState<boolean>(
     initialOptions.minimalChanges,
@@ -48,14 +57,34 @@ const CustomizeModal = ({
   const [customPrompt, setCustomPrompt] = useState<string>('');
   const [error, setError] = useState<string>('');
 
+  // Word limit and character limit both constrain output length, so only one
+  // can be active at a time — checking either one clears the other.
+  const setLimitWords = (val: boolean) => {
+    setLimitWordsState(val);
+    if (val) setLimitCharactersState(false);
+    if (error) setError('');
+  };
+  const setLimitCharacters = (val: boolean) => {
+    setLimitCharactersState(val);
+    if (val) setLimitWordsState(false);
+    if (error) setError('');
+  };
+
   const handleWordCountChange = (e: ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value.replace(/\D/g, '');
     setWordCountStr(val);
     if (error) setError('');
   };
+  const handleCharCountChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value.replace(/\D/g, '');
+    setCharCountStr(val);
+    if (error) setError('');
+  };
   const handleReset = () => {
-    setLimitWords(false);
+    setLimitWordsState(false);
     setWordCountStr('400');
+    setLimitCharactersState(false);
+    setCharCountStr('');
     setMinimalChanges(false);
     setSameLanguage(false);
     setCustomPrompt('');
@@ -75,27 +104,32 @@ const CustomizeModal = ({
         setError('Numbers should be between 50 - 1000');
         return;
       }
-      onSave({
-        options: {
-          limitWords,
-          wordCount: finalWordCount,
-          minimalChanges,
-          sameLanguage,
-        },
-        customPrompt: trimmedCustomPrompt,
-      });
-    } else {
-      setError('');
-      onSave({
-        options: {
-          limitWords,
-          wordCount: parseInt(wordCountStr, 10) || 400,
-          minimalChanges,
-          sameLanguage,
-        },
-        customPrompt: trimmedCustomPrompt,
-      });
     }
+
+    if (limitCharacters) {
+      const finalCharCount = parseInt(charCountStr, 10);
+      if (
+        isNaN(finalCharCount) ||
+        finalCharCount < 200 ||
+        finalCharCount > 5000
+      ) {
+        setError('Numbers should be between 200 - 5000');
+        return;
+      }
+    }
+
+    setError('');
+    onSave({
+      options: {
+        limitWords,
+        wordCount: parseInt(wordCountStr, 10) || 400,
+        limitCharacters,
+        charCount: parseInt(charCountStr, 10) || 0,
+        minimalChanges,
+        sameLanguage,
+      },
+      customPrompt: trimmedCustomPrompt,
+    });
   };
 
   if (!isOpen) return null;
@@ -119,6 +153,14 @@ const CustomizeModal = ({
             setLimitWords={setLimitWords}
             wordCountStr={wordCountStr}
             onWordCountChange={handleWordCountChange}
+            error={error}
+          />
+
+          <CharacterLimitSection
+            limitCharacters={limitCharacters}
+            setLimitCharacters={setLimitCharacters}
+            charCountStr={charCountStr}
+            onCharCountChange={handleCharCountChange}
             error={error}
           />
 

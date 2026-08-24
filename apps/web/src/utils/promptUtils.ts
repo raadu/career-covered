@@ -80,10 +80,21 @@ Replace it with one customized sentence that reflects the company's product, mis
 // Section: Format Helpers
 // ────────────────────────────────
 
-const buildWordRule = (wordCountLimit: number | null): string =>
-  wordCountLimit
-    ? `Word limit: ${wordCountLimit} words maximum. Count your words carefully. Do NOT exceed this limit.`
-    : `Write between 250 and 400 words.`;
+// Word limit and character limit both constrain output length, so exactly one
+// length rule is ever emitted — never both, and never the default fallback
+// alongside an active limit — regardless of what the caller passes in.
+const buildLengthRule = (
+  wordCountLimit: number | null,
+  characterCountLimit: number | null,
+): string => {
+  if (wordCountLimit) {
+    return `Word limit: ${wordCountLimit} words maximum. Count your words carefully. Do NOT exceed this limit. This limit takes priority over the paragraph structure below — merge or shorten paragraphs as needed to fit within it rather than exceeding it.`;
+  }
+  if (characterCountLimit) {
+    return `Character limit: ${characterCountLimit} characters maximum, including spaces. Count carefully. Do NOT exceed this limit. This limit takes priority over the paragraph structure below — merge or shorten paragraphs as needed to fit within it rather than exceeding it.`;
+  }
+  return `Write between 250 and 400 words.`;
+};
 
 const buildChangesRule = (minimalChanges: boolean): string =>
   minimalChanges
@@ -160,12 +171,13 @@ export const buildCoverLetterPrompt = (
   customPrompt?: string,
   jobMarket: import('./marketPrompts').JobMarket = 'international',
   resumeText?: string | null,
+  characterCountLimit: number | null = null,
 ): string => {
   const sanitizedJD = sanitize(jobDescription);
   const sanitizedTemplate = sanitize(template);
   const sanitizedResumeText = resumeText ? sanitize(resumeText) : null;
 
-  const wordRule = buildWordRule(wordCountLimit);
+  const lengthRule = buildLengthRule(wordCountLimit, characterCountLimit);
   const changesRule = buildChangesRule(minimalChanges);
   const languageRule = buildLanguageRule(sameLanguage);
   const marketRules = getMarketRules(jobMarket);
@@ -187,7 +199,7 @@ export const buildCoverLetterPrompt = (
     '',
     'General Requirements',
     '',
-    wordRule,
+    lengthRule,
     '',
     'The cover letter must fit on one A4 page.',
     '',
