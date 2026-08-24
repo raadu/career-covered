@@ -94,12 +94,14 @@ model CoverLetter {
   generatedText  String
   model          String    // AI model used for generation (e.g. "llama-3.3-70b-versatile")
   wordLimit      Int?
+  characterLimit Int?
   minimalChanges Boolean?
   sameLanguage   Boolean?
   customPrompt   String?
   jobMarket      String?   @default("international")
   createdAt      DateTime  @default(now())
 
+  @@index([userId, createdAt])
   @@map("cover_letters")
 }
 

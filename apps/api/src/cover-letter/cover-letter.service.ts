@@ -5,6 +5,7 @@ import {
   UpdateCoverLetterDto,
 } from './dto/cover-letter.dto';
 import { paginate, paginationSkip } from '../common/paginate';
+import { MAX_COVER_LETTERS_PER_USER } from './cover-letter.constants';
 import * as db from '@career-covered/db';
 
 @Injectable()
@@ -66,22 +67,47 @@ export class CoverLetterService {
     userId: string,
     dto: CreateCoverLetterDto,
   ): Promise<db.CoverLetter> {
-    return this.prisma.coverLetter.create({
-      data: {
-        userId,
-        templateId: dto.templateId || null,
-        jobTitle: dto.jobTitle ?? '',
-        companyName: dto.companyName ?? '',
-        jobDescription: dto.jobDescription ?? '',
-        generatedText: dto.generatedText ?? '',
-        model: dto.model ?? '',
-        wordLimit: dto.wordLimit ?? null,
-        minimalChanges: dto.minimalChanges ?? null,
-        sameLanguage: dto.sameLanguage ?? null,
-        customPrompt: dto.customPrompt ?? null,
-        jobMarket: dto.jobMarket ?? null,
-      },
-      include: { template: { select: { name: true, id: true } } },
+    return this.prisma.$transaction(async (tx) => {
+      // Serializes concurrent creates for the same user so the trim below
+      // can't race two inserts into briefly exceeding the cap — same
+      // pattern as ResumeService.create's advisory lock.
+      await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${userId}))`;
+
+      const created = await tx.coverLetter.create({
+        data: {
+          userId,
+          templateId: dto.templateId || null,
+          jobTitle: dto.jobTitle ?? '',
+          companyName: dto.companyName ?? '',
+          jobDescription: dto.jobDescription ?? '',
+          generatedText: dto.generatedText ?? '',
+          model: dto.model ?? '',
+          wordLimit: dto.wordLimit ?? null,
+          characterLimit: dto.characterLimit ?? null,
+          minimalChanges: dto.minimalChanges ?? null,
+          sameLanguage: dto.sameLanguage ?? null,
+          customPrompt: dto.customPrompt ?? null,
+          jobMarket: dto.jobMarket ?? null,
+        },
+        include: { template: { select: { name: true, id: true } } },
+      });
+
+      // Rolling retention: keep only the MAX_COVER_LETTERS_PER_USER most
+      // recent rows for this user, deleting anything older every time a
+      // new one is created.
+      const overflow = await tx.coverLetter.findMany({
+        where: { userId },
+        orderBy: { createdAt: 'desc' },
+        skip: MAX_COVER_LETTERS_PER_USER,
+        select: { id: true },
+      });
+      if (overflow.length > 0) {
+        await tx.coverLetter.deleteMany({
+          where: { id: { in: overflow.map((letter) => letter.id) } },
+        });
+      }
+
+      return created;
     });
   }
 
@@ -106,6 +132,9 @@ export class CoverLetterService {
         }),
         ...(dto.model !== undefined && { model: dto.model }),
         ...(dto.wordLimit !== undefined && { wordLimit: dto.wordLimit }),
+        ...(dto.characterLimit !== undefined && {
+          characterLimit: dto.characterLimit,
+        }),
         ...(dto.minimalChanges !== undefined && {
           minimalChanges: dto.minimalChanges,
         }),
