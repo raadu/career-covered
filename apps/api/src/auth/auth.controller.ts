@@ -57,14 +57,21 @@ const oauthStateStore = new Map<
   { codeVerifier: string; expiresAt: number }
 >();
 
-setInterval(() => {
+export function sweepExpiredOAuthStates(
+  store: Map<string, { codeVerifier: string; expiresAt: number }>,
+): void {
   const now = Date.now();
-  for (const [state, entry] of oauthStateStore) {
+  for (const [state, entry] of store) {
     if (entry.expiresAt < now) {
-      oauthStateStore.delete(state);
+      store.delete(state);
     }
   }
-}, OAUTH_STATE_TTL_MS).unref();
+}
+
+setInterval(
+  () => sweepExpiredOAuthStates(oauthStateStore),
+  OAUTH_STATE_TTL_MS,
+).unref();
 
 @ApiTags('Auth')
 @Controller('auth')

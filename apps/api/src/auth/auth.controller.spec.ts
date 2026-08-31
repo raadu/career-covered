@@ -1,8 +1,36 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { UnauthorizedException } from '@nestjs/common';
 import * as express from 'express';
-import { AuthController, buildCookieOptions } from './auth.controller';
+import {
+  AuthController,
+  buildCookieOptions,
+  sweepExpiredOAuthStates,
+} from './auth.controller';
 import { AuthService } from './auth.service';
 import * as db from '@career-covered/db';
+
+type OAuthStateStore = Map<string, { codeVerifier: string; expiresAt: number }>;
+
+describe('sweepExpiredOAuthStates', () => {
+  it('removes only entries past their expiry', () => {
+    const now = Date.now();
+    const store: OAuthStateStore = new Map([
+      ['expired', { codeVerifier: 'v1', expiresAt: now - 1000 }],
+      ['fresh', { codeVerifier: 'v2', expiresAt: now + 60_000 }],
+    ]);
+
+    sweepExpiredOAuthStates(store);
+
+    expect(store.has('expired')).toBe(false);
+    expect(store.has('fresh')).toBe(true);
+  });
+
+  it('does nothing when the store is empty', () => {
+    const store: OAuthStateStore = new Map();
+    expect(() => sweepExpiredOAuthStates(store)).not.toThrow();
+    expect(store.size).toBe(0);
+  });
+});
 
 describe('buildCookieOptions', () => {
   it('omits domain when no cookie domain is given', () => {
@@ -41,6 +69,7 @@ describe('AuthController', () => {
     ({
       cookie: jest.fn(),
       clearCookie: jest.fn(),
+      redirect: jest.fn(),
     }) as unknown as express.Response;
 
   beforeEach(async () => {
@@ -54,6 +83,8 @@ describe('AuthController', () => {
             login: jest.fn().mockResolvedValue(mockUser),
             createSession: jest.fn().mockResolvedValue('session-token'),
             deleteSession: jest.fn().mockResolvedValue(undefined),
+            createGoogleAuthUrl: jest.fn(),
+            handleGoogleCallback: jest.fn(),
           },
         },
       ],
@@ -132,6 +163,95 @@ describe('AuthController', () => {
       email: mockUser.email,
       name: mockUser.name,
       avatarUrl: mockUser.avatarUrl,
+    });
+  });
+
+  describe('Google OAuth', () => {
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('redirects to the generated Google auth URL and stores the state', () => {
+      const res = mockRes();
+      (service.createGoogleAuthUrl as jest.Mock).mockReturnValue({
+        url: 'https://accounts.google.com/o/oauth2/auth?state=abc',
+        state: 'state-1',
+        codeVerifier: 'verifier-1',
+      });
+
+      controller.googleAuth(res);
+
+      expect(service.createGoogleAuthUrl).toHaveBeenCalled();
+      expect(res.redirect).toHaveBeenCalledWith(
+        'https://accounts.google.com/o/oauth2/auth?state=abc',
+      );
+    });
+
+    it('throws UnauthorizedException when the state was never stored', async () => {
+      const res = mockRes();
+
+      await expect(
+        controller.googleCallback('code', 'never-stored-state', res),
+      ).rejects.toThrow(UnauthorizedException);
+      expect(service.handleGoogleCallback).not.toHaveBeenCalled();
+    });
+
+    it('throws UnauthorizedException when the stored state has expired', async () => {
+      (service.createGoogleAuthUrl as jest.Mock).mockReturnValue({
+        url: 'https://accounts.google.com/o/oauth2/auth',
+        state: 'state-expired',
+        codeVerifier: 'verifier-expired',
+      });
+      controller.googleAuth(mockRes());
+
+      jest.useFakeTimers().setSystemTime(Date.now() + 11 * 60 * 1000);
+
+      const res = mockRes();
+      await expect(
+        controller.googleCallback('code', 'state-expired', res),
+      ).rejects.toThrow(UnauthorizedException);
+      expect(service.handleGoogleCallback).not.toHaveBeenCalled();
+    });
+
+    it('exchanges the code, creates a session, sets the cookie, and redirects to the web app', async () => {
+      (service.createGoogleAuthUrl as jest.Mock).mockReturnValue({
+        url: 'https://accounts.google.com/o/oauth2/auth',
+        state: 'state-valid',
+        codeVerifier: 'verifier-valid',
+      });
+      controller.googleAuth(mockRes());
+      (service.handleGoogleCallback as jest.Mock).mockResolvedValue(mockUser);
+
+      const res = mockRes();
+      await controller.googleCallback('auth-code', 'state-valid', res);
+
+      expect(service.handleGoogleCallback).toHaveBeenCalledWith(
+        'auth-code',
+        'verifier-valid',
+      );
+      expect(service.createSession).toHaveBeenCalledWith(mockUser.id);
+      expect(res.cookie).toHaveBeenCalledWith(
+        'session',
+        'session-token',
+        expect.objectContaining({ httpOnly: true, path: '/' }),
+      );
+      expect(res.redirect).toHaveBeenCalledWith(expect.stringContaining('/'));
+    });
+
+    it('rejects a state that was already consumed by a previous callback (replay protection)', async () => {
+      (service.createGoogleAuthUrl as jest.Mock).mockReturnValue({
+        url: 'https://accounts.google.com/o/oauth2/auth',
+        state: 'state-reuse',
+        codeVerifier: 'verifier-reuse',
+      });
+      controller.googleAuth(mockRes());
+      (service.handleGoogleCallback as jest.Mock).mockResolvedValue(mockUser);
+
+      await controller.googleCallback('auth-code', 'state-reuse', mockRes());
+
+      await expect(
+        controller.googleCallback('auth-code', 'state-reuse', mockRes()),
+      ).rejects.toThrow(UnauthorizedException);
     });
   });
 });
