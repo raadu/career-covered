@@ -88,6 +88,53 @@ const DesignSwatch = ({
     );
   }
 
+  if (swatchStyle === 'frame') {
+    return (
+      <div
+        className="h-full w-full overflow-hidden rounded-sm bg-white dark:bg-gray-800 p-1"
+        style={{ border: `1.5px solid ${accentColor}` }}
+      >
+        <div
+          className="h-full w-full p-2.5"
+          style={{ border: `1px solid ${accentColor}` }}
+        >
+          {lines()}
+        </div>
+      </div>
+    );
+  }
+
+  if (swatchStyle === 'twoTone') {
+    return (
+      <div className="h-full w-full overflow-hidden rounded-sm bg-white dark:bg-gray-800">
+        <div
+          className="h-[16%] w-full"
+          style={{ backgroundColor: accentColor }}
+        />
+        <div
+          className="h-[10%] w-full"
+          style={{ backgroundColor: accentColor, opacity: 0.35 }}
+        />
+        <div className="p-3">{lines()}</div>
+      </div>
+    );
+  }
+
+  if (swatchStyle === 'cornerAccent') {
+    return (
+      <div className="relative h-full w-full overflow-hidden rounded-sm bg-white dark:bg-gray-800 p-3">
+        {lines()}
+        <div
+          className="absolute -top-2 -right-2 h-10 w-10"
+          style={{
+            backgroundColor: accentColor,
+            clipPath: 'polygon(100% 0%, 0% 0%, 100% 100%)',
+          }}
+        />
+      </div>
+    );
+  }
+
   // 'plain'
   return (
     <div className="h-full w-full overflow-hidden rounded-sm border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-800 p-3">

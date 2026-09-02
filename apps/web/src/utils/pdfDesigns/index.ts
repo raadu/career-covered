@@ -5,6 +5,9 @@ import { renderExecutiveFormal } from './executiveFormal';
 import { renderCreativeBold } from './creativeBold';
 import { renderTechnicalMonospace } from './technicalMonospace';
 import { renderElegantSidebar } from './elegantSidebar';
+import { renderFramedLetterhead } from './framedLetterhead';
+import { renderCorporateDuotone } from './corporateDuotone';
+import { renderGeometricAccent } from './geometricAccent';
 
 export type { PdfDesign, PdfDesignId } from './types';
 
@@ -33,14 +36,26 @@ export const PDF_DESIGNS: PdfDesign[] = [
     render: renderModernMinimal,
   },
   {
-    id: 'executive-formal',
-    name: 'Executive',
+    id: 'elegant-sidebar',
+    name: 'Elegant',
     description:
-      'Traditional serif letterhead style with a formal rule border.',
-    recommendedFor: 'Great for legal, finance, architects and senior roles.',
-    accentColor: '#3C3C3C',
-    swatchStyle: 'rules',
-    render: renderExecutiveFormal,
+      'A full-height dark sidebar column paired with a refined serif body.',
+    recommendedFor:
+      'Great for designers and architects wanting a portfolio look.',
+    accentColor: '#0F172A',
+    swatchStyle: 'fullSidebar',
+    render: renderElegantSidebar,
+  },
+  {
+    id: 'corporate-duotone',
+    name: 'Corporate',
+    description:
+      'A two-tone stacked header in shades of black and gray for a polished corporate look.',
+    recommendedFor:
+      'Great for sales, business development and marketing roles.',
+    accentColor: '#1F2937',
+    swatchStyle: 'twoTone',
+    render: renderCorporateDuotone,
   },
   {
     id: 'creative-bold',
@@ -50,6 +65,16 @@ export const PDF_DESIGNS: PdfDesign[] = [
     accentColor: '#7C3AED',
     swatchStyle: 'header',
     render: renderCreativeBold,
+  },
+  {
+    id: 'executive-formal',
+    name: 'Executive',
+    description:
+      'Traditional serif letterhead style with a formal rule border.',
+    recommendedFor: 'Great for legal, finance, architects and senior roles.',
+    accentColor: '#3C3C3C',
+    swatchStyle: 'rules',
+    render: renderExecutiveFormal,
   },
   {
     id: 'technical-monospace',
@@ -62,15 +87,25 @@ export const PDF_DESIGNS: PdfDesign[] = [
     render: renderTechnicalMonospace,
   },
   {
-    id: 'elegant-sidebar',
-    name: 'Elegant',
+    id: 'framed-letterhead',
+    name: 'Letterhead',
     description:
-      'A full-height dark sidebar column paired with a refined serif body.',
+      'A refined double-rule border frames the entire page like premium stationery.',
     recommendedFor:
-      'Great for designers and architects wanting a portfolio look.',
-    accentColor: '#0F172A',
-    swatchStyle: 'fullSidebar',
-    render: renderElegantSidebar,
+      'Great for consulting, banking and senior corporate roles.',
+    accentColor: '#881337',
+    swatchStyle: 'frame',
+    render: renderFramedLetterhead,
+  },
+  {
+    id: 'geometric-accent',
+    name: 'Geometric',
+    description:
+      'A diagonal corner wedge adds a modern, on-trend geometric touch.',
+    recommendedFor: 'Great for startups, product and brand marketing roles.',
+    accentColor: '#F97316',
+    swatchStyle: 'cornerAccent',
+    render: renderGeometricAccent,
   },
 ];
 

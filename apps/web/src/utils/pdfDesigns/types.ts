@@ -6,13 +6,24 @@ export type PdfDesignId =
   | 'executive-formal'
   | 'creative-bold'
   | 'technical-monospace'
-  | 'elegant-sidebar';
+  | 'elegant-sidebar'
+  | 'framed-letterhead'
+  | 'corporate-duotone'
+  | 'geometric-accent';
 
 /** Drives the lightweight preview swatch shown in the Designs picker modal —
  * a simplified mockup of the design's real layout, not a pixel-accurate
  * rendering of the generated PDF. */
 export type PdfDesignSwatchStyle =
-  'plain' | 'topBar' | 'rules' | 'header' | 'leftBar' | 'fullSidebar';
+  | 'plain'
+  | 'topBar'
+  | 'rules'
+  | 'header'
+  | 'leftBar'
+  | 'fullSidebar'
+  | 'frame'
+  | 'twoTone'
+  | 'cornerAccent';
 
 export interface PdfDesign {
   id: PdfDesignId;
