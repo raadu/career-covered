@@ -17,8 +17,8 @@ const CLASSIC_PROFESSIONAL_DESIGN: PdfDesign = {
   id: 'classic-professional',
   name: 'Classic',
   description:
-    'Plain black text on white background. No decoration. ATS friendly.',
-  recommendedFor: 'Great for all types of job applications.',
+    'Plain black text on white background. No decoration.',
+  recommendedFor: 'Great for all types of job applications. ATS Friendly.',
   accentColor: '#111827',
   swatchStyle: 'plain',
   render: renderClassicProfessional,
@@ -50,7 +50,7 @@ export const PDF_DESIGNS: PdfDesign[] = [
     id: 'corporate-duotone',
     name: 'Corporate',
     description:
-      'A two-tone stacked header in shades of black and gray for a polished corporate look.',
+      'A two-tone stacked header in shades of black and gray.',
     recommendedFor:
       'Great for sales, business development and marketing roles.',
     accentColor: '#1F2937',
@@ -90,7 +90,7 @@ export const PDF_DESIGNS: PdfDesign[] = [
     id: 'framed-letterhead',
     name: 'Letterhead',
     description:
-      'A refined double-rule border frames the entire page like premium stationery.',
+      'A refined double-rule border frames the entire page.',
     recommendedFor:
       'Great for consulting, banking and senior corporate roles.',
     accentColor: '#881337',
