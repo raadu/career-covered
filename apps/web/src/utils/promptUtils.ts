@@ -96,14 +96,23 @@ const buildLengthRule = (
   return `Write between 250 and 400 words.`;
 };
 
-const buildChangesRule = (minimalChanges: boolean): string =>
-  minimalChanges
-    ? `CRITICAL: Make ONLY these changes to the provided template:
+type WritingStyle = 'minimal' | 'balanced' | 'full';
+
+const buildChangesRule = (writingStyle: WritingStyle): string => {
+  switch (writingStyle) {
+    case 'minimal':
+      return `CRITICAL: Make ONLY these changes to the provided template:
 1. Replace company name with the new company.
 2. Replace position title with the new position.
 3. Update specific skills to match the job description (only if missing or outdated).
-Keep ALL other sentences exactly as written. Do NOT rewrite, rephrase, restructure, or add new paragraphs. Preserve the original text word-for-word except for the three changes listed above.`
-    : `You may rewrite motivation, skills and experience to create a stronger and more tailored cover letter while remaining truthful.`;
+If a resume is provided, do not invent new skills and experiences. Use existing skills and experiences to match with the job description.
+Keep ALL other sentences exactly as written. Do NOT rewrite, rephrase, restructure, or add new paragraphs. Preserve the original text word-for-word except for the changes listed above.`;
+    case 'balanced':
+      return `Do not fabricate or invent anything new. Use the cover letter (if any), resume (if any), or combination of both. Avoid using dash (-) to join sentences. Avoid complex sentences. Do not put comma (,) before "and" — for example write "Bread, Butter and Butterfly" not "Bread, Butter, and Butterfly". Use human voice and writing style.`;
+    case 'full':
+      return `Rewrite the cover letter as you like. You may invent new skills, technologies and experiences outside the user's resume or cover letter template. But always make sure those match well with the job description.`;
+  }
+};
 
 const buildLanguageRule = (sameLanguage: boolean): string =>
   sameLanguage
@@ -166,7 +175,7 @@ export const buildCoverLetterPrompt = (
   jobDescription: string,
   template: string,
   wordCountLimit: number | null = null,
-  minimalChanges: boolean = true,
+  writingStyle: WritingStyle = 'balanced',
   sameLanguage: boolean = false,
   customPrompt?: string,
   jobMarket: import('./marketPrompts').JobMarket = 'international',
@@ -178,7 +187,7 @@ export const buildCoverLetterPrompt = (
   const sanitizedResumeText = resumeText ? sanitize(resumeText) : null;
 
   const lengthRule = buildLengthRule(wordCountLimit, characterCountLimit);
-  const changesRule = buildChangesRule(minimalChanges);
+  const changesRule = buildChangesRule(writingStyle);
   const languageRule = buildLanguageRule(sameLanguage);
   const marketRules = getMarketRules(jobMarket);
 

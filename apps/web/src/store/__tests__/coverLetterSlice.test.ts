@@ -40,7 +40,7 @@ const createBlankState = (
     wordCount: 400,
     limitCharacters: false,
     charCount: 0,
-    minimalChanges: false,
+    writingStyle: 'balanced' as const,
     sameLanguage: false,
   },
   generationCount: 0,
@@ -262,13 +262,13 @@ describe('coverLetterSlice', () => {
           wordCount: 500,
           limitCharacters: false,
           charCount: 0,
-          minimalChanges: true,
+          writingStyle: 'minimal',
           sameLanguage: true,
         }),
       );
       expect(state.customization.limitWords).toBe(true);
       expect(state.customization.wordCount).toBe(500);
-      expect(state.customization.minimalChanges).toBe(true);
+      expect(state.customization.writingStyle).toBe('minimal');
       expect(state.customization.sameLanguage).toBe(true);
     });
 
@@ -280,7 +280,7 @@ describe('coverLetterSlice', () => {
           wordCount: 400,
           limitCharacters: true,
           charCount: 2000,
-          minimalChanges: false,
+          writingStyle: 'balanced',
           sameLanguage: false,
         }),
       );
@@ -296,13 +296,13 @@ describe('coverLetterSlice', () => {
           wordCount: 300,
           limitCharacters: false,
           charCount: 0,
-          minimalChanges: false,
+          writingStyle: 'balanced',
           sameLanguage: true,
         }),
       );
       expect(localStorage.getItem('cl_limitWords')).toBe('true');
       expect(localStorage.getItem('cl_wordCount')).toBe('300');
-      expect(localStorage.getItem('cl_minimalChanges')).toBe('false');
+      expect(localStorage.getItem('cl_writingStyle')).toBe('balanced');
       expect(localStorage.getItem('cl_sameLanguage')).toBe('true');
     });
 
@@ -314,7 +314,7 @@ describe('coverLetterSlice', () => {
           wordCount: 400,
           limitCharacters: true,
           charCount: 1500,
-          minimalChanges: false,
+          writingStyle: 'balanced',
           sameLanguage: false,
         }),
       );
@@ -330,7 +330,7 @@ describe('coverLetterSlice', () => {
             wordCount: 500,
             limitCharacters: true,
             charCount: 2000,
-            minimalChanges: true,
+            writingStyle: 'minimal',
             sameLanguage: true,
           },
         }),
@@ -339,7 +339,7 @@ describe('coverLetterSlice', () => {
           wordCount: 400,
           limitCharacters: false,
           charCount: 0,
-          minimalChanges: false,
+          writingStyle: 'balanced',
           sameLanguage: false,
         }),
       );
@@ -348,7 +348,7 @@ describe('coverLetterSlice', () => {
         wordCount: 400,
         limitCharacters: false,
         charCount: 0,
-        minimalChanges: false,
+        writingStyle: 'balanced',
         sameLanguage: false,
       });
     });

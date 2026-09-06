@@ -16,8 +16,8 @@ const WordLimitSection = ({
   error,
 }: WordLimitSectionProps) => {
   return (
-    <div className="space-y-3">
-      <label className="flex items-center gap-3 cursor-pointer group">
+    <div className="space-y-2">
+      <label className="flex items-center gap-2 cursor-pointer group">
         <div className="relative flex items-center justify-center">
           <input
             type="checkbox"

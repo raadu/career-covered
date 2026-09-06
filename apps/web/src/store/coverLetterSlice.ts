@@ -28,7 +28,7 @@ export interface CoverLetterState {
     wordCount: number;
     limitCharacters: boolean;
     charCount: number;
-    minimalChanges: boolean;
+    writingStyle: 'minimal' | 'balanced' | 'full';
     sameLanguage: boolean;
   };
   generationCount: number;
@@ -81,7 +81,7 @@ const initialState: CoverLetterState = {
     wordCount: parseInt(getLocalStorageItem('wordCount') || '400', 10),
     limitCharacters: getLocalStorageItem('limitCharacters') === 'true',
     charCount: parseInt(getLocalStorageItem('charCount') || '0', 10),
-    minimalChanges: getLocalStorageItem('minimalChanges') === 'true',
+    writingStyle: (getLocalStorageItem('writingStyle') as 'minimal' | 'balanced' | 'full') || 'balanced',
     sameLanguage: getLocalStorageItem('sameLanguage') === 'true',
   },
   generationCount: fallbackCount,
@@ -197,8 +197,8 @@ export const coverLetterSlice = createSlice({
       );
       setLocalStorageItem('charCount', String(action.payload.charCount));
       setLocalStorageItem(
-        'minimalChanges',
-        String(action.payload.minimalChanges),
+        'writingStyle',
+        action.payload.writingStyle,
       );
       setLocalStorageItem('sameLanguage', String(action.payload.sameLanguage));
     },

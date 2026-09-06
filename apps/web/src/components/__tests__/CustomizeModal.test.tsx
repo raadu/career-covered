@@ -7,7 +7,7 @@ const initialOptions = {
   wordCount: 400,
   limitCharacters: false,
   charCount: 0,
-  minimalChanges: true,
+  writingStyle: 'balanced' as const,
   sameLanguage: false,
 };
 

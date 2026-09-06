@@ -72,7 +72,7 @@ const GeneratorControls = ({ selectedResumeId }: GeneratorControlsProps) => {
   const isFilterOn = !!(
     customization?.limitWords ||
     customization?.limitCharacters ||
-    customization?.minimalChanges ||
+    customization?.writingStyle !== 'balanced' ||
     customization?.sameLanguage
   );
 
@@ -105,7 +105,7 @@ const GeneratorControls = ({ selectedResumeId }: GeneratorControlsProps) => {
       jobDescription,
       template,
       wordCountLimit,
-      activeCustomization?.minimalChanges,
+      activeCustomization?.writingStyle,
       activeCustomization?.sameLanguage,
       customPrompt,
       undefined,
@@ -139,7 +139,7 @@ const GeneratorControls = ({ selectedResumeId }: GeneratorControlsProps) => {
             characterLimit: activeCustomization?.limitCharacters
               ? activeCustomization.charCount
               : undefined,
-            minimalChanges: activeCustomization?.minimalChanges || undefined,
+            minimalChanges: activeCustomization?.writingStyle === 'minimal' || undefined,
             sameLanguage: activeCustomization?.sameLanguage || undefined,
           }),
         })

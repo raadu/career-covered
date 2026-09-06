@@ -22,7 +22,7 @@ const CustomPromptSection = ({
           value={customPrompt}
           onChange={(e) => setCustomPrompt(e.target.value)}
           placeholder="Wanna add or remove anything from your cover letter? Type here in your own words."
-          className="min-h-28 w-full border border-gray-300 dark:border-gray-600 p-3 text-sm text-gray-700 dark:text-gray-300 outline-none transition-all placeholder:text-gray-400 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 bg-transparent"
+          className="min-h-20 w-full border border-gray-300 dark:border-gray-600 p-2 text-sm text-gray-700 dark:text-gray-300 outline-none transition-all placeholder:text-gray-400 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 bg-transparent"
         />
       </div>
     </>

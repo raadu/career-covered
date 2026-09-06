@@ -47,7 +47,7 @@ describe('promptUtils', () => {
         jobDescription,
         template,
         null,
-        true,
+        'balanced',
         false,
         undefined,
         'international',
@@ -69,7 +69,7 @@ describe('promptUtils', () => {
         jobDescription,
         template,
         null,
-        true,
+        'balanced',
         false,
         undefined,
         'international',
@@ -91,7 +91,7 @@ describe('promptUtils', () => {
         jobDescription,
         template,
         200,
-        true,
+        'balanced',
         false,
         undefined,
         'international',
@@ -129,6 +129,55 @@ describe('promptUtils', () => {
       expect(result).toContain('!@#$%^&*()_+{}|:');
     });
 
+    describe('writing styles', () => {
+      it('uses balanced style by default', () => {
+        const result = buildCoverLetterPrompt(jobDescription, template);
+        expect(result).toContain('Do not fabricate or invent anything new');
+        expect(result).not.toContain('Make ONLY these changes');
+        expect(result).not.toContain('Rewrite the cover letter as you like');
+      });
+
+      it('minimal style restricts changes to company, position, and skills', () => {
+        const result = buildCoverLetterPrompt(
+          jobDescription,
+          template,
+          null,
+          'minimal',
+        );
+        expect(result).toContain('Make ONLY these changes');
+        expect(result).toContain('Replace company name');
+        expect(result).toContain('Replace position title');
+        expect(result).toContain('do not invent new skills');
+        expect(result).not.toContain('Rewrite the cover letter');
+      });
+
+      it('balanced style forbids fabrication and enforces human voice rules', () => {
+        const result = buildCoverLetterPrompt(
+          jobDescription,
+          template,
+          null,
+          'balanced',
+        );
+        expect(result).toContain('Do not fabricate or invent anything new');
+        expect(result).toContain('Avoid using dash');
+        expect(result).toContain('Bread, Butter and Butterfly');
+        expect(result).toContain('Use human voice');
+      });
+
+      it('full style allows invention and free rewriting', () => {
+        const result = buildCoverLetterPrompt(
+          jobDescription,
+          template,
+          null,
+          'full',
+        );
+        expect(result).toContain('Rewrite the cover letter as you like');
+        expect(result).toContain('You may invent new skills');
+        expect(result).not.toContain('Make ONLY these changes');
+        expect(result).not.toContain('Do not fabricate');
+      });
+    });
+
     describe('resume personalization', () => {
       const resumeText = 'Built scalable systems at Acme Corp for 5 years.';
 
@@ -137,7 +186,7 @@ describe('promptUtils', () => {
           jobDescription,
           '',
           null,
-          true,
+          'balanced',
           false,
           undefined,
           'international',
@@ -154,7 +203,7 @@ describe('promptUtils', () => {
           jobDescription,
           template,
           null,
-          true,
+          'balanced',
           false,
           undefined,
           'international',
@@ -172,7 +221,7 @@ describe('promptUtils', () => {
           jobDescription,
           '',
           null,
-          true,
+          'balanced',
           false,
           undefined,
           'international',
@@ -191,7 +240,7 @@ describe('promptUtils', () => {
           jobDescription,
           template,
           null,
-          true,
+          'balanced',
           false,
           undefined,
           'international',
@@ -212,7 +261,7 @@ describe('promptUtils', () => {
           jobDescription,
           '',
           null,
-          true,
+          'balanced',
           false,
           undefined,
           'international',

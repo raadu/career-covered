@@ -2,7 +2,9 @@ import { useState, type ChangeEvent } from 'react';
 import Header from './Header';
 import WordLimitSection from './WordLimitSection';
 import CharacterLimitSection from './CharacterLimitSection';
-import MinimalChangesSection from './MinimalChangesSection';
+import WritingStyleSection, {
+  type WritingStyle,
+} from './WritingStyleSection';
 import CustomPromptSection from './CustomPromptSection';
 import SameLanguageSection from './SameLanguageSection';
 import Footer from './Footer';
@@ -12,7 +14,7 @@ export interface CustomizationOptions {
   wordCount: number;
   limitCharacters: boolean;
   charCount: number;
-  minimalChanges: boolean;
+  writingStyle: WritingStyle;
   sameLanguage: boolean;
 }
 
@@ -48,8 +50,8 @@ const CustomizeModal = ({
   const [charCountStr, setCharCountStr] = useState<string>(
     initialOptions.charCount ? String(initialOptions.charCount) : '',
   );
-  const [minimalChanges, setMinimalChanges] = useState<boolean>(
-    initialOptions.minimalChanges,
+  const [writingStyle, setWritingStyle] = useState<WritingStyle>(
+    initialOptions.writingStyle,
   );
   const [sameLanguage, setSameLanguage] = useState<boolean>(
     initialOptions.sameLanguage,
@@ -85,7 +87,7 @@ const CustomizeModal = ({
     setWordCountStr('400');
     setLimitCharactersState(false);
     setCharCountStr('');
-    setMinimalChanges(false);
+    setWritingStyle('balanced');
     setSameLanguage(false);
     setCustomPrompt('');
     setError('');
@@ -125,7 +127,7 @@ const CustomizeModal = ({
         wordCount: parseInt(wordCountStr, 10) || 400,
         limitCharacters,
         charCount: parseInt(charCountStr, 10) || 0,
-        minimalChanges,
+        writingStyle,
         sameLanguage,
       },
       customPrompt: trimmedCustomPrompt,
@@ -136,18 +138,20 @@ const CustomizeModal = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30 backdrop-blur-md transition-all overscroll-none"
+      className="fixed inset-0 z-50 flex items-center justify-center p-2 bg-black/30 backdrop-blur-md transition-all overscroll-none"
       onClick={onClose}
     >
       <div
-        className="bg-white dark:bg-gray-800 shadow-xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-300 border border-white/20"
+        className="flex flex-col bg-white dark:bg-gray-800 shadow-xl w-full max-w-md max-h-[85vh] overflow-hidden animate-in fade-in zoom-in duration-300 border border-white/20"
         role="dialog"
         aria-modal="true"
         onClick={(e) => e.stopPropagation()}
       >
-        <Header onClose={onClose} />
+        <div className="shrink-0">
+          <Header onClose={onClose} />
+        </div>
 
-        <div className="p-5 space-y-6">
+        <div className="p-3 space-y-3 overflow-y-auto flex-1 min-h-0">
           <WordLimitSection
             limitWords={limitWords}
             setLimitWords={setLimitWords}
@@ -164,10 +168,10 @@ const CustomizeModal = ({
             error={error}
           />
 
-          <MinimalChangesSection
+          <WritingStyleSection
             hasTemplate={hasTemplate}
-            minimalChanges={minimalChanges}
-            onToggle={() => setMinimalChanges(!minimalChanges)}
+            writingStyle={writingStyle}
+            onChange={setWritingStyle}
           />
 
           <SameLanguageSection
@@ -181,7 +185,9 @@ const CustomizeModal = ({
           />
         </div>
 
-        <Footer onSave={handleSave} onReset={handleReset} />
+        <div className="shrink-0">
+          <Footer onSave={handleSave} onReset={handleReset} />
+        </div>
       </div>
     </div>
   );
