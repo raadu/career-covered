@@ -63,10 +63,6 @@ export function useTemplates() {
     if (isAuthenticated) fetchPage(1);
   }, [isAuthenticated, fetchPage]);
 
-  useEffect(() => {
-    setSelectedIds(new Set());
-  }, [data]);
-
   const allSelected =
     data.length > 0 && data.every((t) => selectedIds.has(t.id));
   const someSelected = data.some((t) => selectedIds.has(t.id));
@@ -92,8 +88,12 @@ export function useTemplates() {
     });
   };
 
-  const handlePageChange = (p: number) => fetchPage(p + 1);
+  const handlePageChange = (p: number) => {
+    setSelectedIds(new Set());
+    fetchPage(p + 1);
+  };
   const handlePageSizeChange = (size: number) => {
+    setSelectedIds(new Set());
     setPageSize(size);
     fetchPage(1, size);
   };
