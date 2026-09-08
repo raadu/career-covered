@@ -76,7 +76,7 @@ const emptyProps = {
   onToggleSelect: vi.fn(),
   onPageChange: vi.fn(),
   onPageSizeChange: vi.fn(),
-  onDownloadPdf: vi.fn(),
+  onOpenDesigns: vi.fn(),
   onDownloadWord: vi.fn(),
   onCopy: vi.fn(),
   onDelete: vi.fn(),
@@ -166,7 +166,7 @@ describe('PreviousCoverLettersTable', () => {
 
   it('renders action buttons with correct titles', () => {
     render(<PreviousCoverLettersTable {...withDataProps} />);
-    const pdfButtons = screen.getAllByTitle('Download as PDF');
+    const pdfButtons = screen.getAllByTitle('Choose a PDF design');
     const wordButtons = screen.getAllByTitle('Download as Word');
     const copyButtons = screen.getAllByTitle('Copy to clipboard');
     const deleteButtons = screen.getAllByTitle('Delete');
@@ -177,17 +177,17 @@ describe('PreviousCoverLettersTable', () => {
     expect(deleteButtons.length).toBe(3);
   });
 
-  it('calls onDownloadPdf when PDF button clicked', () => {
-    const onDownloadPdf = vi.fn();
+  it('calls onOpenDesigns when PDF button clicked', () => {
+    const onOpenDesigns = vi.fn();
     render(
       <PreviousCoverLettersTable
         {...withDataProps}
-        onDownloadPdf={onDownloadPdf}
+        onOpenDesigns={onOpenDesigns}
       />,
     );
-    const pdfButtons = screen.getAllByTitle('Download as PDF');
+    const pdfButtons = screen.getAllByTitle('Choose a PDF design');
     fireEvent.click(pdfButtons[0]);
-    expect(onDownloadPdf).toHaveBeenCalledWith(mockItems[0]);
+    expect(onOpenDesigns).toHaveBeenCalledWith(mockItems[0]);
   });
 
   it('calls onDownloadWord when Word button clicked', () => {
@@ -299,6 +299,9 @@ describe('PreviousCoverLettersView — integration', () => {
     });
     expect(
       screen.getByText('You have 3 saved cover letters'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('Only the latest 100 entries are saved and shown.'),
     ).toBeInTheDocument();
   });
 
@@ -557,5 +560,160 @@ describe('PreviousCoverLettersView — edge cases', () => {
       preloadedState: { auth: { isAuthenticated: false, isLoading: true } },
     });
     expect(container.innerHTML).toBe('');
+  });
+});
+
+/* ============================================================
+ * Delete confirmation flows
+ * ============================================================ */
+describe('PreviousCoverLettersView — delete confirmation flows', () => {
+  const mockPaginatedResponse = {
+    data: mockItems,
+    total: 3,
+    page: 1,
+    limit: 10,
+    totalPages: 1,
+  };
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('sends a DELETE request and removes the row when confirmed', async () => {
+    const mockFetch = vi.fn().mockResolvedValueOnce({
+      ok: true,
+      json: () => Promise.resolve(mockPaginatedResponse),
+    });
+    mockFetch.mockResolvedValueOnce({ ok: true, json: () => Promise.resolve({}) });
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: () =>
+        Promise.resolve({
+          data: mockItems.slice(1),
+          total: 2,
+          page: 1,
+          limit: 10,
+          totalPages: 1,
+        }),
+    });
+    vi.stubGlobal('fetch', mockFetch);
+
+    renderWithProviders(<PreviousCoverLettersView />, {
+      preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
+    });
+    await waitFor(() => {
+      expect(
+        screen.getByText('Software Engineer at Google'),
+      ).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getAllByTitle('Delete')[0]);
+    fireEvent.click(screen.getByText('Sure!'));
+
+    await waitFor(() => {
+      const deleteCall = mockFetch.mock.calls.find(
+        (call) =>
+          call[0] === '/api/cover-letters/1' && call[1]?.method === 'DELETE',
+      );
+      expect(deleteCall).toBeDefined();
+    });
+    await waitFor(() => {
+      expect(
+        screen.queryByText('Software Engineer at Google'),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  it('keeps the row when the single delete request fails', async () => {
+    const mockFetch = vi.fn().mockResolvedValueOnce({
+      ok: true,
+      json: () => Promise.resolve(mockPaginatedResponse),
+    });
+    mockFetch.mockResolvedValueOnce({ ok: false });
+    vi.stubGlobal('fetch', mockFetch);
+
+    renderWithProviders(<PreviousCoverLettersView />, {
+      preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
+    });
+    await waitFor(() => {
+      expect(
+        screen.getByText('Software Engineer at Google'),
+      ).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getAllByTitle('Delete')[0]);
+    fireEvent.click(screen.getByText('Sure!'));
+
+    await waitFor(() => {
+      const deleteCall = mockFetch.mock.calls.find(
+        (call) =>
+          call[0] === '/api/cover-letters/1' && call[1]?.method === 'DELETE',
+      );
+      expect(deleteCall).toBeDefined();
+    });
+    expect(
+      screen.getByText('Software Engineer at Google'),
+    ).toBeInTheDocument();
+  });
+
+  it('does not send a request when handleDelete fires with no id pending', async () => {
+    const mockFetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve(mockPaginatedResponse),
+    });
+    vi.stubGlobal('fetch', mockFetch);
+
+    renderWithProviders(<PreviousCoverLettersView />, {
+      preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
+    });
+    await waitFor(() => {
+      expect(
+        screen.getByText('Software Engineer at Google'),
+      ).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getAllByTitle('Delete')[0]);
+    fireEvent.click(screen.getByText('Nope'));
+
+    expect(
+      mockFetch.mock.calls.some((call) => call[1]?.method === 'DELETE'),
+    ).toBe(false);
+  });
+
+  it('keeps the selection when the batch delete request fails', async () => {
+    const mockFetch = vi.fn().mockResolvedValueOnce({
+      ok: true,
+      json: () => Promise.resolve(mockPaginatedResponse),
+    });
+    mockFetch.mockResolvedValueOnce({ ok: false });
+    vi.stubGlobal('fetch', mockFetch);
+
+    renderWithProviders(<PreviousCoverLettersView />, {
+      preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
+    });
+    await waitFor(() => {
+      expect(
+        screen.getByText('Software Engineer at Google'),
+      ).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getAllByRole('checkbox')[0]); // select all
+    await waitFor(() => {
+      expect(screen.getByText('Delete Selected')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByText('Delete Selected'));
+    fireEvent.click(screen.getByText('Delete All'));
+
+    await waitFor(() => {
+      const batchCall = mockFetch.mock.calls.find(
+        (call) =>
+          call[0] === '/api/cover-letters/batch' &&
+          call[1]?.method === 'DELETE',
+      );
+      expect(batchCall).toBeDefined();
+    });
+    expect(
+      screen.getByText('Software Engineer at Google'),
+    ).toBeInTheDocument();
   });
 });

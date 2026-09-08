@@ -1,6 +1,12 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { showToast } from 'components/common/Toast';
 import { createApiThunk } from 'store/createApiThunk';
+import {
+  getLocalStorageItem,
+  setLocalStorageItem,
+  removeLocalStorageItem,
+} from 'utils/localStorageUtils';
+import { AVAILABLE_MODELS, DEFAULT_MODEL } from 'utils/AIModelUtils';
 
 export interface SavedTemplate {
   id: string;
@@ -20,12 +26,15 @@ export interface CoverLetterState {
   customization: {
     limitWords: boolean;
     wordCount: number;
-    minimalChanges: boolean;
+    limitCharacters: boolean;
+    charCount: number;
+    writingStyle: 'minimal' | 'balanced' | 'full';
     sameLanguage: boolean;
   };
   generationCount: number;
   savedTemplates: SavedTemplate[];
   activeTemplateId: string | null;
+  selectedModel: string;
 }
 
 export function restoreSessionStorage(): {
@@ -42,12 +51,16 @@ export function restoreSessionStorage(): {
   };
 }
 
-const savedTemplate = localStorage.getItem('cl_template') || '';
-const savedApiKey = localStorage.getItem('cl_apiKey') || '';
+const savedTemplate = getLocalStorageItem('template') || '';
+const savedApiKey = getLocalStorageItem('apiKey') || '';
 const fallbackCount = parseInt(
-  localStorage.getItem('cl_generation_count') || '0',
+  getLocalStorageItem('generation_count') || '0',
   10,
 );
+const savedModel = getLocalStorageItem('model');
+const initialSelectedModel = AVAILABLE_MODELS.some((m) => m.id === savedModel)
+  ? (savedModel as string)
+  : DEFAULT_MODEL;
 
 const {
   jobDescription: restoredJobDescription,
@@ -64,14 +77,17 @@ const initialState: CoverLetterState = {
   isGenerating: false,
   isLoadingTemplates: false,
   customization: {
-    limitWords: localStorage.getItem('cl_limitWords') === 'true',
-    wordCount: parseInt(localStorage.getItem('cl_wordCount') || '400', 10),
-    minimalChanges: localStorage.getItem('cl_minimalChanges') === 'true',
-    sameLanguage: localStorage.getItem('cl_sameLanguage') === 'true',
+    limitWords: getLocalStorageItem('limitWords') === 'true',
+    wordCount: parseInt(getLocalStorageItem('wordCount') || '400', 10),
+    limitCharacters: getLocalStorageItem('limitCharacters') === 'true',
+    charCount: parseInt(getLocalStorageItem('charCount') || '0', 10),
+    writingStyle: (getLocalStorageItem('writingStyle') as 'minimal' | 'balanced' | 'full') || 'balanced',
+    sameLanguage: getLocalStorageItem('sameLanguage') === 'true',
   },
   generationCount: fallbackCount,
   savedTemplates: [],
   activeTemplateId: null,
+  selectedModel: initialSelectedModel,
 };
 
 export const fetchTemplates = createApiThunk<SavedTemplate[]>(
@@ -140,8 +156,8 @@ export const coverLetterSlice = createSlice({
     clearTemplate: (state) => {
       state.template = '';
       state.activeTemplateId = null;
-      localStorage.setItem('cl_template', '');
-      localStorage.removeItem('cl_active_template_id');
+      setLocalStorageItem('template', '');
+      removeLocalStorageItem('active_template_id');
     },
     setJobDescription: (state, action: PayloadAction<string>) => {
       state.jobDescription = action.payload;
@@ -173,25 +189,31 @@ export const coverLetterSlice = createSlice({
       action: PayloadAction<CoverLetterState['customization']>,
     ) => {
       state.customization = action.payload;
-      localStorage.setItem('cl_limitWords', String(action.payload.limitWords));
-      localStorage.setItem('cl_wordCount', String(action.payload.wordCount));
-      localStorage.setItem(
-        'cl_minimalChanges',
-        String(action.payload.minimalChanges),
+      setLocalStorageItem('limitWords', String(action.payload.limitWords));
+      setLocalStorageItem('wordCount', String(action.payload.wordCount));
+      setLocalStorageItem(
+        'limitCharacters',
+        String(action.payload.limitCharacters),
       );
-      localStorage.setItem(
-        'cl_sameLanguage',
-        String(action.payload.sameLanguage),
+      setLocalStorageItem('charCount', String(action.payload.charCount));
+      setLocalStorageItem(
+        'writingStyle',
+        action.payload.writingStyle,
       );
+      setLocalStorageItem('sameLanguage', String(action.payload.sameLanguage));
     },
     incrementGenerationCount: (state) => {
       const fallbackCount = parseInt(
-        localStorage.getItem('cl_generation_count') || '0',
+        getLocalStorageItem('generation_count') || '0',
         10,
       );
       const newFallbackCount = fallbackCount + 1;
-      localStorage.setItem('cl_generation_count', String(newFallbackCount));
+      setLocalStorageItem('generation_count', String(newFallbackCount));
       state.generationCount = newFallbackCount;
+    },
+    setSelectedModel: (state, action: PayloadAction<string>) => {
+      state.selectedModel = action.payload;
+      setLocalStorageItem('model', action.payload);
     },
     selectTemplate: (state, action: PayloadAction<string>) => {
       const id = action.payload;
@@ -200,7 +222,7 @@ export const coverLetterSlice = createSlice({
         state.activeTemplateId = id;
         state.template = tpl.content;
         state.isTemplateExpanded = true;
-        localStorage.setItem('cl_active_template_id', id);
+        setLocalStorageItem('active_template_id', id);
       }
     },
   },
@@ -212,14 +234,14 @@ export const coverLetterSlice = createSlice({
       .addCase(fetchTemplates.fulfilled, (state, action) => {
         state.savedTemplates = action.payload;
         state.isLoadingTemplates = false;
-        const savedId = localStorage.getItem('cl_active_template_id');
+        const savedId = getLocalStorageItem('active_template_id');
         if (savedId) {
           const tpl = action.payload.find((t) => t.id === savedId);
           if (tpl) {
             state.activeTemplateId = savedId;
             state.template = tpl.content;
           } else {
-            localStorage.removeItem('cl_active_template_id');
+            removeLocalStorageItem('active_template_id');
           }
         }
       })
@@ -231,7 +253,7 @@ export const coverLetterSlice = createSlice({
         state.activeTemplateId = action.payload.id;
         state.template = action.payload.content;
         state.isTemplateExpanded = true;
-        localStorage.setItem('cl_active_template_id', action.payload.id);
+        setLocalStorageItem('active_template_id', action.payload.id);
         showToast('New template added', { duration: 2000 });
       })
       .addCase(updateTemplate.fulfilled, (state, action) => {
@@ -252,13 +274,10 @@ export const coverLetterSlice = createSlice({
               (t) => t.id === state.activeTemplateId,
             );
             if (tpl) state.template = tpl.content;
-            localStorage.setItem(
-              'cl_active_template_id',
-              state.activeTemplateId,
-            );
+            setLocalStorageItem('active_template_id', state.activeTemplateId);
           } else {
             state.template = '';
-            localStorage.removeItem('cl_active_template_id');
+            removeLocalStorageItem('active_template_id');
           }
         }
         showToast('Template has been removed', { duration: 2000 });
@@ -267,8 +286,8 @@ export const coverLetterSlice = createSlice({
         state.savedTemplates = [];
         state.activeTemplateId = null;
         state.template = '';
-        localStorage.removeItem('cl_active_template_id');
-        localStorage.removeItem('cl_template');
+        removeLocalStorageItem('active_template_id');
+        removeLocalStorageItem('template');
       });
   },
 });
@@ -287,6 +306,7 @@ export const {
   setCustomization,
   incrementGenerationCount,
   selectTemplate,
+  setSelectedModel,
 } = coverLetterSlice.actions;
 
 export default coverLetterSlice.reducer;

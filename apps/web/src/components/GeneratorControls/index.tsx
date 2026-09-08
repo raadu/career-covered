@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { showToast } from 'components/common/Toast';
 import { useSelector } from 'react-redux';
 import { buildCoverLetterPrompt } from 'utils/promptUtils';
-import { DEFAULT_MODEL } from 'utils/AIModelUtils';
 import { type RootState, useAppDispatch } from 'store';
 import {
   setApiKey,
@@ -11,6 +10,7 @@ import {
   setAllCollapsed,
   setCustomization,
   incrementGenerationCount,
+  setSelectedModel,
 } from 'store/coverLetterSlice';
 import { useGenerateCoverLetterMutation } from 'store/apiSlice';
 import OnboardingModal from 'components/Modals/OnboardingModal';
@@ -21,8 +21,27 @@ import CustomizeModal, {
 import ApiKeySection from './ApiKeySection';
 import ControlActions from './ControlActions';
 import GenerateAction from './GenerateAction';
+import ModelSelect from './ModelSelect';
 
-const GeneratorControls = () => {
+interface GeneratorControlsProps {
+  selectedResumeId?: string | null;
+}
+
+async function fetchResumeText(resumeId: string): Promise<string | null> {
+  try {
+    const res = await fetch(`/api/resumes/${resumeId}/content`);
+    if (!res.ok) throw new Error('Failed to load resume');
+    const { parsedText } = (await res.json()) as { parsedText: string | null };
+    return parsedText;
+  } catch {
+    showToast('Could not load the selected resume — generating without it', {
+      type: 'error',
+    });
+    return null;
+  }
+}
+
+const GeneratorControls = ({ selectedResumeId }: GeneratorControlsProps) => {
   const dispatch = useAppDispatch();
   const {
     apiKey,
@@ -32,6 +51,7 @@ const GeneratorControls = () => {
     customization,
     generationCount,
     activeTemplateId,
+    selectedModel,
   } = useSelector((state: RootState) => state.coverLetter);
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
   const [generate, { isLoading, error }] = useGenerateCoverLetterMutation();
@@ -51,7 +71,8 @@ const GeneratorControls = () => {
 
   const isFilterOn = !!(
     customization?.limitWords ||
-    customization?.minimalChanges ||
+    customization?.limitCharacters ||
+    customization?.writingStyle !== 'balanced' ||
     customization?.sameLanguage
   );
 
@@ -71,22 +92,32 @@ const GeneratorControls = () => {
     const wordCountLimit = activeCustomization?.limitWords
       ? activeCustomization.wordCount
       : null;
+    const characterCountLimit = activeCustomization?.limitCharacters
+      ? activeCustomization.charCount
+      : null;
+
+    const resumeText = selectedResumeId
+      ? await fetchResumeText(selectedResumeId)
+      : null;
 
     // Construct prompt
     const prompt = buildCoverLetterPrompt(
       jobDescription,
       template,
       wordCountLimit,
-      activeCustomization?.minimalChanges,
+      activeCustomization?.writingStyle,
       activeCustomization?.sameLanguage,
       customPrompt,
+      undefined,
+      resumeText,
+      characterCountLimit,
     );
 
     try {
       dispatch(setAllCollapsed()); // Collapse inputs for better view
       const result = await generate({
         prompt,
-        model: DEFAULT_MODEL,
+        model: selectedModel,
         ...(apiKey && { userApiKey: apiKey }),
       }).unwrap();
       dispatch(setGeneratedLetter(result));
@@ -101,11 +132,14 @@ const GeneratorControls = () => {
             templateId: activeTemplateId || undefined,
             jobDescription,
             generatedText: result,
-            model: DEFAULT_MODEL,
+            model: selectedModel,
             wordLimit: activeCustomization?.limitWords
               ? activeCustomization.wordCount
               : undefined,
-            minimalChanges: activeCustomization?.minimalChanges || undefined,
+            characterLimit: activeCustomization?.limitCharacters
+              ? activeCustomization.charCount
+              : undefined,
+            minimalChanges: activeCustomization?.writingStyle === 'minimal' || undefined,
             sameLanguage: activeCustomization?.sameLanguage || undefined,
           }),
         })
@@ -141,7 +175,7 @@ const GeneratorControls = () => {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-3 flex flex-col items-start gap-2">
+    <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 p-2 flex flex-col items-start gap-2">
       <div className="flex flex-col lg:flex-row w-full gap-3 lg:items-center justify-between">
         <ApiKeySection
           apiKey={apiKey}
@@ -152,6 +186,11 @@ const GeneratorControls = () => {
         />
 
         <div className="flex flex-col sm:flex-row w-full lg:w-auto items-stretch lg:items-center gap-1.5">
+          <ModelSelect
+            selectedModel={selectedModel}
+            onChange={(id) => dispatch(setSelectedModel(id))}
+          />
+
           <ControlActions
             isFilterOn={isFilterOn}
             setShowCustomizeModal={setShowCustomizeModal}
@@ -162,10 +201,15 @@ const GeneratorControls = () => {
             hasJobDescription={!!jobDescription}
             hasGeneratedLetter={!!generatedLetter}
             onGenerate={() => handleGenerate()}
-            error={error}
           />
         </div>
       </div>
+
+      {error && (
+        <p className="w-full text-center text-red-500 text-xs">
+          Error generating. Check API Key.
+        </p>
+      )}
 
       <OnboardingModal
         isOpen={showHelpModal}

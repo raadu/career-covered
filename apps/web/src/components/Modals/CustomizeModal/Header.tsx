@@ -6,12 +6,12 @@ interface HeaderProps {
 
 const Header = ({ onClose }: HeaderProps) => {
   return (
-    <div className="flex items-center justify-between p-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-700/50">
+    <div className="flex items-center justify-between px-3 py-2 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-700/50">
       <div className="flex items-center gap-2">
-        <div className="bg-cyan-100 dark:bg-cyan-900/50 text-cyan-600 dark:text-cyan-400 p-1.5 rounded-lg">
+        <div className="bg-cyan-100 dark:bg-cyan-900/50 text-cyan-600 dark:text-cyan-400 p-1 rounded-md">
           <FaSlidersH size={14} />
         </div>
-        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+        <h3 className="text-base font-semibold text-gray-800 dark:text-gray-100">
           Cover Letter Customization
         </h3>
       </div>

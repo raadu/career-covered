@@ -1,5 +1,6 @@
 import {
   FaFileAlt,
+  FaFileUpload,
   FaLifeRing,
   FaQuestionCircle,
   FaChevronDown,
@@ -47,6 +48,16 @@ const SidebarNavigation = ({ isExpanded }: SidebarNavigationProps) => {
           : []),
       ],
     },
+    ...(isAuthenticated
+      ? [
+          {
+            path: '/resume',
+            label: 'Resumes',
+            icon: FaFileUpload,
+            title: 'Manage your resumes',
+          },
+        ]
+      : []),
     {
       path: '/faq',
       label: 'FAQ',
@@ -62,7 +73,7 @@ const SidebarNavigation = ({ isExpanded }: SidebarNavigationProps) => {
   ];
 
   return (
-    <nav className="flex-1 flex flex-row lg:flex-col p-1 lg:p-2 gap-2 lg:gap-0 lg:space-y-1.5 w-full overflow-x-auto lg:overflow-visible items-center lg:items-stretch h-full no-scrollbar">
+    <nav className="flex-1 flex flex-row lg:flex-col p-0.5 lg:p-1 gap-1 lg:gap-0 lg:space-y-0.5 w-full overflow-x-auto lg:overflow-visible items-center lg:items-stretch h-full no-scrollbar">
       {menuItems.map((item) => {
         const Icon = item.icon;
         const isActive = currentPath === item.path;
@@ -77,10 +88,10 @@ const SidebarNavigation = ({ isExpanded }: SidebarNavigationProps) => {
               onClick={() => navigate(item.path)}
               className={clsx(
                 'group flex items-center cursor-pointer transition-all duration-300 relative',
-                'p-2 lg:p-2.5 mx-1 rounded-xl lg:rounded-2xl whitespace-nowrap',
+                'py-1.5 px-2 mx-0.5 rounded-md whitespace-nowrap',
                 isExpanded
-                  ? 'lg:rounded-xl lg:gap-3 gap-2'
-                  : 'lg:justify-center gap-2',
+                  ? 'lg:rounded-md lg:gap-2 gap-1.5'
+                  : 'lg:justify-center gap-1.5',
                 isExpandedItem
                   ? 'bg-blue-50/80 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 shadow-sm shadow-blue-500/5'
                   : 'text-gray-400 dark:text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-600 dark:hover:text-gray-300',
@@ -90,18 +101,18 @@ const SidebarNavigation = ({ isExpanded }: SidebarNavigationProps) => {
               <div
                 className={clsx(
                   'shrink-0 flex items-center justify-center transition-all duration-300',
-                  isExpandedItem ? 'scale-110' : 'group-hover:scale-110',
+                  isExpandedItem ? 'scale-105' : 'group-hover:scale-105',
                 )}
               >
                 <Icon
-                  size={isExpanded ? 16 : 20}
-                  className="lg:w-5 lg:h-5 w-4 h-4"
+                  size={isExpanded ? 14 : 16}
+                  className="lg:w-4 lg:h-4 w-3.5 h-3.5"
                 />
               </div>
 
               <span
                 className={clsx(
-                  'text-[12px] lg:text-[13px] font-bold tracking-tight transition-all truncate flex-1',
+                  'text-[11px] lg:text-[12px] font-semibold tracking-tight transition-all truncate flex-1',
                   isExpandedItem ? 'opacity-100' : 'opacity-80',
                   !isExpanded ? 'lg:hidden block' : 'block',
                   'hidden sm:block',
@@ -123,12 +134,12 @@ const SidebarNavigation = ({ isExpanded }: SidebarNavigationProps) => {
               )}
 
               {isExpandedItem && (
-                <div className="absolute bottom-0 lg:bottom-auto left-auto lg:left-0 w-5 lg:w-1 h-1 lg:h-4 bg-blue-500 rounded-full" />
+                <div className="absolute bottom-0 lg:bottom-auto left-auto lg:left-0 w-4 lg:w-0.5 h-0.5 lg:h-3 bg-blue-500 rounded-full" />
               )}
             </div>
 
             {hasChildren && isExpandedItem && (
-              <div className="flex flex-row lg:flex-col ml-2 lg:ml-3 mt-0.5 lg:mt-0.5 gap-1">
+              <div className="flex flex-row lg:flex-col ml-2 lg:ml-2.5 mt-0.5 lg:mt-0.5 gap-0.5">
                 {item.children!.map((child) => {
                   const isChildRouteActive = currentPath === child.path;
                   return (
@@ -137,10 +148,10 @@ const SidebarNavigation = ({ isExpanded }: SidebarNavigationProps) => {
                       onClick={() => navigate(child.path)}
                       className={clsx(
                         'group flex items-center cursor-pointer transition-all duration-200 relative',
-                        'px-2 lg:px-3 py-1.5 lg:py-1.5 mx-1 rounded-lg lg:rounded-lg whitespace-nowrap',
+                        'px-2 py-1 mx-0.5 rounded whitespace-nowrap',
                         isExpanded
-                          ? 'lg:gap-2 gap-1.5'
-                          : 'lg:justify-center gap-1.5',
+                          ? 'lg:gap-1.5 gap-1'
+                          : 'lg:justify-center gap-1',
                         isChildRouteActive
                           ? 'bg-blue-50/60 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'
                           : 'text-gray-400 dark:text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-600 dark:hover:text-gray-300',
@@ -157,7 +168,7 @@ const SidebarNavigation = ({ isExpanded }: SidebarNavigationProps) => {
                       />
                       <span
                         className={clsx(
-                          'text-[11px] lg:text-[12px] font-semibold tracking-tight transition-all truncate',
+                          'text-[10px] lg:text-[11px] font-semibold tracking-tight transition-all truncate',
                           !isExpanded ? 'lg:hidden block' : 'block',
                           'hidden sm:block',
                         )}

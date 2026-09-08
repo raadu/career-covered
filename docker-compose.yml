@@ -67,11 +67,18 @@ services:
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
       GROQ_API_KEY: ${GROQ_API_KEY}
       GOOGLE_REDIRECT_URI: http://localhost:3000/auth/google/callback
+      S3_ENDPOINT: http://minio:9000
+      S3_BUCKET: ${S3_BUCKET:-career-covered}
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY:-minioadmin}
+      S3_SECRET_KEY: ${S3_SECRET_KEY:-minioadmin}
+      S3_REGION: ${S3_REGION:-us-east-1}
     ports:
       - '3000:3000'
     depends_on:
       postgres:
         condition: service_healthy
+      minio:
+        condition: service_started
 
   # ─── Vite Frontend (Production — via Nginx) ───────────────────────────────
   web:
@@ -112,11 +119,18 @@ services:
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
       GROQ_API_KEY: ${GROQ_API_KEY}
       GOOGLE_REDIRECT_URI: http://localhost:3000/auth/google/callback
+      S3_ENDPOINT: http://minio:9000
+      S3_BUCKET: ${S3_BUCKET:-career-covered}
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY:-minioadmin}
+      S3_SECRET_KEY: ${S3_SECRET_KEY:-minioadmin}
+      S3_REGION: ${S3_REGION:-us-east-1}
     ports:
       - '3000:3000'
     depends_on:
       postgres:
         condition: service_healthy
+      minio:
+        condition: service_started
 
   # ─── Frontend (Dev mode — Vite HMR) ───────────────────────────────────────
   web-dev:

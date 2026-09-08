@@ -14,6 +14,7 @@ import coverLetterReducer, {
   setCustomization,
   incrementGenerationCount,
   selectTemplate,
+  setSelectedModel,
   fetchTemplates,
   createTemplate,
   updateTemplate,
@@ -21,6 +22,7 @@ import coverLetterReducer, {
   type SavedTemplate,
   type CoverLetterState,
 } from 'store/coverLetterSlice';
+import { DEFAULT_MODEL } from 'utils/AIModelUtils';
 
 const createBlankState = (
   overrides?: Partial<CoverLetterState>,
@@ -36,12 +38,15 @@ const createBlankState = (
   customization: {
     limitWords: false,
     wordCount: 400,
-    minimalChanges: false,
+    limitCharacters: false,
+    charCount: 0,
+    writingStyle: 'balanced' as const,
     sameLanguage: false,
   },
   generationCount: 0,
   savedTemplates: [],
   activeTemplateId: null,
+  selectedModel: DEFAULT_MODEL,
   ...overrides,
 });
 
@@ -255,14 +260,32 @@ describe('coverLetterSlice', () => {
         setCustomization({
           limitWords: true,
           wordCount: 500,
-          minimalChanges: true,
+          limitCharacters: false,
+          charCount: 0,
+          writingStyle: 'minimal',
           sameLanguage: true,
         }),
       );
       expect(state.customization.limitWords).toBe(true);
       expect(state.customization.wordCount).toBe(500);
-      expect(state.customization.minimalChanges).toBe(true);
+      expect(state.customization.writingStyle).toBe('minimal');
       expect(state.customization.sameLanguage).toBe(true);
+    });
+
+    it('updates character-limit options', () => {
+      const state = coverLetterReducer(
+        createBlankState(),
+        setCustomization({
+          limitWords: false,
+          wordCount: 400,
+          limitCharacters: true,
+          charCount: 2000,
+          writingStyle: 'balanced',
+          sameLanguage: false,
+        }),
+      );
+      expect(state.customization.limitCharacters).toBe(true);
+      expect(state.customization.charCount).toBe(2000);
     });
 
     it('persists to localStorage', () => {
@@ -271,14 +294,32 @@ describe('coverLetterSlice', () => {
         setCustomization({
           limitWords: true,
           wordCount: 300,
-          minimalChanges: false,
+          limitCharacters: false,
+          charCount: 0,
+          writingStyle: 'balanced',
           sameLanguage: true,
         }),
       );
       expect(localStorage.getItem('cl_limitWords')).toBe('true');
       expect(localStorage.getItem('cl_wordCount')).toBe('300');
-      expect(localStorage.getItem('cl_minimalChanges')).toBe('false');
+      expect(localStorage.getItem('cl_writingStyle')).toBe('balanced');
       expect(localStorage.getItem('cl_sameLanguage')).toBe('true');
+    });
+
+    it('persists character-limit options to localStorage', () => {
+      coverLetterReducer(
+        createBlankState(),
+        setCustomization({
+          limitWords: false,
+          wordCount: 400,
+          limitCharacters: true,
+          charCount: 1500,
+          writingStyle: 'balanced',
+          sameLanguage: false,
+        }),
+      );
+      expect(localStorage.getItem('cl_limitCharacters')).toBe('true');
+      expect(localStorage.getItem('cl_charCount')).toBe('1500');
     });
 
     it('resets customization to defaults', () => {
@@ -287,23 +328,47 @@ describe('coverLetterSlice', () => {
           customization: {
             limitWords: true,
             wordCount: 500,
-            minimalChanges: true,
+            limitCharacters: true,
+            charCount: 2000,
+            writingStyle: 'minimal',
             sameLanguage: true,
           },
         }),
         setCustomization({
           limitWords: false,
           wordCount: 400,
-          minimalChanges: false,
+          limitCharacters: false,
+          charCount: 0,
+          writingStyle: 'balanced',
           sameLanguage: false,
         }),
       );
       expect(state.customization).toEqual({
         limitWords: false,
         wordCount: 400,
-        minimalChanges: false,
+        limitCharacters: false,
+        charCount: 0,
+        writingStyle: 'balanced',
         sameLanguage: false,
       });
+    });
+  });
+
+  describe('setSelectedModel', () => {
+    it('updates the selected model', () => {
+      const state = coverLetterReducer(
+        createBlankState(),
+        setSelectedModel('openai/gpt-oss-20b'),
+      );
+      expect(state.selectedModel).toBe('openai/gpt-oss-20b');
+    });
+
+    it('persists the choice to localStorage', () => {
+      coverLetterReducer(
+        createBlankState(),
+        setSelectedModel('openai/gpt-oss-20b'),
+      );
+      expect(localStorage.getItem('cl_model')).toBe('openai/gpt-oss-20b');
     });
   });
 
@@ -579,7 +644,7 @@ describe('coverLetterSlice', () => {
       expect(created).toHaveProperty('jobDescription');
       expect(created).toHaveProperty('generatedLetter');
       expect(created).toHaveProperty('apiKey');
-      expect(created).not.toHaveProperty('model');
+      expect(created).toHaveProperty('selectedModel');
       expect(created).toHaveProperty('isTemplateExpanded');
       expect(created).toHaveProperty('isJobDescExpanded');
       expect(created).toHaveProperty('isGenerating');
@@ -599,6 +664,11 @@ describe('coverLetterSlice', () => {
     it('activeTemplateId starts null', () => {
       const created = coverLetterReducer(undefined, { type: '@@INIT' });
       expect(created.activeTemplateId).toBeNull();
+    });
+
+    it('selectedModel defaults to DEFAULT_MODEL when nothing is persisted', () => {
+      const created = coverLetterReducer(undefined, { type: '@@INIT' });
+      expect(created.selectedModel).toBe(DEFAULT_MODEL);
     });
   });
 

@@ -53,6 +53,11 @@ export class CreateCoverLetterDto {
 
   @ApiPropertyOptional()
   @IsOptional()
+  @IsNumber()
+  characterLimit?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
   @IsBoolean()
   minimalChanges?: boolean;
 
@@ -109,6 +114,11 @@ export class UpdateCoverLetterDto {
   @IsOptional()
   @IsNumber()
   wordLimit?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsNumber()
+  characterLimit?: number;
 
   @ApiPropertyOptional()
   @IsOptional()

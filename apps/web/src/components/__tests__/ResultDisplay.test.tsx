@@ -45,9 +45,8 @@ describe('ResultDisplay', () => {
     });
     expect(screen.getByText(/Dear Hiring Manager/i)).toBeInTheDocument();
     expect(
-      screen.getByRole('button', { name: /Designs/i }),
+      screen.getByRole('button', { name: /PDF/i }),
     ).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /PDF/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Word/i })).toBeInTheDocument();
   });
 
@@ -66,7 +65,7 @@ describe('ResultDisplay', () => {
     expect(screen.queryByTitle(/script/i)).not.toBeInTheDocument();
   });
 
-  describe('Designs button', () => {
+  describe('PDF button', () => {
     const testLetter = 'Dear Hiring Manager, this is my cover letter.';
 
     it('prompts login and does not open the design picker when not authenticated', () => {
@@ -77,7 +76,7 @@ describe('ResultDisplay', () => {
         },
       });
 
-      fireEvent.click(screen.getByRole('button', { name: /Designs/i }));
+      fireEvent.click(screen.getByRole('button', { name: /PDF/i }));
 
       expect(mockShowToast).toHaveBeenCalledWith(
         expect.stringContaining('login'),
@@ -96,7 +95,7 @@ describe('ResultDisplay', () => {
         },
       });
 
-      fireEvent.click(screen.getByRole('button', { name: /Designs/i }));
+      fireEvent.click(screen.getByRole('button', { name: /PDF/i }));
 
       expect(screen.getByText('Choose a PDF Design')).toBeInTheDocument();
     });
@@ -109,7 +108,7 @@ describe('ResultDisplay', () => {
         },
       });
 
-      fireEvent.click(screen.getByRole('button', { name: /Designs/i }));
+      fireEvent.click(screen.getByRole('button', { name: /PDF/i }));
       fireEvent.click(screen.getByText('Minimal'));
 
       await waitFor(() => {
@@ -144,7 +143,7 @@ describe('ResultDisplay', () => {
         },
       });
 
-      fireEvent.click(screen.getByRole('button', { name: /Designs/i }));
+      fireEvent.click(screen.getByRole('button', { name: /PDF/i }));
       fireEvent.click(screen.getByText('Executive'));
 
       await waitFor(() => {

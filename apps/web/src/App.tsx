@@ -3,15 +3,12 @@ import { Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { Helmet } from 'react-helmet-async';
 import Layout from 'layout/Layout';
-import MainHeader from 'components/MainHeader';
-import TemplateInput from 'components/TemplateInput';
-import JobDescriptionInput from 'components/JobDescriptionInput';
-import GeneratorControls from 'components/GeneratorControls';
-import ResultDisplay from 'components/ResultDisplay';
+import HomeView from 'views/HomeView';
 import SupportView from 'views/SupportView';
 import FaqView from 'views/FaqView';
 import TemplatesView from 'views/TemplatesView';
 import PreviousCoverLettersView from 'views/PreviousCoverLettersView';
+import ResumeView from 'views/ResumeView';
 import ogImage from 'assets/og-image.png';
 import { fetchCurrentUser } from 'store/authSlice';
 import { useAppDispatch } from 'store';
@@ -74,25 +71,8 @@ const App = () => {
           path="/cover-letter/previous"
           element={<PreviousCoverLettersView />}
         />
-        <Route
-          path="/"
-          element={
-            <div className="space-y-2 pb-2">
-              <MainHeader />
-
-              <div className="space-y-2">
-                <TemplateInput />
-                <JobDescriptionInput />
-
-                <div className="pt-1">
-                  <GeneratorControls />
-                </div>
-
-                <ResultDisplay />
-              </div>
-            </div>
-          }
-        />
+        <Route path="/resume" element={<ResumeView />} />
+        <Route path="/" element={<HomeView />} />
       </Routes>
     </Layout>
   );

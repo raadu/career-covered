@@ -18,7 +18,7 @@ describe('PdfDesignsModal', () => {
     expect(container.firstChild).toBeNull();
   });
 
-  it('renders all 6 design cards when open', () => {
+  it('renders all 9 design cards when open', () => {
     render(<PdfDesignsModal {...defaultProps} />);
     PDF_DESIGNS.forEach((design) => {
       expect(screen.getByText(design.name)).toBeInTheDocument();

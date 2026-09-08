@@ -39,7 +39,7 @@ const TextAreaHeader = ({
 
   return (
     <div
-      className="py-2 px-3 md:py-2.5 md:px-4 cursor-pointer bg-gray-50/80 dark:bg-gray-700/80 backdrop-blur-sm border-b border-gray-100 dark:border-gray-600 hover:bg-gray-100/50 dark:hover:bg-gray-600/50 transition-all duration-200 group"
+      className="py-1.5 px-2 md:py-2 md:px-3 cursor-pointer bg-gray-50/80 dark:bg-gray-700/80 backdrop-blur-sm border-b border-gray-100 dark:border-gray-600 hover:bg-gray-100/50 dark:hover:bg-gray-600/50 transition-all duration-200 group"
       onClick={onToggleExpand}
     >
       <div className="sm:flex sm:items-center sm:justify-between">
@@ -55,7 +55,7 @@ const TextAreaHeader = ({
             <>
               {onAddTemplate && (
                 <button
-                  className={`flex items-center gap-1.5 text-[10px] bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 py-1 px-2.5 rounded-md border border-gray-200 dark:border-gray-600 uppercase font-bold tracking-wider transition-all duration-200 hover:bg-white dark:hover:bg-gray-600 hover:border-blue-300 hover:text-blue-600 dark:hover:text-blue-400 shadow-sm active:scale-95 group/btn ${
+                  className={`flex items-center gap-1.5 text-[10px] bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 py-1 px-2.5 border border-gray-200 dark:border-gray-600 uppercase font-bold tracking-wider transition-all duration-200 hover:bg-white dark:hover:bg-gray-600 hover:border-blue-300 hover:text-blue-600 dark:hover:text-blue-400 shadow-sm active:scale-95 group/btn ${
                     !value.trim() ? 'opacity-40 cursor-not-allowed' : ''
                   }`}
                   onClick={(e) => {
@@ -73,7 +73,7 @@ const TextAreaHeader = ({
                 </button>
               )}
               <button
-                className="flex items-center gap-1.5 text-[10px] bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 py-1 px-2.5 rounded-md border border-gray-200 dark:border-gray-600 uppercase font-bold tracking-wider transition-all duration-200 hover:bg-white dark:hover:bg-gray-600 hover:border-blue-300 hover:text-blue-600 dark:hover:text-blue-400 shadow-sm active:scale-95 group/btn"
+                className="flex items-center gap-1.5 text-[10px] bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 py-1 px-2.5 border border-gray-200 dark:border-gray-600 uppercase font-bold tracking-wider transition-all duration-200 hover:bg-white dark:hover:bg-gray-600 hover:border-blue-300 hover:text-blue-600 dark:hover:text-blue-400 shadow-sm active:scale-95 group/btn"
                 onClick={handleCopy}
                 title={`Copy ${label}`}
               >
@@ -85,7 +85,7 @@ const TextAreaHeader = ({
               </button>
               {onClear && (
                 <button
-                  className="flex items-center gap-1.5 text-[10px] bg-gray-900 dark:bg-gray-600 text-white py-1 px-2.5 rounded-md uppercase font-bold tracking-wider transition-all duration-200 border border-gray-900 dark:border-gray-600 hover:bg-gray-700 dark:hover:bg-gray-500 hover:border-gray-700 hover:shadow-md active:scale-95 group/btn"
+                  className="flex items-center gap-1.5 text-[10px] bg-gray-900 dark:bg-gray-600 text-white py-1 px-2.5 uppercase font-bold tracking-wider transition-all duration-200 border border-gray-900 dark:border-gray-600 hover:bg-gray-700 dark:hover:bg-gray-500 hover:border-gray-700 hover:shadow-md active:scale-95 group/btn"
                   onClick={(e) => {
                     e.stopPropagation();
                     onClear();

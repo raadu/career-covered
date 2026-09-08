@@ -10,6 +10,7 @@ import { AiModule } from './ai/ai.module';
 import { AuthModule } from './auth/auth.module';
 import { TemplateModule } from './template/template.module';
 import { CoverLetterModule } from './cover-letter/cover-letter.module';
+import { ResumeModule } from './resume/resume.module';
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { CoverLetterModule } from './cover-letter/cover-letter.module';
     AuthModule,
     TemplateModule,
     CoverLetterModule,
+    ResumeModule,
   ],
   controllers: [AppController],
   providers: [

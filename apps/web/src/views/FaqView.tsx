@@ -5,44 +5,39 @@ import { FaChevronDown } from 'react-icons/fa';
 
 const faqItems = [
   {
-    question: 'How do I log in or sign up using Groq?',
+    question: 'Do I need to login or signup?',
     answer:
-      'Career Covered does not require any traditional login, signup, or account creation. You can start generating AI-powered cover letters immediately, completely free. For your first 5 cover letters, we provide a built-in Groq API key at no cost. After that, you can add your own free Groq API key to continue generating unlimited cover letters. To get a free key, visit console.groq.com, create an account, generate an API key, and paste it into the app using the "Add Custom API Key" button in the generator controls. The entire process takes under 2 minutes and requires no payment information.',
+      'You can initially use the app without logging in or signing up. Your first 5 cover letters use our built in API key for free. After that you can add your own free Groq API key. Go to console.groq.com and create a free account. Generate an API key and paste it into the app using the Add Custom API Key button. You can login or signup to use extra features like saving templates, cover letters and resumes.',
   },
   {
     question: 'Will I be charged with my credit card?',
     answer:
-      'No, absolutely not. Career Covered is 100% free to use with no hidden fees, subscriptions, or paid plans. We never ask for your credit card information or any payment details. If you choose to use your own Groq API key for unlimited generations, Groq provides a generous free tier that also does not require any payment information. There are no trials, no upsells, and no premium features to unlock — everything is completely free forever.',
-  },
-  {
-    question: 'Is my data secure?',
-    answer:
-      "Yes, your data security and privacy are important to us. Your job descriptions and cover letters are sent directly from your browser to Groq's API for AI processing — they are never stored on our servers. We do not collect, sell, or share any personal information. All data transmitted between your browser and the API is encrypted using HTTPS. We also use DOMpurify to sanitize all content and protect against XSS attacks. Your templates and preferences are stored locally in your browser only.",
+      'No. Career Covered is completely free. We never ask for your credit card or any payment details. If you use your own Groq API key from the Groq free tier then that is also free. There are currently no hidden fees or paid plans.',
   },
   {
     question: 'How many cover letters can I create for free?',
     answer:
-      'You get 5 free cover letters immediately using our built-in API key — no account, signup, or payment needed. After those 5 generations, you can add your own free Groq API key to continue creating unlimited cover letters. Since Groq offers a completely free tier with generous rate limits, you can generate as many cover letters as you need without ever paying a cent. The free tier includes access to powerful AI models like Llama 3 and Mixtral.',
+      'You will get 5 free cover letters with no signup. After that you can add your own free Groq API key for unlimited use. Groq offers a generous free tier so you can keep generating cover letters at no cost.',
   },
   {
     question: 'What is a Groq API key and why do I need one?',
     answer:
-      'A Groq API key is a free access token that enables Career Covered to generate AI-powered cover letters using Groq\'s ultra-fast inference engine. After your first 5 free generations using our shared key, you will need your own key to continue. Getting one is completely free: go to console.groq.com, create a free account, navigate to the API Keys section, and click "Create API Key". Copy the key and paste it into Career Covered. Your key gives you access to cutting-edge language models with blazing-fast response times.',
+      'A Groq API key is a free token that lets Career Covered generate cover letters using Groq AI. After your first 5 free uses you need your own key. Get one free at console.groq.com. Create an account and generate a key. Then paste it into the app.',
   },
   {
     question: 'Can I customize the tone and style of my cover letter?',
     answer:
-      'Yes, you have full control over the tone, style, and structure of your cover letter. Click the "Customize" button to adjust the writing style — choose from professional, casual, enthusiastic, formal, or persuasive tones. You can also set the desired length, include specific keywords from the job description, and control how closely the letter follows your template. The AI respects your customization preferences while tailoring the content to match the job description you provide.',
+      'Yes. Click the Customize button to choose a writing style. You can pick Minimal Balanced or Full. You can also set a word or character limit. Add your own custom instructions too. The AI follows your preferences while matching the job description.',
   },
   {
     question: 'How do I export my cover letter?',
     answer:
-      'Exporting your cover letter is simple. Once generated, you can click the "Copy" button to copy the full text to your clipboard instantly. Use the "Download" button to save your cover letter as a Word document (.docx) or as a PDF file. You can also edit the generated text directly in the built-in editor before exporting, allowing you to make final tweaks and personalize the letter further before saving or sharing it with employers.',
+      'Click the Copy button to copy the text to your clipboard. Use the PDF or Word button to download your cover letter. You can edit the text in the built in editor before exporting.',
   },
   {
     question: 'What templates can I use?',
     answer:
-      "Career Covered offers a variety of professional cover letter templates to choose from, including General, Software Engineer, Design, Marketing, Business, and more. You can also paste your own custom cover letter template — the AI will follow your template's structure, format, and style while intelligently tailoring the content to match the job description. This flexibility ensures your cover letter always matches your personal brand and industry standards.",
+      'You can paste your own cover letter template. Cover letter template is the common cover letter that you already wrote by The AI keeps your voice and style while adapting it to the job. Save multiple templates and switch between them easily. You can rename or delete templates anytime.',
   },
 ];
 
@@ -87,8 +82,8 @@ const FaqView = () => {
         />
       </Helmet>
 
-      <div className="max-w-3xl mx-auto py-6 md:py-12 px-4 sm:px-6">
-        <div className="bg-white dark:bg-gray-800 rounded-2xl sm:rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 p-5 sm:p-8 md:p-12 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="max-w-5xl mx-auto py-6 md:py-12 px-4 sm:px-6">
+        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 p-5 sm:p-8 md:p-12 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
           <div className="space-y-4 text-center">
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-gray-900 dark:text-gray-100 tracking-tight">
               Frequently Asked Questions

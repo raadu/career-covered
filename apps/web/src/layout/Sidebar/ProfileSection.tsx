@@ -46,7 +46,7 @@ const ProfileSection = ({ isExpanded }: ProfileSectionProps) => {
       {isAuthenticated && user ? (
         <div
           className={clsx(
-            'flex items-center gap-2.5 h-12 lg:h-12 px-3 transition-all shrink-0',
+            'flex items-center gap-2 h-8 lg:h-8 px-2 transition-all shrink-0',
             isExpanded
               ? 'lg:hover:bg-gray-50 lg:dark:hover:bg-gray-800/50 w-full lg:w-full'
               : 'justify-center lg:justify-center w-auto lg:w-full',
@@ -54,7 +54,7 @@ const ProfileSection = ({ isExpanded }: ProfileSectionProps) => {
         >
           <button
             onClick={handleAuthAction}
-            className="w-5 h-5 lg:w-7 lg:h-7 rounded-full lg:rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-[9px] lg:text-[11px] shrink-0 shadow-sm cursor-pointer"
+            className="w-4 h-4 lg:w-6 lg:h-6 rounded-full lg:rounded-md bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-[8px] lg:text-[10px] shrink-0 shadow-sm cursor-pointer"
           >
             {user.avatarUrl ? (
               <img
@@ -70,10 +70,10 @@ const ProfileSection = ({ isExpanded }: ProfileSectionProps) => {
           {isExpanded && (
             <span className="hidden lg:contents">
               <div className="flex-1 min-w-0">
-                <p className="text-[12px] font-semibold text-gray-700 dark:text-gray-200 truncate leading-tight">
+                <p className="text-[11px] font-semibold text-gray-700 dark:text-gray-200 truncate leading-tight">
                   {user.name}
                 </p>
-                <p className="text-[9px] text-gray-400 truncate leading-tight">
+                <p className="text-[8px] text-gray-400 truncate leading-tight">
                   {user.email}
                 </p>
               </div>
@@ -91,17 +91,17 @@ const ProfileSection = ({ isExpanded }: ProfileSectionProps) => {
         <button
           onClick={handleAuthAction}
           className={clsx(
-            'h-12 flex items-center transition-all duration-300 group shrink-0 text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 justify-center w-auto lg:w-full lg:border-t border-gray-100 dark:border-gray-700 lg:hover:bg-gray-50 lg:dark:hover:bg-gray-700',
-            isExpanded && 'lg:gap-3 lg:px-4',
+            'h-8 flex items-center transition-all duration-300 group shrink-0 text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 justify-center w-auto lg:w-full lg:border-t border-gray-100 dark:border-gray-700 lg:hover:bg-gray-50 lg:dark:hover:bg-gray-700',
+            isExpanded && 'lg:gap-2 lg:px-3',
           )}
           title="Sign In"
         >
           <FaSignInAlt
-            size={18}
+            size={14}
             className="group-hover:scale-110 transition-all shrink-0"
           />
           {isExpanded && (
-            <span className="hidden lg:block text-xs font-semibold text-gray-500 dark:text-gray-400 whitespace-nowrap">
+            <span className="hidden lg:block text-[11px] font-semibold text-gray-500 dark:text-gray-400 whitespace-nowrap">
               Sign In
             </span>
           )}

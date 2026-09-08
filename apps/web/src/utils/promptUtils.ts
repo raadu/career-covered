@@ -80,24 +80,75 @@ Replace it with one customized sentence that reflects the company's product, mis
 // Section: Format Helpers
 // ────────────────────────────────
 
-const buildWordRule = (wordCountLimit: number | null): string =>
-  wordCountLimit
-    ? `Word limit: ${wordCountLimit} words maximum. Count your words carefully. Do NOT exceed this limit.`
-    : `Write between 250 and 400 words.`;
+// Word limit and character limit both constrain output length, so exactly one
+// length rule is ever emitted — never both, and never the default fallback
+// alongside an active limit — regardless of what the caller passes in.
+const buildLengthRule = (
+  wordCountLimit: number | null,
+  characterCountLimit: number | null,
+): string => {
+  if (wordCountLimit) {
+    return `Word limit: ${wordCountLimit} words maximum. Count your words carefully. Do NOT exceed this limit. This limit takes priority over the paragraph structure below — merge or shorten paragraphs as needed to fit within it rather than exceeding it.`;
+  }
+  if (characterCountLimit) {
+    return `Character limit: ${characterCountLimit} characters maximum, including spaces. Count carefully. Do NOT exceed this limit. This limit takes priority over the paragraph structure below — merge or shorten paragraphs as needed to fit within it rather than exceeding it.`;
+  }
+  return `Write between 250 and 400 words.`;
+};
 
-const buildChangesRule = (minimalChanges: boolean): string =>
-  minimalChanges
-    ? `CRITICAL: Make ONLY these changes to the provided template:
+type WritingStyle = 'minimal' | 'balanced' | 'full';
+
+const buildChangesRule = (writingStyle: WritingStyle): string => {
+  switch (writingStyle) {
+    case 'minimal':
+      return `CRITICAL: Make ONLY these changes to the provided template:
 1. Replace company name with the new company.
 2. Replace position title with the new position.
 3. Update specific skills to match the job description (only if missing or outdated).
-Keep ALL other sentences exactly as written. Do NOT rewrite, rephrase, restructure, or add new paragraphs. Preserve the original text word-for-word except for the three changes listed above.`
-    : `You may rewrite motivation, skills and experience to create a stronger and more tailored cover letter while remaining truthful.`;
+If a resume is provided, do not invent new skills and experiences. Use existing skills and experiences to match with the job description.
+Keep ALL other sentences exactly as written. Do NOT rewrite, rephrase, restructure, or add new paragraphs. Preserve the original text word-for-word except for the changes listed above.`;
+    case 'balanced':
+      return `Do not fabricate or invent anything new. Use the cover letter (if any), resume (if any), or combination of both. Avoid using dash (-) or double dashes (--) to join sentences or words. Avoid complex sentences. Do not put comma (,) before "and" — for example it should be "Bread, Butter and Butterfly". It should not be "Bread, Butter, and Butterfly". Use human voice and writing style.`;
+    case 'full':
+      return `Rewrite the cover letter as you like. You may invent new skills, technologies and experiences outside the user's resume or cover letter template. But always make sure those match well with the job description.`;
+  }
+};
 
 const buildLanguageRule = (sameLanguage: boolean): string =>
   sameLanguage
     ? `CRITICAL: The cover letter MUST be written in the SAME LANGUAGE as the job description below. Analyze the job description's language and write the entire cover letter in that language. Do NOT default to English.`
     : `Write in professional English unless instructed otherwise.`;
+
+// Covers all four combinations of (template present?, resume present?) —
+// the resume is the candidate's real background when there's no template
+// to work from, and a supplementary source of facts/skills when there is.
+const buildBackgroundSection = (
+  template: string,
+  resumeText: string | null,
+): string => {
+  if (template && resumeText) {
+    return `Candidate Background / Existing Cover Letter:
+${template}
+
+Candidate Resume:
+${resumeText}
+
+The existing cover letter above should still drive the overall voice and structure. Use the resume only to add factual details, skills or achievements the cover letter doesn't already mention — do not contradict anything already stated in the cover letter.`;
+  }
+
+  if (resumeText) {
+    return `Candidate Resume:
+${resumeText}
+
+The candidate did not provide a previous cover letter. Write a highly personalized cover letter from scratch, using the resume above to match the candidate's real skills and experience to the job description.`;
+  }
+
+  if (template) {
+    return `Candidate Background / Existing Cover Letter:\n${template}`;
+  }
+
+  return `The candidate did not provide a previous cover letter. Create one from scratch.`;
+};
 
 // ────────────────────────────────
 // Public Helpers
@@ -124,22 +175,26 @@ export const buildCoverLetterPrompt = (
   jobDescription: string,
   template: string,
   wordCountLimit: number | null = null,
-  minimalChanges: boolean = true,
+  writingStyle: WritingStyle = 'balanced',
   sameLanguage: boolean = false,
   customPrompt?: string,
   jobMarket: import('./marketPrompts').JobMarket = 'international',
+  resumeText?: string | null,
+  characterCountLimit: number | null = null,
 ): string => {
   const sanitizedJD = sanitize(jobDescription);
   const sanitizedTemplate = sanitize(template);
+  const sanitizedResumeText = resumeText ? sanitize(resumeText) : null;
 
-  const wordRule = buildWordRule(wordCountLimit);
-  const changesRule = buildChangesRule(minimalChanges);
+  const lengthRule = buildLengthRule(wordCountLimit, characterCountLimit);
+  const changesRule = buildChangesRule(writingStyle);
   const languageRule = buildLanguageRule(sameLanguage);
   const marketRules = getMarketRules(jobMarket);
 
-  const templateSection = sanitizedTemplate
-    ? `Candidate Background / Existing Cover Letter:\n${sanitizedTemplate}`
-    : `The candidate did not provide a previous cover letter. Create one from scratch.`;
+  const backgroundSection = buildBackgroundSection(
+    sanitizedTemplate,
+    sanitizedResumeText,
+  );
 
   return [
     SYSTEM_ROLE,
@@ -147,13 +202,13 @@ export const buildCoverLetterPrompt = (
     'Job Description:',
     sanitizedJD,
     '',
-    templateSection,
+    backgroundSection,
     '',
     marketRules,
     '',
     'General Requirements',
     '',
-    wordRule,
+    lengthRule,
     '',
     'The cover letter must fit on one A4 page.',
     '',

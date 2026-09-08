@@ -2,8 +2,8 @@ import { useMemo } from 'react';
 import { type ColumnDef, type CellContext } from '@tanstack/react-table';
 import { FaPencilAlt, FaTrash } from 'react-icons/fa';
 import DataTable from 'components/common/DataTable';
+import formatDate from 'utils/dateUtils';
 import Checkbox from './Checkbox';
-import formatDate from './formatDate';
 import type { Template } from './types';
 
 interface TemplateTableProps {

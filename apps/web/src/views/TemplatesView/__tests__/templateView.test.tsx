@@ -612,3 +612,141 @@ describe('TemplatesView — edge cases', () => {
     expect(container.innerHTML).toBe('');
   });
 });
+
+/* ============================================================
+ * Delete confirmation flows
+ * ============================================================ */
+describe('TemplatesView — delete confirmation flows', () => {
+  const mockPaginatedResponse = {
+    data: mockTemplates,
+    total: 3,
+    page: 1,
+    limit: 10,
+    totalPages: 1,
+  };
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('sends a DELETE request and removes the row when confirmed', async () => {
+    const mockFetch = vi.fn().mockResolvedValueOnce({
+      ok: true,
+      json: () => Promise.resolve(mockPaginatedResponse),
+    });
+    mockFetch.mockResolvedValueOnce({ ok: true, json: () => Promise.resolve({}) });
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: () =>
+        Promise.resolve({
+          data: mockTemplates.slice(1),
+          total: 2,
+          page: 1,
+          limit: 10,
+          totalPages: 1,
+        }),
+    });
+    vi.stubGlobal('fetch', mockFetch);
+
+    renderWithProviders(<TemplatesView />, {
+      preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
+    });
+    await waitFor(() => {
+      expect(screen.getByText('Dev')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getAllByTitle('Delete Template')[0]);
+    fireEvent.click(screen.getByText('Sure!'));
+
+    await waitFor(() => {
+      const deleteCall = mockFetch.mock.calls.find(
+        (call) => call[0] === '/api/templates/1' && call[1]?.method === 'DELETE',
+      );
+      expect(deleteCall).toBeDefined();
+    });
+    await waitFor(() => {
+      expect(screen.queryByText('Dev')).not.toBeInTheDocument();
+    });
+  });
+
+  it('keeps the row and closes the modal when the single delete request fails', async () => {
+    const mockFetch = vi.fn().mockResolvedValueOnce({
+      ok: true,
+      json: () => Promise.resolve(mockPaginatedResponse),
+    });
+    mockFetch.mockResolvedValueOnce({ ok: false });
+    vi.stubGlobal('fetch', mockFetch);
+
+    renderWithProviders(<TemplatesView />, {
+      preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
+    });
+    await waitFor(() => {
+      expect(screen.getByText('Dev')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getAllByTitle('Delete Template')[0]);
+    fireEvent.click(screen.getByText('Sure!'));
+
+    await waitFor(() => {
+      const deleteCall = mockFetch.mock.calls.find(
+        (call) => call[0] === '/api/templates/1' && call[1]?.method === 'DELETE',
+      );
+      expect(deleteCall).toBeDefined();
+    });
+    expect(screen.getByText('Dev')).toBeInTheDocument();
+  });
+
+  it('does nothing when handleDelete fires with no template id pending (cancel then confirm race)', async () => {
+    const mockFetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve(mockPaginatedResponse),
+    });
+    vi.stubGlobal('fetch', mockFetch);
+
+    renderWithProviders(<TemplatesView />, {
+      preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
+    });
+    await waitFor(() => {
+      expect(screen.getByText('Dev')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getAllByTitle('Delete Template')[0]);
+    fireEvent.click(screen.getByText('Nope'));
+
+    expect(
+      mockFetch.mock.calls.some((call) => call[1]?.method === 'DELETE'),
+    ).toBe(false);
+  });
+
+  it('keeps the selection and modal open when the batch delete request fails', async () => {
+    const mockFetch = vi.fn().mockResolvedValueOnce({
+      ok: true,
+      json: () => Promise.resolve(mockPaginatedResponse),
+    });
+    mockFetch.mockResolvedValueOnce({ ok: false });
+    vi.stubGlobal('fetch', mockFetch);
+
+    renderWithProviders(<TemplatesView />, {
+      preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
+    });
+    await waitFor(() => {
+      expect(screen.getByText('Dev')).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getAllByRole('checkbox')[0]); // select all
+    await waitFor(() => {
+      expect(screen.getByText('Delete Selected')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByText('Delete Selected'));
+    fireEvent.click(screen.getByText('Delete All'));
+
+    await waitFor(() => {
+      const batchCall = mockFetch.mock.calls.find(
+        (call) =>
+          call[0] === '/api/templates/batch' && call[1]?.method === 'DELETE',
+      );
+      expect(batchCall).toBeDefined();
+    });
+    expect(screen.getByText('Dev')).toBeInTheDocument();
+  });
+});

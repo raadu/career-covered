@@ -35,6 +35,7 @@ const ControlActions = ({
         shimmer
         icon={<FaSlidersH className="animate-pulse" size={12} />}
         title="Customize as you needed."
+        className="rounded-none"
       >
         Customize More
       </CommonButton>

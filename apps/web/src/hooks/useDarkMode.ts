@@ -1,12 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
-
-const STORAGE_KEY = 'cl_darkMode';
-
-const getInitialDarkMode = (): boolean => {
-  const stored = localStorage.getItem(STORAGE_KEY);
-  if (stored !== null) return stored === 'true';
-  return false;
-};
+import { useEffect, useCallback } from 'react';
+import { useLocalStorageState } from 'hooks/useLocalStorageState';
 
 const applyDarkClass = (isDark: boolean) => {
   if (isDark) {
@@ -17,19 +10,15 @@ const applyDarkClass = (isDark: boolean) => {
 };
 
 export const useDarkMode = () => {
-  const [isDark, setIsDark] = useState<boolean>(getInitialDarkMode);
+  const [isDark, setIsDark] = useLocalStorageState<boolean>('darkMode', false);
 
   useEffect(() => {
     applyDarkClass(isDark);
   }, [isDark]);
 
   const toggleDark = useCallback(() => {
-    setIsDark((prev) => {
-      const next = !prev;
-      localStorage.setItem(STORAGE_KEY, String(next));
-      return next;
-    });
-  }, []);
+    setIsDark(!isDark);
+  }, [isDark, setIsDark]);
 
   return { isDark, toggleDark };
 };

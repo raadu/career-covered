@@ -1,3 +1,4 @@
+import { createRef } from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import CollapsibleTextArea from '../common/CollapsibleTextArea';
@@ -34,5 +35,12 @@ describe('CollapsibleTextArea', () => {
   it('shows required asterisk when required prop is true', () => {
     render(<CollapsibleTextArea {...defaultProps} required={true} />);
     expect(screen.getByText('*')).toBeInTheDocument();
+  });
+
+  it('forwards the ref to the card root element', () => {
+    const ref = createRef<HTMLDivElement>();
+    render(<CollapsibleTextArea {...defaultProps} ref={ref} />);
+    expect(ref.current).not.toBeNull();
+    expect(ref.current).toHaveClass('shadow-sm');
   });
 });

@@ -47,7 +47,7 @@ const TemplateBox = ({
   return (
     <div
       onClick={!editing ? onSelect : undefined}
-      className={`group relative flex items-center gap-1 sm:gap-1.5 px-1.5 sm:px-2 py-1 sm:py-1.5 rounded-xl cursor-pointer transition-all duration-200 border text-xs sm:text-sm min-w-[160px] max-w-[280px] shrink-0 ${
+      className={`group relative flex items-center gap-1 sm:gap-1.5 px-1 sm:px-1.5 py-0.5 sm:py-1 cursor-pointer transition-all duration-200 border text-xs sm:text-sm min-w-[160px] max-w-[280px] shrink-0 ${
         isActive
           ? 'bg-blue-50/80 dark:bg-blue-900/30 border-blue-300 dark:border-blue-600 shadow-sm'
           : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-blue-200 dark:hover:border-blue-700 hover:shadow-sm'

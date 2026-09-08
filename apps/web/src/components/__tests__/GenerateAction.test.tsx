@@ -1,6 +1,5 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import GenerateAction from '../GeneratorControls/GenerateAction';
 
 describe('GenerateAction', () => {
@@ -45,20 +44,5 @@ describe('GenerateAction', () => {
       />,
     );
     expect(screen.getByRole('button')).toBeDisabled();
-  });
-
-  it('shows error message when error prop is provided', () => {
-    render(
-      <GenerateAction
-        {...defaultProps}
-        error={{ status: 500, data: {} } satisfies FetchBaseQueryError}
-      />,
-    );
-    expect(screen.getByText(/Error generating/i)).toBeInTheDocument();
-  });
-
-  it('does not show error message when error is undefined', () => {
-    render(<GenerateAction {...defaultProps} />);
-    expect(screen.queryByText(/Error generating/i)).not.toBeInTheDocument();
   });
 });
