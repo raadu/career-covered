@@ -12,15 +12,14 @@ describe('FaqView', () => {
     expect(screen.getByText('Frequently Asked Questions')).toBeInTheDocument();
   });
 
-  it('renders all 8 FAQ questions', () => {
+  it('renders all 7 FAQ questions', () => {
     renderWithProviders(<FaqView />);
     expect(
-      screen.getByText(/How do I log in or sign up using Groq/i),
+      screen.getByText(/Do I need to login or signup/i),
     ).toBeInTheDocument();
     expect(
       screen.getByText(/Will I be charged with my credit card/i),
     ).toBeInTheDocument();
-    expect(screen.getByText(/Is my data secure/i)).toBeInTheDocument();
     expect(
       screen.getByText(/How many cover letters can I create for free/i),
     ).toBeInTheDocument();
@@ -36,7 +35,6 @@ describe('FaqView', () => {
 
   it('opens first 5 questions by default', () => {
     renderWithProviders(<FaqView />);
-    // First 5 buttons should have aria-expanded="true"
     const buttons = screen.getAllByRole('button');
     const expanded = buttons.filter(
       (b) => b.getAttribute('aria-expanded') === 'true',
@@ -44,40 +42,35 @@ describe('FaqView', () => {
     expect(expanded).toHaveLength(5);
   });
 
-  it('has remaining 3 questions collapsed by default', () => {
+  it('has remaining 2 questions collapsed by default', () => {
     renderWithProviders(<FaqView />);
     const buttons = screen.getAllByRole('button');
     const collapsed = buttons.filter(
       (b) => b.getAttribute('aria-expanded') === 'false',
     );
-    expect(collapsed).toHaveLength(3);
+    expect(collapsed).toHaveLength(2);
   });
 
   it('toggles a question open when clicked', () => {
     renderWithProviders(<FaqView />);
-    // 6th question (index 5) should start collapsed
-    const customizeBtn = screen.getByText(
-      /Can I customize the tone and style/i,
-    );
-    expect(customizeBtn.closest('button')?.getAttribute('aria-expanded')).toBe(
+    const exportBtn = screen.getByText(/How do I export my cover letter/i);
+    expect(exportBtn.closest('button')?.getAttribute('aria-expanded')).toBe(
       'false',
     );
 
-    fireEvent.click(customizeBtn);
+    fireEvent.click(exportBtn);
 
-    expect(customizeBtn.closest('button')?.getAttribute('aria-expanded')).toBe(
+    expect(exportBtn.closest('button')?.getAttribute('aria-expanded')).toBe(
       'true',
     );
-    // Answer should be visible
     expect(
-      screen.getByText(/You have full control over the tone/i),
+      screen.getByText(/Click the Copy button to copy the text/i),
     ).toBeInTheDocument();
   });
 
   it('toggles a question closed when clicked', () => {
     renderWithProviders(<FaqView />);
-    // First question should start open
-    const firstBtn = screen.getByText(/How do I log in or sign up/i);
+    const firstBtn = screen.getByText(/Do I need to login or signup/i);
     expect(firstBtn.closest('button')?.getAttribute('aria-expanded')).toBe(
       'true',
     );
