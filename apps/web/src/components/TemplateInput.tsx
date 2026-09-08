@@ -88,7 +88,7 @@ const TemplateInput = ({ boxRef }: TemplateInputProps) => {
     // itself (row 2) instead of guessing a fixed offset for the row above it.
     // Below lg it stays a normal block so mobile keeps its original stacking.
     <div className="space-y-1 lg:space-y-0 lg:contents">
-      <div className="lg:col-start-1 lg:row-start-1">
+      <div className="lg:col-start-1 lg:row-start-1 overflow-hidden">
         {isLoadingTemplates ? (
           <div className="flex gap-2 py-1">
             <div className="w-24 h-7 bg-gray-100 dark:bg-gray-700 animate-pulse" />

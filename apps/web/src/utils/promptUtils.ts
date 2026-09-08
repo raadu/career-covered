@@ -108,7 +108,7 @@ const buildChangesRule = (writingStyle: WritingStyle): string => {
 If a resume is provided, do not invent new skills and experiences. Use existing skills and experiences to match with the job description.
 Keep ALL other sentences exactly as written. Do NOT rewrite, rephrase, restructure, or add new paragraphs. Preserve the original text word-for-word except for the changes listed above.`;
     case 'balanced':
-      return `Do not fabricate or invent anything new. Use the cover letter (if any), resume (if any), or combination of both. Avoid using dash (-) to join sentences. Avoid complex sentences. Do not put comma (,) before "and" — for example write "Bread, Butter and Butterfly" not "Bread, Butter, and Butterfly". Use human voice and writing style.`;
+      return `Do not fabricate or invent anything new. Use the cover letter (if any), resume (if any), or combination of both. Avoid using dash (-) or double dashes (--) to join sentences or words. Avoid complex sentences. Do not put comma (,) before "and" — for example it should be "Bread, Butter and Butterfly". It should not be "Bread, Butter, and Butterfly". Use human voice and writing style.`;
     case 'full':
       return `Rewrite the cover letter as you like. You may invent new skills, technologies and experiences outside the user's resume or cover letter template. But always make sure those match well with the job description.`;
   }
