@@ -637,6 +637,37 @@ describe('coverLetterSlice', () => {
     });
   });
 
+  describe('auth/logoutUser/fulfilled extraReducer', () => {
+    it('clears saved templates, active selection, and current draft on logout', () => {
+      localStorage.setItem('cl_active_template_id', 'id-1');
+      localStorage.setItem('cl_template', 'Content 1');
+
+      const state = coverLetterReducer(
+        createBlankState({
+          savedTemplates: [tpl1, tpl2],
+          activeTemplateId: 'id-1',
+          template: 'Content 1',
+        }),
+        { type: 'auth/logoutUser/fulfilled' },
+      );
+
+      expect(state.savedTemplates).toEqual([]);
+      expect(state.activeTemplateId).toBeNull();
+      expect(state.template).toBe('');
+      expect(localStorage.getItem('cl_active_template_id')).toBeNull();
+      expect(localStorage.getItem('cl_template')).toBeNull();
+    });
+
+    it('is a no-op on already-empty state', () => {
+      const state = coverLetterReducer(createBlankState(), {
+        type: 'auth/logoutUser/fulfilled',
+      });
+      expect(state.savedTemplates).toEqual([]);
+      expect(state.activeTemplateId).toBeNull();
+      expect(state.template).toBe('');
+    });
+  });
+
   describe('initial state', () => {
     it('returns valid initial state shape', () => {
       const created = coverLetterReducer(undefined, { type: '@@INIT' });

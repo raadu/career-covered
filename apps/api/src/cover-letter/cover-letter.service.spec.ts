@@ -54,6 +54,23 @@ describe('CoverLetterService', () => {
     );
   });
 
+  describe('findOne', () => {
+    it('scopes the lookup by both id and userId, so another user cannot read it by id alone', async () => {
+      await service.findOne('cl-1', 'user-1');
+      expect(mockPrismaService.coverLetter.findFirst).toHaveBeenCalledWith({
+        where: { id: 'cl-1', userId: 'user-1' },
+        include: { template: { select: { name: true, id: true } } },
+      });
+    });
+
+    it('throws NotFoundException when the letter exists but belongs to a different user', async () => {
+      mockPrismaService.coverLetter.findFirst.mockResolvedValueOnce(null);
+      await expect(
+        service.findOne('someone-elses-letter', 'attacker-1'),
+      ).rejects.toThrow(NotFoundException);
+    });
+  });
+
   describe('create', () => {
     it('creates the cover letter for the given user', async () => {
       mockPrismaService.coverLetter.create.mockResolvedValue({ id: 'cl-2' });
@@ -151,6 +168,24 @@ describe('CoverLetterService', () => {
       await expect(service.remove('cl-1', 'user-1')).rejects.toThrow(
         NotFoundException,
       );
+    });
+  });
+
+  describe('removeBatch', () => {
+    it('scopes the batch delete by userId, alongside the id list', async () => {
+      await service.removeBatch(['cl-1', 'cl-2'], 'user-1');
+      expect(mockPrismaService.coverLetter.deleteMany).toHaveBeenCalledWith({
+        where: { id: { in: ['cl-1', 'cl-2'] }, userId: 'user-1' },
+      });
+    });
+
+    it('does not throw when some ids belong to another user — they are simply excluded by the userId scope', async () => {
+      mockPrismaService.coverLetter.deleteMany.mockResolvedValueOnce({
+        count: 1,
+      });
+      await expect(
+        service.removeBatch(['cl-1', 'someone-elses-letter'], 'user-1'),
+      ).resolves.toBeUndefined();
     });
   });
 });

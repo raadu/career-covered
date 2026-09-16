@@ -107,6 +107,35 @@ describe('ResumeService', () => {
       ).rejects.toThrow(BadRequestException);
     });
 
+    it('accepts a file exactly at the size limit', async () => {
+      mockPrismaService.resume.count.mockResolvedValue(0);
+      mockPrismaService.resume.findMany.mockResolvedValue([]);
+      mockPrismaService.resume.create.mockResolvedValue({
+        id: 'r1',
+        order: 0,
+        name: 'resume',
+        originalFileName: 'resume.pdf',
+        mimeType: 'application/pdf',
+        fileSize: MAX_RESUME_BYTES,
+        parsedText: null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+      // Not a real, parseable PDF, so compress() falls back to the original
+      // bytes unchanged (see the fakePdfBuffer comment above) — the buffer's
+      // length is exactly what reaches the MAX_RESUME_BYTES check.
+      const exactFile = fakeFile({
+        buffer: Buffer.concat([
+          Buffer.from('%PDF-'),
+          Buffer.alloc(MAX_RESUME_BYTES - 5, 'x'),
+        ]),
+      });
+
+      await expect(
+        service.create('user-1', exactFile, undefined),
+      ).resolves.toMatchObject({ id: 'r1' });
+    });
+
     it('uploads, extracts, and creates the row, defaulting name to the filename without extension', async () => {
       mockPrismaService.resume.count.mockResolvedValue(2);
       mockPrismaService.resume.findMany.mockResolvedValue([
@@ -495,6 +524,19 @@ describe('ResumeService', () => {
       expect(mockPrismaService.resume.delete).toHaveBeenCalledWith({
         where: { id: 'r1' },
       });
+    });
+
+    it('rethrows a non-NotFound storage error as-is, without self-healing the row', async () => {
+      const resume = { id: 'r1', storageKey: 'resumes/user-1/x.pdf' };
+      mockPrismaService.resume.findFirst.mockResolvedValue(resume);
+      mockStorageService.getObject.mockRejectedValue(
+        new Error('storage backend unavailable'),
+      );
+
+      await expect(service.getFileStream('r1', 'user-1')).rejects.toThrow(
+        'storage backend unavailable',
+      );
+      expect(mockPrismaService.resume.delete).not.toHaveBeenCalled();
     });
   });
 

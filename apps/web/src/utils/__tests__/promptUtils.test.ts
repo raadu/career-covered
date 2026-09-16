@@ -86,6 +86,23 @@ describe('promptUtils', () => {
       expect(result).toContain('Write between 250 and 400 words.');
     });
 
+    it('falls back to the default word-range guidance when the limits are explicitly 0', () => {
+      const result = buildCoverLetterPrompt(
+        jobDescription,
+        template,
+        0,
+        'balanced',
+        false,
+        undefined,
+        'international',
+        null,
+        0,
+      );
+      expect(result).toContain('Write between 250 and 400 words.');
+      expect(result).not.toContain('Word limit:');
+      expect(result).not.toContain('Character limit:');
+    });
+
     it('prefers the word limit over the character limit if both are somehow passed', () => {
       const result = buildCoverLetterPrompt(
         jobDescription,
@@ -107,6 +124,83 @@ describe('promptUtils', () => {
       expect(result).toContain(
         'The candidate did not provide a previous cover letter',
       );
+    });
+
+    it('treats a whitespace-only template as present rather than missing', () => {
+      const result = buildCoverLetterPrompt(jobDescription, '   ');
+      expect(result).toContain('Candidate Background / Existing Cover Letter:');
+      expect(result).not.toContain(
+        'The candidate did not provide a previous cover letter',
+      );
+    });
+
+    describe('language mode', () => {
+      it('defaults to professional English when sameLanguage is not set', () => {
+        const result = buildCoverLetterPrompt(jobDescription, template);
+        expect(result).toContain('Write in professional English');
+        expect(result).not.toContain('CRITICAL: The cover letter MUST be written in the SAME LANGUAGE');
+      });
+
+      it('instructs the model to match the job description language when sameLanguage is true', () => {
+        const result = buildCoverLetterPrompt(
+          jobDescription,
+          template,
+          null,
+          'balanced',
+          true,
+        );
+        expect(result).toContain(
+          'CRITICAL: The cover letter MUST be written in the SAME LANGUAGE as the job description below',
+        );
+        expect(result).not.toContain('Write in professional English unless instructed otherwise.');
+      });
+    });
+
+    describe('job market selection', () => {
+      it('includes Sweden-specific guidelines when jobMarket is sweden', () => {
+        const result = buildCoverLetterPrompt(
+          jobDescription,
+          template,
+          null,
+          'balanced',
+          false,
+          undefined,
+          'sweden',
+        );
+        expect(result).toContain('Job Market: Sweden');
+        expect(result).toContain('Be humble, genuine and professional.');
+      });
+
+      it('includes Bangladesh-specific guidelines when jobMarket is bangladesh', () => {
+        const result = buildCoverLetterPrompt(
+          jobDescription,
+          template,
+          null,
+          'balanced',
+          false,
+          undefined,
+          'bangladesh',
+        );
+        expect(result).toContain('Job Market: Bangladesh');
+        expect(result).toContain('Be respectful and formal.');
+      });
+    });
+
+    it('appends the custom prompt to the end of the full built prompt', () => {
+      const result = buildCoverLetterPrompt(
+        jobDescription,
+        template,
+        null,
+        'balanced',
+        false,
+        'Mention my open-source work',
+      );
+      const customIndex = result.indexOf('Additional user instruction:');
+      expect(customIndex).toBeGreaterThan(-1);
+      expect(result.indexOf('Mention my open-source work')).toBeGreaterThan(
+        customIndex,
+      );
+      expect(customIndex).toBeGreaterThan(result.indexOf('Output Rules:'));
     });
 
     it('should sanitize malicious code in job description and template', () => {

@@ -125,6 +125,49 @@ describe('AiService', () => {
     ).rejects.toThrow(InternalServerErrorException);
   });
 
+  it('surfaces the Groq error message when Groq responds with a non-2xx status', async () => {
+    const fetchMock = jest.fn().mockResolvedValue({
+      ok: false,
+      json: jest
+        .fn()
+        .mockResolvedValue({ error: { message: 'Invalid API key' } }),
+    });
+    global.fetch = fetchMock;
+
+    await expect(
+      service.generate({
+        model: 'openai/gpt-oss-120b',
+        messages: [{ role: 'user', content: 'test' }],
+      }),
+    ).rejects.toThrow('Invalid API key');
+  });
+
+  it('falls back to a generic message when Groq responds with a non-2xx status and no error body', async () => {
+    const fetchMock = jest.fn().mockResolvedValue({
+      ok: false,
+      json: jest.fn().mockResolvedValue({}),
+    });
+    global.fetch = fetchMock;
+
+    await expect(
+      service.generate({
+        model: 'openai/gpt-oss-120b',
+        messages: [{ role: 'user', content: 'test' }],
+      }),
+    ).rejects.toThrow('Groq API request failed');
+  });
+
+  it('propagates rejection when the network request to Groq itself fails', async () => {
+    global.fetch = jest.fn().mockRejectedValue(new Error('fetch failed'));
+
+    await expect(
+      service.generate({
+        model: 'openai/gpt-oss-120b',
+        messages: [{ role: 'user', content: 'test' }],
+      }),
+    ).rejects.toThrow('fetch failed');
+  });
+
   it('should use the caller-supplied API key over the configured fallback', async () => {
     const fetchMock = jest.fn().mockResolvedValue({
       ok: true,

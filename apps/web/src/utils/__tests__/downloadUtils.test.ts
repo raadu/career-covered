@@ -13,7 +13,25 @@ vi.mock('utils/pdfDesigns', () => ({
   getPdfDesign: (id: string) => mockGetPdfDesign(id),
 }));
 
-import { generatePdf, sanitizeForPdf } from '../downloadUtils';
+const mockToBlob = vi.fn(async () => new Blob(['docx-bytes']));
+const mockSaveAs = vi.fn();
+const capturedParagraphs: unknown[] = [];
+
+vi.mock('docx', () => ({
+  Document: vi.fn().mockImplementation((config) => config),
+  Packer: { toBlob: () => mockToBlob() },
+  Paragraph: vi.fn().mockImplementation((config) => {
+    capturedParagraphs.push(config);
+    return config;
+  }),
+  TextRun: vi.fn().mockImplementation((config) => config),
+}));
+
+vi.mock('file-saver', () => ({
+  saveAs: (blob: Blob, fileName: string) => mockSaveAs(blob, fileName),
+}));
+
+import { generatePdf, generateWord, sanitizeForPdf } from '../downloadUtils';
 
 describe('generatePdf', () => {
   beforeEach(() => {
@@ -40,6 +58,41 @@ describe('generatePdf', () => {
   it('sanitizes smart typography before rendering', () => {
     generatePdf('“Dear” Sir—Madam… it’s a pleasure•', 'My_File');
     expect(mockRender).toHaveBeenCalledWith('"Dear" Sir-Madam... it\'s a pleasure-');
+  });
+});
+
+describe('generateWord', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    capturedParagraphs.length = 0;
+  });
+
+  it('creates one paragraph per line and saves as a .docx with the given file name', async () => {
+    await generateWord('Line one\nLine two\nLine three', 'My_File');
+
+    expect(capturedParagraphs).toHaveLength(3);
+    expect(mockToBlob).toHaveBeenCalledTimes(1);
+    expect(mockSaveAs).toHaveBeenCalledWith(expect.any(Blob), 'My_File.docx');
+  });
+
+  it('produces a single empty paragraph for an empty string', async () => {
+    await generateWord('', 'Empty_File');
+
+    expect(capturedParagraphs).toHaveLength(1);
+    expect(mockSaveAs).toHaveBeenCalledWith(expect.any(Blob), 'Empty_File.docx');
+  });
+
+  it('applies the expected font and size to every paragraph run', async () => {
+    await generateWord('Only line', 'Sized_File');
+
+    const paragraphConfig = capturedParagraphs[0] as {
+      children: { font: string; size: number; text: string }[];
+    };
+    expect(paragraphConfig.children[0]).toMatchObject({
+      text: 'Only line',
+      font: 'Arial',
+      size: 24,
+    });
   });
 });
 

@@ -13,7 +13,7 @@ const IS_LOCAL_ENV =
  * Simple Basic Auth gate for Swagger. Only enforced when SWAGGER_USER /
  * SWAGGER_PASSWORD are configured — left open if unset (e.g. local dev).
  */
-function swaggerBasicAuth(
+export function swaggerBasicAuth(
   req: express.Request,
   res: express.Response,
   next: express.NextFunction,
@@ -101,4 +101,8 @@ async function bootstrap() {
   console.log(`API running on http://localhost:${port}`);
   console.log(`Swagger docs: http://localhost:${port}/docs`);
 }
-void bootstrap();
+// Guarded so importing this module (e.g. to unit-test swaggerBasicAuth)
+// doesn't also boot a real server as a side effect.
+if (require.main === module) {
+  void bootstrap();
+}

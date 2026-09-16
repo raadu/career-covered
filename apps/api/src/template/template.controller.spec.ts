@@ -21,6 +21,7 @@ describe('TemplateController', () => {
             create: jest.fn().mockResolvedValue({ id: 't2' }),
             update: jest.fn().mockResolvedValue({ id: 't1' }),
             remove: jest.fn().mockResolvedValue(undefined),
+            removeBatch: jest.fn().mockResolvedValue(undefined),
           },
         },
       ],
@@ -62,5 +63,35 @@ describe('TemplateController', () => {
       limit: 10,
       totalPages: 0,
     });
+  });
+
+  it('findOne delegates to the service with the authenticated user id, never a body/query-supplied one', async () => {
+    const result = await controller.findOne('t1', mockUser);
+    expect(service.findOne).toHaveBeenCalledWith('t1', mockUser.id);
+    expect(result).toEqual({ id: 't1' });
+  });
+
+  it('create delegates to the service scoped to the authenticated user id', async () => {
+    const dto = { name: 'My Template', content: 'Dear Hiring Manager' };
+    const result = await controller.create(dto, mockUser);
+    expect(service.create).toHaveBeenCalledWith(mockUser.id, dto);
+    expect(result).toEqual({ id: 't2' });
+  });
+
+  it('update delegates to the service scoped to the authenticated user id', async () => {
+    const dto = { name: 'Renamed', content: 'New content' };
+    const result = await controller.update('t1', dto, mockUser);
+    expect(service.update).toHaveBeenCalledWith('t1', mockUser.id, dto);
+    expect(result).toEqual({ id: 't1' });
+  });
+
+  it('remove delegates to the service scoped to the authenticated user id', async () => {
+    await controller.remove('t1', mockUser);
+    expect(service.remove).toHaveBeenCalledWith('t1', mockUser.id);
+  });
+
+  it('removeBatch delegates to the service scoped to the authenticated user id, never a client-supplied one', async () => {
+    await controller.removeBatch({ ids: ['t1', 't2'] }, mockUser);
+    expect(service.removeBatch).toHaveBeenCalledWith(['t1', 't2'], mockUser.id);
   });
 });

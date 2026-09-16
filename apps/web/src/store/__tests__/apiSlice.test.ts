@@ -108,4 +108,129 @@ describe('apiSlice.generateCoverLetter', () => {
         .unwrap(),
     ).rejects.toBeDefined();
   });
+
+  it('rejects when the message content is an empty string', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(
+        async () =>
+          new Response(
+            JSON.stringify({ choices: [{ message: { content: '' } }] }),
+            { status: 200 },
+          ),
+      ),
+    );
+
+    const store = createTestStore();
+    await expect(
+      store
+        .dispatch(
+          apiSlice.endpoints.generateCoverLetter.initiate({
+            prompt: 'write a letter',
+            model: 'openai/gpt-oss-120b',
+          }),
+        )
+        .unwrap(),
+    ).rejects.toBeDefined();
+  });
+
+  it('includes userApiKey in the request body when provided', async () => {
+    let capturedBody: string | undefined;
+    const fetchMock = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+      capturedBody =
+        init?.body !== undefined
+          ? (init.body as string)
+          : await (input as Request).clone().text();
+      return new Response(
+        JSON.stringify({ choices: [{ message: { content: 'Dear...' } }] }),
+        { status: 200 },
+      );
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    const store = createTestStore();
+    await store
+      .dispatch(
+        apiSlice.endpoints.generateCoverLetter.initiate({
+          prompt: 'write a letter',
+          model: 'openai/gpt-oss-120b',
+          userApiKey: 'gsk_test_key',
+        }),
+      )
+      .unwrap();
+
+    expect(JSON.parse(capturedBody!).userApiKey).toBe('gsk_test_key');
+  });
+
+  it('omits userApiKey from the request body entirely when not provided', async () => {
+    let capturedBody: string | undefined;
+    const fetchMock = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+      capturedBody =
+        init?.body !== undefined
+          ? (init.body as string)
+          : await (input as Request).clone().text();
+      return new Response(
+        JSON.stringify({ choices: [{ message: { content: 'Dear...' } }] }),
+        { status: 200 },
+      );
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    const store = createTestStore();
+    await store
+      .dispatch(
+        apiSlice.endpoints.generateCoverLetter.initiate({
+          prompt: 'write a letter',
+          model: 'openai/gpt-oss-120b',
+        }),
+      )
+      .unwrap();
+
+    expect('userApiKey' in JSON.parse(capturedBody!)).toBe(false);
+  });
+
+  it('rejects when the network request itself fails', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => {
+        throw new TypeError('Failed to fetch');
+      }),
+    );
+
+    const store = createTestStore();
+    await expect(
+      store
+        .dispatch(
+          apiSlice.endpoints.generateCoverLetter.initiate({
+            prompt: 'write a letter',
+            model: 'openai/gpt-oss-120b',
+          }),
+        )
+        .unwrap(),
+    ).rejects.toBeDefined();
+  });
+
+  it('rejects when the upstream responds with a non-2xx status', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(
+        async () =>
+          new Response(JSON.stringify({ error: 'rate limited' }), {
+            status: 429,
+          }),
+      ),
+    );
+
+    const store = createTestStore();
+    await expect(
+      store
+        .dispatch(
+          apiSlice.endpoints.generateCoverLetter.initiate({
+            prompt: 'write a letter',
+            model: 'openai/gpt-oss-120b',
+          }),
+        )
+        .unwrap(),
+    ).rejects.toBeDefined();
+  });
 });

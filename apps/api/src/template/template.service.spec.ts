@@ -48,6 +48,24 @@ describe('TemplateService', () => {
     );
   });
 
+  describe('findOne', () => {
+    it('scopes the lookup by both id and userId, so another user cannot read it by id alone', async () => {
+      await service.findOne('t1', 'user-1');
+      expect(mockPrismaService.template.findFirst).toHaveBeenCalledWith({
+        where: { id: 't1', userId: 'user-1' },
+      });
+    });
+
+    it('throws NotFoundException when the template exists but belongs to a different user', async () => {
+      // findFirst is scoped by userId at the query level, so a template
+      // owned by someone else comes back as null, identical to a missing id.
+      mockPrismaService.template.findFirst.mockResolvedValueOnce(null);
+      await expect(
+        service.findOne('someone-elses-template', 'attacker-1'),
+      ).rejects.toThrow(NotFoundException);
+    });
+  });
+
   describe('update', () => {
     it('scopes the update by both id and userId in a single query', async () => {
       await service.update('t1', 'user-1', {
@@ -88,6 +106,27 @@ describe('TemplateService', () => {
       await expect(service.remove('t1', 'user-1')).rejects.toThrow(
         NotFoundException,
       );
+    });
+  });
+
+  describe('removeBatch', () => {
+    it('scopes the batch delete by userId, alongside the id list', async () => {
+      await service.removeBatch(['t1', 't2'], 'user-1');
+      expect(mockPrismaService.template.deleteMany).toHaveBeenCalledWith({
+        where: { id: { in: ['t1', 't2'] }, userId: 'user-1' },
+      });
+    });
+
+    it('does not throw when some ids belong to another user — they are simply excluded by the userId scope', async () => {
+      // deleteMany with a userId filter silently deletes 0 rows for ids it
+      // doesn't own, rather than 404ing — unlike single remove(), a batch
+      // request mixing owned and unowned ids should not fail the whole call.
+      mockPrismaService.template.deleteMany.mockResolvedValueOnce({
+        count: 1,
+      });
+      await expect(
+        service.removeBatch(['t1', 'someone-elses-template'], 'user-1'),
+      ).resolves.toBeUndefined();
     });
   });
 });

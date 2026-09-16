@@ -52,6 +52,47 @@ describe('useResumeUpload', () => {
     );
   });
 
+  it('accepts a file exactly at the 10MB size limit', async () => {
+    const fetchMock = vi.fn(async () => ({
+      ok: true,
+      json: async () => ({ id: 'r1' }),
+    }));
+    vi.stubGlobal('fetch', fetchMock);
+    const { result } = renderHook(() => useResumeUpload(vi.fn()));
+
+    await act(async () => {
+      await result.current.uploadResume(
+        pdfFile('exact.pdf', 10 * 1024 * 1024),
+        0,
+      );
+    });
+
+    expect(fetchMock).toHaveBeenCalled();
+    expect(mockShowToast).not.toHaveBeenCalledWith(
+      'File exceeds the 10MB size limit',
+      expect.anything(),
+    );
+  });
+
+  it('allows the upload when currentCount is exactly one below the cap', async () => {
+    const fetchMock = vi.fn(async () => ({
+      ok: true,
+      json: async () => ({ id: 'r1' }),
+    }));
+    vi.stubGlobal('fetch', fetchMock);
+    const { result } = renderHook(() => useResumeUpload(vi.fn()));
+
+    await act(async () => {
+      await result.current.uploadResume(pdfFile(), 7);
+    });
+
+    expect(fetchMock).toHaveBeenCalled();
+    expect(mockShowToast).not.toHaveBeenCalledWith(
+      expect.stringContaining('maximum 8 resumes'),
+      expect.anything(),
+    );
+  });
+
   it('shows the max-resumes toast and skips upload when at the cap', async () => {
     vi.stubGlobal('fetch', vi.fn());
     const { result } = renderHook(() => useResumeUpload(vi.fn()));
@@ -144,6 +185,51 @@ describe('useResumeUpload', () => {
     expect(onUploaded).not.toHaveBeenCalled();
     expect(mockShowToast).toHaveBeenCalledWith(
       'Server exploded',
+      expect.objectContaining({ type: 'error' }),
+    );
+  });
+
+  it('falls back to a generic error message when the error response body is not valid JSON', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => ({
+        ok: false,
+        json: async () => {
+          throw new SyntaxError('Unexpected end of JSON input');
+        },
+      })),
+    );
+    const onUploaded = vi.fn();
+    const { result } = renderHook(() => useResumeUpload(onUploaded));
+
+    await act(async () => {
+      await result.current.uploadResume(pdfFile(), 0);
+    });
+
+    expect(onUploaded).not.toHaveBeenCalled();
+    expect(mockShowToast).toHaveBeenCalledWith(
+      'Failed to upload resume',
+      expect.objectContaining({ type: 'error' }),
+    );
+  });
+
+  it('shows an error toast when the network request itself throws', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => {
+        throw new TypeError('Failed to fetch');
+      }),
+    );
+    const onUploaded = vi.fn();
+    const { result } = renderHook(() => useResumeUpload(onUploaded));
+
+    await act(async () => {
+      await result.current.uploadResume(pdfFile(), 0);
+    });
+
+    expect(onUploaded).not.toHaveBeenCalled();
+    expect(mockShowToast).toHaveBeenCalledWith(
+      'Failed to fetch',
       expect.objectContaining({ type: 'error' }),
     );
   });
