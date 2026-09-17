@@ -95,7 +95,16 @@ export class AuthController {
     );
     const token = await this.authService.createSession(user.id);
     res.cookie(SESSION_COOKIE, token, COOKIE_OPTIONS);
-    return { id: user.id, email: user.email, name: user.name };
+    return {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      avatarUrl: user.avatarUrl,
+      linkedinUrl: user.linkedinUrl,
+      githubUrl: user.githubUrl,
+      websiteUrl: user.websiteUrl,
+      contactEmail: user.contactEmail,
+    };
   }
 
   @Public()
@@ -111,7 +120,16 @@ export class AuthController {
     const user = await this.authService.login(dto.email, dto.password);
     const token = await this.authService.createSession(user.id);
     res.cookie(SESSION_COOKIE, token, COOKIE_OPTIONS);
-    return { id: user.id, email: user.email, name: user.name };
+    return {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      avatarUrl: user.avatarUrl,
+      linkedinUrl: user.linkedinUrl,
+      githubUrl: user.githubUrl,
+      websiteUrl: user.websiteUrl,
+      contactEmail: user.contactEmail,
+    };
   }
 
   @Get('me')
@@ -123,6 +141,10 @@ export class AuthController {
       email: user.email,
       name: user.name,
       avatarUrl: user.avatarUrl,
+      linkedinUrl: user.linkedinUrl,
+      githubUrl: user.githubUrl,
+      websiteUrl: user.websiteUrl,
+      contactEmail: user.contactEmail,
     };
   }
 

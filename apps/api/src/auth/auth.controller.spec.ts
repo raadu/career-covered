@@ -63,6 +63,11 @@ describe('AuthController', () => {
     email: 'test@example.com',
     name: 'Test User',
     avatarUrl: null,
+    linkedinUrl: null,
+    githubUrl: null,
+    websiteUrl: null,
+    contactEmail: null,
+    passwordHash: 'super-secret-hash',
   } as db.User;
 
   const mockRes = () =>
@@ -119,12 +124,21 @@ describe('AuthController', () => {
       id: mockUser.id,
       email: mockUser.email,
       name: mockUser.name,
+      avatarUrl: mockUser.avatarUrl,
+      linkedinUrl: mockUser.linkedinUrl,
+      githubUrl: mockUser.githubUrl,
+      websiteUrl: mockUser.websiteUrl,
+      contactEmail: mockUser.contactEmail,
     });
+    expect(result).not.toHaveProperty('passwordHash');
   });
 
   it('sets the session cookie on login', async () => {
     const res = mockRes();
-    await controller.login({ email: 'test@example.com', password: 'pw' }, res);
+    const result = await controller.login(
+      { email: 'test@example.com', password: 'pw' },
+      res,
+    );
 
     expect(service.login).toHaveBeenCalledWith('test@example.com', 'pw');
     expect(res.cookie).toHaveBeenCalledWith(
@@ -132,6 +146,17 @@ describe('AuthController', () => {
       'session-token',
       expect.objectContaining({ httpOnly: true, path: '/' }),
     );
+    expect(result).toEqual({
+      id: mockUser.id,
+      email: mockUser.email,
+      name: mockUser.name,
+      avatarUrl: mockUser.avatarUrl,
+      linkedinUrl: mockUser.linkedinUrl,
+      githubUrl: mockUser.githubUrl,
+      websiteUrl: mockUser.websiteUrl,
+      contactEmail: mockUser.contactEmail,
+    });
+    expect(result).not.toHaveProperty('passwordHash');
   });
 
   it('clears the session cookie on logout using the same path/domain it was set with', async () => {
@@ -157,13 +182,19 @@ describe('AuthController', () => {
     expect(res.clearCookie).toHaveBeenCalled();
   });
 
-  it('returns the current user on me', () => {
-    expect(controller.me(mockUser)).toEqual({
+  it('returns the current user on me, including the quick-copy links but never passwordHash', () => {
+    const result = controller.me(mockUser);
+    expect(result).toEqual({
       id: mockUser.id,
       email: mockUser.email,
       name: mockUser.name,
       avatarUrl: mockUser.avatarUrl,
+      linkedinUrl: mockUser.linkedinUrl,
+      githubUrl: mockUser.githubUrl,
+      websiteUrl: mockUser.websiteUrl,
+      contactEmail: mockUser.contactEmail,
     });
+    expect(result).not.toHaveProperty('passwordHash');
   });
 
   describe('Google OAuth', () => {

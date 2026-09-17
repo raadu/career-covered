@@ -20,6 +20,13 @@ model User {
   email        String   @unique
   name         String?
   avatarUrl    String?
+
+  // Quick Copy Links — freely editable, independent of the login email above
+  linkedinUrl  String?
+  githubUrl    String?
+  websiteUrl   String?
+  contactEmail String?
+
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 

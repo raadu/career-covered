@@ -11,6 +11,7 @@ import { AuthModule } from './auth/auth.module';
 import { TemplateModule } from './template/template.module';
 import { CoverLetterModule } from './cover-letter/cover-letter.module';
 import { ResumeModule } from './resume/resume.module';
+import { ProfileModule } from './profile/profile.module';
 
 @Module({
   imports: [
@@ -52,6 +53,7 @@ import { ResumeModule } from './resume/resume.module';
     TemplateModule,
     CoverLetterModule,
     ResumeModule,
+    ProfileModule,
   ],
   controllers: [AppController],
   providers: [
