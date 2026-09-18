@@ -34,7 +34,29 @@ describe('promptUtils', () => {
       const result = buildCoverLetterPrompt(jobDescription, template);
       expect(result).toContain(jobDescription);
       expect(result).toContain(template);
-      expect(result).toContain('expert career coach');
+      expect(result).toContain('expert professional cover letter writer');
+    });
+
+    it('instructs the model to prioritize recent, matching experience in the middle paragraph', () => {
+      const result = buildCoverLetterPrompt(jobDescription, template);
+      expect(result).toContain(
+        'Try to highlight most recent experiences that matches first.',
+      );
+    });
+
+    it('tells the model to avoid dashes/hyphens instead of the old "standard paragraph formatting" rule', () => {
+      const result = buildCoverLetterPrompt(jobDescription, template);
+      expect(result).toContain(
+        'Avoid using dashes (—) or hyphens (--) to join sentences or words.',
+      );
+      expect(result).not.toContain('Use standard paragraph formatting only.');
+    });
+
+    it('ties the template placeholder replacement to the candidate\'s own experience/skills', () => {
+      const result = buildCoverLetterPrompt(jobDescription, template);
+      expect(result).toContain(
+        "Replace it with one customized sentence that reflects my experiences or skills with the company's product, mission, values or impact based on the job description.",
+      );
     });
 
     it('should include word count limit when provided', () => {
@@ -243,6 +265,17 @@ describe('promptUtils', () => {
         expect(result).toContain('Replace position title');
         expect(result).toContain('do not invent new skills');
         expect(result).not.toContain('Rewrite the cover letter');
+      });
+
+      it('minimal style numbers all 5 rules, including the resume and preserve-wording rules', () => {
+        const result = buildCoverLetterPrompt(
+          jobDescription,
+          template,
+          null,
+          'minimal',
+        );
+        expect(result).toContain('4. If a resume is provided');
+        expect(result).toContain('5. Keep ALL other sentences exactly as written');
       });
 
       it('balanced style forbids fabrication and enforces human voice rules', () => {
