@@ -6,6 +6,8 @@ import {
   LuEraser,
   LuPlus,
 } from 'react-icons/lu';
+import CommonButton from 'components/common/CommonButton';
+import { ICON_SIZE } from 'components/common/iconSizes';
 
 interface TextAreaHeaderProps {
   label: string;
@@ -30,23 +32,31 @@ const TextAreaHeader = ({
 }: TextAreaHeaderProps) => {
   const chevron = (
     <button
-      className="text-gray-400 dark:text-gray-500 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors p-1"
+      className="text-neutral-400 dark:text-neutral-500 group-hover:text-brand-500 dark:group-hover:text-brand-400 transition-colors p-1"
       aria-label={isExpanded ? 'Collapse' : 'Expand'}
     >
-      {isExpanded ? <LuChevronUp size={14} /> : <LuChevronDown size={14} />}
+      {isExpanded ? (
+        <LuChevronUp size={ICON_SIZE.xs} />
+      ) : (
+        <LuChevronDown size={ICON_SIZE.xs} />
+      )}
     </button>
   );
 
   return (
     <div
-      className="py-1.5 px-2 md:py-2 md:px-3 cursor-pointer bg-gray-50/80 dark:bg-gray-700/80 backdrop-blur-sm border-b border-gray-100 dark:border-gray-600 hover:bg-gray-100/50 dark:hover:bg-gray-600/50 transition-all duration-200 group"
+      className="py-1.5 px-2 md:py-2 md:px-3 cursor-pointer bg-neutral-50/80 dark:bg-neutral-800/80 backdrop-blur-sm border-b border-neutral-200 dark:border-neutral-700 hover:bg-neutral-100/50 dark:hover:bg-neutral-700/50 transition-all duration-200 group"
       onClick={onToggleExpand}
     >
       <div className="sm:flex sm:items-center sm:justify-between">
         <div className="flex items-center justify-between">
-          <label className="font-semibold text-gray-700 dark:text-gray-200 flex items-center gap-2 cursor-pointer select-none text-sm tracking-tight">
+          <label className="font-semibold text-neutral-800 dark:text-neutral-200 flex items-center gap-2 cursor-pointer select-none text-sm tracking-tight">
             {label}
-            {required && <span className="text-red-500 text-xs">*</span>}
+            {required && (
+              <span className="text-danger dark:text-danger-fg-dark text-xs">
+                *
+              </span>
+            )}
           </label>
           <div className="sm:hidden">{chevron}</div>
         </div>
@@ -54,47 +64,42 @@ const TextAreaHeader = ({
           {value && (
             <>
               {onAddTemplate && (
-                <button
-                  className={`flex items-center gap-1.5 text-[10px] bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 py-1 px-2.5 border border-gray-200 dark:border-gray-600 uppercase font-bold tracking-wider transition-all duration-200 hover:bg-white dark:hover:bg-gray-600 hover:border-blue-300 hover:text-blue-600 dark:hover:text-blue-400 shadow-sm active:scale-95 group/btn ${
-                    !value.trim() ? 'opacity-40 cursor-not-allowed' : ''
-                  }`}
+                <CommonButton
+                  variant="outline"
+                  icon={<LuPlus size={ICON_SIZE.xs} />}
                   onClick={(e) => {
                     e.stopPropagation();
                     if (value.trim() && onAddTemplate) onAddTemplate();
                   }}
                   title="Save as a template"
                   disabled={!value.trim()}
+                  className="px-2 text-xs"
                 >
-                  <LuPlus
-                    size={12}
-                    className="group-hover/btn:scale-110 transition-transform"
-                  />
                   Save as Template
-                </button>
+                </CommonButton>
               )}
-              <button
-                className="flex items-center gap-1.5 text-[10px] bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 py-1 px-2.5 border border-gray-200 dark:border-gray-600 uppercase font-bold tracking-wider transition-all duration-200 hover:bg-white dark:hover:bg-gray-600 hover:border-blue-300 hover:text-blue-600 dark:hover:text-blue-400 shadow-sm active:scale-95 group/btn"
+              <CommonButton
+                variant="ghost"
+                icon={<LuCopy size={ICON_SIZE.xs} />}
                 onClick={handleCopy}
                 title={`Copy ${label}`}
+                className="px-2 text-xs"
               >
-                <LuCopy
-                  size={12}
-                  className="group-hover/btn:scale-110 transition-transform"
-                />
                 Copy
-              </button>
+              </CommonButton>
               {onClear && (
-                <button
-                  className="flex items-center gap-1.5 text-[10px] bg-gray-900 dark:bg-gray-600 text-white py-1 px-2.5 uppercase font-bold tracking-wider transition-all duration-200 border border-gray-900 dark:border-gray-600 hover:bg-gray-700 dark:hover:bg-gray-500 hover:border-gray-700 hover:shadow-md active:scale-95 group/btn"
+                <CommonButton
+                  variant="destructive"
+                  icon={<LuEraser size={ICON_SIZE.xs} />}
                   onClick={(e) => {
                     e.stopPropagation();
                     onClear();
                   }}
-                  title={`Remove all the text`}
+                  title="Remove all the text"
+                  className="px-2 text-xs"
                 >
-                  <LuEraser size={12} />
                   Clear
-                </button>
+                </CommonButton>
               )}
             </>
           )}

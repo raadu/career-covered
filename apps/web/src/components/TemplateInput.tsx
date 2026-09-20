@@ -91,8 +91,8 @@ const TemplateInput = ({ boxRef }: TemplateInputProps) => {
       <div className="lg:col-start-1 lg:row-start-1 overflow-hidden">
         {isLoadingTemplates ? (
           <div className="flex gap-2 py-1">
-            <div className="w-24 h-7 bg-gray-100 dark:bg-gray-700 animate-pulse" />
-            <div className="w-20 h-7 bg-gray-100 dark:bg-gray-700 animate-pulse" />
+            <div className="w-24 h-7 bg-neutral-100 dark:bg-neutral-800 animate-pulse" />
+            <div className="w-20 h-7 bg-neutral-100 dark:bg-neutral-800 animate-pulse" />
           </div>
         ) : (
           <TemplateSelector

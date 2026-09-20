@@ -11,7 +11,7 @@ const ModelSelect = ({ selectedModel, onChange }: ModelSelectProps) => {
       value={selectedModel}
       onChange={(e) => onChange(e.target.value)}
       aria-label="AI Model"
-      className="w-full sm:w-auto h-9 px-3 text-[11px] font-semibold rounded-none bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 text-gray-500 dark:text-gray-400 shadow-sm transition-all duration-200 hover:border-blue-200 dark:hover:border-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 cursor-pointer"
+      className="w-full sm:w-auto h-10 px-3 text-[11px] font-semibold bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 text-neutral-500 dark:text-neutral-400 shadow-sm transition-all duration-200 hover:border-brand-200 dark:hover:border-brand-600 hover:bg-brand-50 dark:hover:bg-brand-900/20 hover:text-brand-600 dark:hover:text-brand-400 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 cursor-pointer"
     >
       {AVAILABLE_MODELS.map((model) => (
         <option key={model.id} value={model.id} title={model.description}>

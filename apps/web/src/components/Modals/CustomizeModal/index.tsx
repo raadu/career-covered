@@ -1,5 +1,8 @@
 import { useState, type ChangeEvent } from 'react';
-import Header from './Header';
+import { FaSlidersH } from 'react-icons/fa';
+import Modal from 'components/common/Modal';
+import CommonButton from 'components/common/CommonButton';
+import { ICON_SIZE } from 'components/common/iconSizes';
 import WordLimitSection from './WordLimitSection';
 import CharacterLimitSection from './CharacterLimitSection';
 import WritingStyleSection, {
@@ -7,7 +10,6 @@ import WritingStyleSection, {
 } from './WritingStyleSection';
 import CustomPromptSection from './CustomPromptSection';
 import SameLanguageSection from './SameLanguageSection';
-import Footer from './Footer';
 
 export interface CustomizationOptions {
   limitWords: boolean;
@@ -134,62 +136,57 @@ const CustomizeModal = ({
     });
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-2 bg-black/30 backdrop-blur-md transition-all overscroll-none"
-      onClick={onClose}
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Cover Letter Customization"
+      icon={<FaSlidersH size={ICON_SIZE.sm} />}
+      footer={
+        <>
+          <CommonButton variant="ghost" onClick={handleReset}>
+            Reset
+          </CommonButton>
+          <CommonButton variant="primary" onClick={handleSave}>
+            Save Options
+          </CommonButton>
+        </>
+      }
     >
-      <div
-        className="flex flex-col bg-white dark:bg-gray-800 shadow-xl w-full max-w-md max-h-[85vh] overflow-hidden animate-in fade-in zoom-in duration-300 border border-white/20"
-        role="dialog"
-        aria-modal="true"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="shrink-0">
-          <Header onClose={onClose} />
-        </div>
+      <div className="space-y-3">
+        <WordLimitSection
+          limitWords={limitWords}
+          setLimitWords={setLimitWords}
+          wordCountStr={wordCountStr}
+          onWordCountChange={handleWordCountChange}
+          error={error}
+        />
 
-        <div className="p-3 space-y-3 overflow-y-auto flex-1 min-h-0">
-          <WordLimitSection
-            limitWords={limitWords}
-            setLimitWords={setLimitWords}
-            wordCountStr={wordCountStr}
-            onWordCountChange={handleWordCountChange}
-            error={error}
-          />
+        <CharacterLimitSection
+          limitCharacters={limitCharacters}
+          setLimitCharacters={setLimitCharacters}
+          charCountStr={charCountStr}
+          onCharCountChange={handleCharCountChange}
+          error={error}
+        />
 
-          <CharacterLimitSection
-            limitCharacters={limitCharacters}
-            setLimitCharacters={setLimitCharacters}
-            charCountStr={charCountStr}
-            onCharCountChange={handleCharCountChange}
-            error={error}
-          />
+        <WritingStyleSection
+          hasTemplate={hasTemplate}
+          writingStyle={writingStyle}
+          onChange={setWritingStyle}
+        />
 
-          <WritingStyleSection
-            hasTemplate={hasTemplate}
-            writingStyle={writingStyle}
-            onChange={setWritingStyle}
-          />
+        <SameLanguageSection
+          sameLanguage={sameLanguage}
+          onToggle={() => setSameLanguage(!sameLanguage)}
+        />
 
-          <SameLanguageSection
-            sameLanguage={sameLanguage}
-            onToggle={() => setSameLanguage(!sameLanguage)}
-          />
-
-          <CustomPromptSection
-            customPrompt={customPrompt}
-            setCustomPrompt={setCustomPrompt}
-          />
-        </div>
-
-        <div className="shrink-0">
-          <Footer onSave={handleSave} onReset={handleReset} />
-        </div>
+        <CustomPromptSection
+          customPrompt={customPrompt}
+          setCustomPrompt={setCustomPrompt}
+        />
       </div>
-    </div>
+    </Modal>
   );
 };
 

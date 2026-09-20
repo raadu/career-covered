@@ -40,7 +40,7 @@ const CollapsibleTextArea = forwardRef<
     return (
       <div
         ref={ref}
-        className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-300 hover:shadow-md hover:border-blue-100/50 dark:hover:border-blue-800/50"
+        className="bg-white dark:bg-neutral-900 shadow-sm border border-neutral-200 dark:border-neutral-800 overflow-hidden transition-all duration-300 hover:shadow-md hover:border-brand-200 dark:hover:border-brand-800"
       >
         <TextAreaHeader
           label={label}

@@ -68,8 +68,9 @@ describe('TextAreaHeader', () => {
     render(
       <TextAreaHeader {...defaultProps} value="   " onAddTemplate={vi.fn()} />,
     );
-    // Value is trimmed to check - whitespace still truthy, button shown but disabled
-    const btn = screen.getByText('Save as Template');
+    // Value is trimmed to check - whitespace still truthy, button shown but disabled.
+    // CommonButton wraps its label in a <span>, so find the ancestor <button>.
+    const btn = screen.getByText('Save as Template').closest('button');
     expect(btn).toBeDisabled();
   });
 

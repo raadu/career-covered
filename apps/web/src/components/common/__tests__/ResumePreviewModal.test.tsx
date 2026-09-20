@@ -33,10 +33,9 @@ describe('ResumePreviewModal', () => {
 
   it('closes on backdrop click', () => {
     const onClose = vi.fn();
-    const { container } = render(
-      <ResumePreviewModal isOpen={true} resumeId="r1" onClose={onClose} />,
-    );
-    fireEvent.click(container.firstChild as HTMLElement);
+    render(<ResumePreviewModal isOpen={true} resumeId="r1" onClose={onClose} />);
+    // Modal portals to document.body, so the backdrop is the dialog's parent.
+    fireEvent.click(screen.getByRole('dialog').parentElement!);
     expect(onClose).toHaveBeenCalledOnce();
   });
 
@@ -54,7 +53,7 @@ describe('ResumePreviewModal', () => {
     render(
       <ResumePreviewModal isOpen={true} resumeId="r1" onClose={onClose} />,
     );
-    fireEvent.click(screen.getByLabelText('Close modal'));
+    fireEvent.click(screen.getByLabelText('Close'));
     expect(onClose).toHaveBeenCalledOnce();
   });
 });

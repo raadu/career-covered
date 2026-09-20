@@ -17,16 +17,23 @@ const HomeView = () => {
       <MainHeader />
 
       <div className="space-y-2">
-        <div className="grid grid-cols-1 lg:grid-cols-[7fr_3fr] gap-2 lg:gap-x-2 lg:gap-y-1 items-start">
-          <TemplateInput boxRef={templateBoxRef} />
-          <ResumeSelector
-            selectedResumeId={selectedResumeId}
-            onSelectResume={setSelectedResumeId}
-            maxHeight={templateBoxHeight}
-          />
-        </div>
+        {/* Mobile: Job Description (required) before Template/Resume (optional).
+            Desktop: reset to source order — the grid's own side-by-side split
+            is unaffected either way. */}
+        <div className="flex flex-col gap-2">
+          <div className="order-2 lg:order-1 grid grid-cols-1 lg:grid-cols-[7fr_3fr] gap-2 lg:gap-x-2 lg:gap-y-1 items-start">
+            <TemplateInput boxRef={templateBoxRef} />
+            <ResumeSelector
+              selectedResumeId={selectedResumeId}
+              onSelectResume={setSelectedResumeId}
+              maxHeight={templateBoxHeight}
+            />
+          </div>
 
-        <JobDescriptionInput />
+          <div className="order-1 lg:order-2">
+            <JobDescriptionInput />
+          </div>
+        </div>
 
         <div className="pt-1">
           <GeneratorControls selectedResumeId={selectedResumeId} />
