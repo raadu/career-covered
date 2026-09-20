@@ -20,7 +20,7 @@ const UploadHeaderButton = ({
   return (
     <>
       <CommonButton
-        variant="dark"
+        variant="primary"
         icon={<FaPlus size={12} />}
         isLoading={isUploading}
         onClick={() => (atCap ? onCapReached() : openPicker())}

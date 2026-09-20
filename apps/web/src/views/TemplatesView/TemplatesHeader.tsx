@@ -17,7 +17,7 @@ const TemplatesHeader = ({ total, onCreateClick }: TemplatesHeaderProps) => (
       </p>
     </div>
     <CommonButton
-      variant="dark"
+      variant="primary"
       icon={<FaPlus size={12} />}
       onClick={onCreateClick}
     >

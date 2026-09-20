@@ -30,7 +30,7 @@ const ControlActions = ({
       </div>
 
       <CommonButton
-        variant="cyan"
+        variant="outline"
         onClick={() => setShowCustomizeModal(true)}
         shimmer
         icon={<FaSlidersH className="animate-pulse" size={12} />}

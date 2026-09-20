@@ -47,16 +47,18 @@ const DataTable = <T extends object>({
   });
 
   return (
-    <div className="border border-gray-200 dark:border-gray-700 rounded-sm overflow-hidden">
-      <table className="w-full border-collapse">
-        <TableHeader headerGroups={table.getHeaderGroups()} />
-        <TableBody
-          rowModel={table.getRowModel()}
-          columnsLength={columns.length}
-          isLoading={isLoading}
-          emptyMessage={emptyMessage}
-        />
-      </table>
+    <div className="border border-neutral-200 dark:border-neutral-700 overflow-hidden">
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse">
+          <TableHeader headerGroups={table.getHeaderGroups()} />
+          <TableBody
+            rowModel={table.getRowModel()}
+            columnsLength={columns.length}
+            isLoading={isLoading}
+            emptyMessage={emptyMessage}
+          />
+        </table>
+      </div>
 
       <Pagination
         pageCount={pageCount}

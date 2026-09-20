@@ -6,8 +6,7 @@ function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-type ButtonVariant =
-  'primary' | 'secondary' | 'ghost' | 'outline' | 'gradient' | 'dark' | 'cyan';
+type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'outline' | 'destructive';
 
 interface CommonButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
@@ -16,6 +15,23 @@ interface CommonButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement
   shimmer?: boolean;
   fullWidth?: boolean;
 }
+
+// 40px min-height, not derived from padding — padding can shrink for a
+// denser look without silently reintroducing an undersized touch target.
+const baseStyles =
+  'relative flex items-center justify-center gap-2 min-h-10 px-4 text-sm font-semibold transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 overflow-hidden';
+
+const variants: Record<ButtonVariant, string> = {
+  primary: 'bg-brand-600 text-white hover:bg-brand-700',
+  secondary:
+    'bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-200 hover:bg-neutral-200 dark:hover:bg-neutral-700',
+  ghost:
+    'px-3 text-neutral-500 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-neutral-900 dark:hover:text-neutral-100',
+  outline:
+    'bg-transparent border border-neutral-300 dark:border-neutral-600 text-neutral-700 dark:text-neutral-200 hover:border-brand-500 hover:text-brand-700 dark:hover:text-brand-300',
+  destructive:
+    'bg-transparent border border-danger-border dark:border-danger-border-dark text-danger-fg dark:text-danger-fg-dark hover:bg-danger-subtle dark:hover:bg-danger-subtle-dark',
+};
 
 const CommonButton = ({
   children,
@@ -28,32 +44,9 @@ const CommonButton = ({
   disabled,
   ...props
 }: CommonButtonProps) => {
-  const baseStyles =
-    'relative flex items-center justify-center gap-2 rounded-sm font-semibold transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 overflow-hidden shadow-sm';
-
-  const variants = {
-    primary:
-      'bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 h-9 px-4 text-xs',
-    secondary:
-      'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 h-9 px-4 text-xs',
-    dark: 'bg-gray-800 dark:bg-gray-600 text-white hover:bg-black dark:hover:bg-gray-500 h-9 px-3 text-xs font-bold',
-    ghost:
-      'text-gray-400 dark:text-gray-500 hover:text-blue-500 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 h-auto p-1.5 text-[10px] uppercase tracking-wider font-bold shadow-none',
-    outline:
-      'bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:border-blue-200 dark:hover:border-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-600 dark:hover:text-blue-400 h-8 px-3 text-[11px] font-semibold',
-    gradient:
-      'bg-gradient-to-r from-cyan-500 via-blue-600 to-violet-600 text-white hover:from-cyan-600 hover:to-violet-700 h-9 px-4 text-xs shadow-cyan-500/20',
-    cyan: 'bg-cyan-50 dark:bg-cyan-900/30 border border-cyan-200 dark:border-cyan-800 text-cyan-700 dark:text-cyan-300 hover:bg-cyan-100 dark:hover:bg-cyan-900/50 h-9 px-3 text-xs',
-  };
-
   return (
     <button
-      className={cn(
-        baseStyles,
-        variants[variant],
-        fullWidth && 'w-full',
-        className,
-      )}
+      className={cn(baseStyles, variants[variant], fullWidth && 'w-full', className)}
       disabled={isLoading || disabled}
       {...props}
     >
@@ -62,7 +55,7 @@ const CommonButton = ({
       )}
 
       {isLoading ? (
-        <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full" />
+        <div className="animate-spin h-5 w-5 border-2 border-current border-t-transparent rounded-full" />
       ) : (
         <>
           {icon}

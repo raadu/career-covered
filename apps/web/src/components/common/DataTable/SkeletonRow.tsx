@@ -12,7 +12,7 @@ const SkeletonRow = ({ cols }: SkeletonRowProps) => (
     {Array.from({ length: cols }).map((_, i) => (
       <td key={i} className="px-4 py-3">
         <div
-          className="h-4 bg-gray-100 dark:bg-gray-700 rounded animate-pulse"
+          className="h-4 bg-neutral-100 dark:bg-neutral-700 animate-pulse"
           style={{ width: `${WIDTH_PATTERN[i % WIDTH_PATTERN.length]}%` }}
         />
       </td>

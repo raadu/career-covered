@@ -70,7 +70,7 @@ const EditTemplateModal = ({
             Cancel
           </CommonButton>
           <CommonButton
-            variant="dark"
+            variant="primary"
             onClick={onSave}
             isLoading={isUpdating}
             disabled={!name.trim() || !content.trim()}

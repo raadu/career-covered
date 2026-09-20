@@ -82,7 +82,7 @@ const OnboardingModal = ({
               />
             </div>
             <CommonButton
-              variant="gradient"
+              variant="primary"
               onClick={handleStart}
               disabled={!tempKey.trim()}
               className="h-11 px-8 text-xs uppercase tracking-widest font-black active:scale-[0.98] rounded-md"

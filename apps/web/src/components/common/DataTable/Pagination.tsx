@@ -35,15 +35,15 @@ const Pagination = ({
   if (pageCount <= 1 && pageSizeOptions.length === 0) return null;
 
   return (
-    <div className="flex items-center justify-between px-4 py-3 border-t border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50">
+    <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-t border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800">
       <div className="flex items-center gap-2">
-        <span className="text-xs text-gray-500 dark:text-gray-400">
+        <span className="text-xs text-neutral-500 dark:text-neutral-400">
           Items per page:
         </span>
         <select
           value={pageSize}
           onChange={(e) => onPageSizeChange(Number(e.target.value))}
-          className="text-xs bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-sm px-2 py-1 text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-900 dark:focus:ring-gray-100"
+          className="text-xs bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-700 px-2 py-1 text-neutral-700 dark:text-neutral-300 focus:outline-none focus:ring-1 focus:ring-neutral-900 dark:focus:ring-neutral-100"
         >
           {pageSizeOptions.map((size) => (
             <option key={size} value={size}>
@@ -51,7 +51,7 @@ const Pagination = ({
             </option>
           ))}
         </select>
-        <span className="text-xs text-gray-400 dark:text-gray-500 ml-1">
+        <span className="text-xs text-neutral-400 dark:text-neutral-500 ml-1">
           {total} total
         </span>
       </div>
@@ -61,7 +61,7 @@ const Pagination = ({
           <button
             onClick={() => onPageChange(pageIndex - 1)}
             disabled={pageIndex === 0}
-            className="flex items-center gap-1 px-2 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            className="min-h-10 flex items-center gap-1 px-2 text-xs font-medium text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
           >
             <FaChevronLeft size={10} />
             Prev
@@ -71,10 +71,10 @@ const Pagination = ({
             <button
               key={p}
               onClick={() => onPageChange(p - 1)}
-              className={`w-7 h-7 text-xs font-semibold rounded-sm transition-colors ${
+              className={`min-h-10 min-w-10 text-xs font-semibold transition-colors ${
                 p === pageIndex + 1
-                  ? 'bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900'
-                  : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
+                  ? 'bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900'
+                  : 'text-neutral-500 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-700'
               }`}
             >
               {p}
@@ -84,7 +84,7 @@ const Pagination = ({
           <button
             onClick={() => onPageChange(pageIndex + 1)}
             disabled={pageIndex >= pageCount - 1}
-            className="flex items-center gap-1 px-2 py-1.5 text-xs font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            className="min-h-10 flex items-center gap-1 px-2 text-xs font-medium text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
           >
             Next
             <FaChevronRight size={10} />

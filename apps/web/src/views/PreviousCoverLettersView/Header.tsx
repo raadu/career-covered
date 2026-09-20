@@ -25,7 +25,7 @@ const Header = ({ total }: HeaderProps) => {
         </p>
       </div>
       <CommonButton
-        variant="dark"
+        variant="primary"
         icon={<FaPlus size={12} />}
         onClick={() => navigate('/')}
       >
