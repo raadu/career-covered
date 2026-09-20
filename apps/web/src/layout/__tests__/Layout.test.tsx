@@ -54,8 +54,8 @@ describe('Layout Component', () => {
         },
       },
     );
-    // Heading in OnboardingModal
-    expect(screen.getByText(/It’s so easy to start!/i)).toBeInTheDocument();
+    // Title in OnboardingModal's Modal-shell header
+    expect(screen.getByText('Getting Started')).toBeInTheDocument();
   });
 
   it('does not show onboarding modal if no API key is present but generationCount is 4 or less', () => {
@@ -72,9 +72,7 @@ describe('Layout Component', () => {
         },
       },
     );
-    expect(
-      screen.queryByText(/It’s so easy to start!/i),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText('Getting Started')).not.toBeInTheDocument();
   });
 
   it('initializes sidebar state from localStorage', () => {

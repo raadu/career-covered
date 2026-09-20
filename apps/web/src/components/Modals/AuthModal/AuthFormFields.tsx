@@ -1,6 +1,7 @@
 import type { FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { FaEnvelope, FaLock, FaUser } from 'react-icons/fa';
+import CommonButton from 'components/common/CommonButton';
 import type { FormErrors } from './useAuthForm';
 
 interface AuthFormFieldsProps {
@@ -35,7 +36,7 @@ const AuthFormFields = ({
       <div>
         <div className="relative">
           <FaUser
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400"
             size={12}
           />
           <input
@@ -43,11 +44,11 @@ const AuthFormFields = ({
             placeholder="Full name"
             value={name}
             onChange={(e) => onNameChange(e.target.value)}
-            className={`w-full pl-8 pr-3 h-9 bg-gray-50 dark:bg-gray-700/50 border ${errors.name ? 'border-red-300 dark:border-red-700' : 'border-gray-200 dark:border-gray-600'} rounded-lg focus:ring-2 focus:ring-blue-500/10 focus:border-blue-400 outline-none text-[13px] transition-all dark:text-gray-100 placeholder:text-gray-400`}
+            className={`w-full pl-8 pr-3 h-10 bg-neutral-50 dark:bg-neutral-800 border ${errors.name ? 'border-danger-border dark:border-danger-border-dark' : 'border-neutral-200 dark:border-neutral-600'} focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none text-sm transition-all dark:text-neutral-100 placeholder:text-neutral-400`}
           />
         </div>
         {errors.name && (
-          <p className="mt-1 text-[11px] text-red-500 font-medium">
+          <p className="mt-1 text-[11px] text-danger dark:text-danger-fg-dark font-medium">
             {errors.name}
           </p>
         )}
@@ -57,7 +58,7 @@ const AuthFormFields = ({
     <div>
       <div className="relative">
         <FaEnvelope
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+          className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400"
           size={12}
         />
         <input
@@ -65,11 +66,11 @@ const AuthFormFields = ({
           placeholder="Email address"
           value={email}
           onChange={(e) => onEmailChange(e.target.value)}
-          className={`w-full pl-8 pr-3 h-9 bg-gray-50 dark:bg-gray-700/50 border ${errors.email ? 'border-red-300 dark:border-red-700' : 'border-gray-200 dark:border-gray-600'} rounded-lg focus:ring-2 focus:ring-blue-500/10 focus:border-blue-400 outline-none text-[13px] transition-all dark:text-gray-100 placeholder:text-gray-400`}
+          className={`w-full pl-8 pr-3 h-10 bg-neutral-50 dark:bg-neutral-800 border ${errors.email ? 'border-danger-border dark:border-danger-border-dark' : 'border-neutral-200 dark:border-neutral-600'} focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none text-sm transition-all dark:text-neutral-100 placeholder:text-neutral-400`}
         />
       </div>
       {errors.email && (
-        <p className="mt-1 text-[11px] text-red-500 font-medium">
+        <p className="mt-1 text-[11px] text-danger dark:text-danger-fg-dark font-medium">
           {errors.email}
         </p>
       )}
@@ -78,7 +79,7 @@ const AuthFormFields = ({
     <div>
       <div className="relative">
         <FaLock
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+          className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400"
           size={12}
         />
         <input
@@ -86,11 +87,11 @@ const AuthFormFields = ({
           placeholder="Password"
           value={password}
           onChange={(e) => onPasswordChange(e.target.value)}
-          className={`w-full pl-8 pr-3 h-9 bg-gray-50 dark:bg-gray-700/50 border ${errors.password ? 'border-red-300 dark:border-red-700' : 'border-gray-200 dark:border-gray-600'} rounded-lg focus:ring-2 focus:ring-blue-500/10 focus:border-blue-400 outline-none text-[13px] transition-all dark:text-gray-100 placeholder:text-gray-400`}
+          className={`w-full pl-8 pr-3 h-10 bg-neutral-50 dark:bg-neutral-800 border ${errors.password ? 'border-danger-border dark:border-danger-border-dark' : 'border-neutral-200 dark:border-neutral-600'} focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none text-sm transition-all dark:text-neutral-100 placeholder:text-neutral-400`}
         />
       </div>
       {errors.password && (
-        <p className="mt-1 text-[11px] text-red-500 font-medium">
+        <p className="mt-1 text-[11px] text-danger dark:text-danger-fg-dark font-medium">
           {errors.password}
         </p>
       )}
@@ -101,29 +102,16 @@ const AuthFormFields = ({
         <Link
           to="/support"
           onClick={onForgotPasswordClick}
-          className="text-[11px] text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-colors font-medium"
+          className="text-[11px] text-neutral-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors font-medium"
         >
           Forgot password?
         </Link>
       </div>
     )}
 
-    <button
-      type="submit"
-      disabled={loading}
-      className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold h-9 rounded-lg transition-all text-[12px] disabled:opacity-50 disabled:cursor-not-allowed"
-    >
-      {loading ? (
-        <span className="inline-flex items-center gap-2">
-          <span className="animate-spin h-3.5 w-3.5 border-2 border-white border-t-transparent rounded-full" />
-          Processing...
-        </span>
-      ) : isRegister ? (
-        'Create account'
-      ) : (
-        'Sign in'
-      )}
-    </button>
+    <CommonButton type="submit" disabled={loading} isLoading={loading} fullWidth>
+      {isRegister ? 'Create account' : 'Sign in'}
+    </CommonButton>
   </form>
 );
 

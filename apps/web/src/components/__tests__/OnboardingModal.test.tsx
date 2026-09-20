@@ -15,7 +15,9 @@ describe('OnboardingModal', () => {
     renderWithProviders(
       <OnboardingModal isOpen={true} onComplete={onComplete} />,
     );
-    expect(screen.getByText(/It’s so easy to start!/i)).toBeInTheDocument();
+    // Modal shell owns the title now; content starts one step in.
+    expect(screen.getByText('Getting Started')).toBeInTheDocument();
+    expect(screen.getByText(/You just need an API key/i)).toBeInTheDocument();
     expect(
       screen.getByPlaceholderText(/Enter your Groq API Key here/i),
     ).toBeInTheDocument();
@@ -29,7 +31,7 @@ describe('OnboardingModal', () => {
         onClose={vi.fn()}
       />,
     );
-    expect(screen.getByText(/How to get your API Key/i)).toBeInTheDocument();
+    expect(screen.getByText('Add Your API Key')).toBeInTheDocument();
   });
 
   it('dispatches setApiKey and calls onComplete when Start is clicked', () => {

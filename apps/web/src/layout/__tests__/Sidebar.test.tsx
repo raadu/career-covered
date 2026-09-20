@@ -56,7 +56,7 @@ describe('Sidebar Components', () => {
       // Default path is '/' in test-utils MemoryRouter
       renderWithProviders(<SidebarNavigation isExpanded={true} />);
       const coverLetterItem = screen.getByTitle(/Cover Letter Generator/i);
-      expect(coverLetterItem).toHaveClass('bg-blue-50/80'); // Active class
+      expect(coverLetterItem).toHaveClass('bg-brand-100'); // Active class
     });
   });
 
@@ -67,10 +67,14 @@ describe('Sidebar Components', () => {
       );
       expect(expandedContainer.firstChild).toHaveClass('lg:w-56');
 
+      // Collapsed desktop width falls back to the tablet rail's md:w-16 —
+      // there's no separate lg:w-16 override needed since nothing at lg:
+      // contradicts it (see Sidebar/index.tsx).
       const { container: collapsedContainer } = renderWithProviders(
         <Sidebar isExpanded={false} onToggle={vi.fn()} />,
       );
-      expect(collapsedContainer.firstChild).toHaveClass('lg:w-16');
+      expect(collapsedContainer.firstChild).toHaveClass('md:w-16');
+      expect(collapsedContainer.firstChild).not.toHaveClass('lg:w-56');
     });
   });
 });

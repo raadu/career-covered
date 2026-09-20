@@ -23,8 +23,8 @@ const authState = (overrides = {}) => ({
   ...overrides,
 });
 
-// Icons render twice: once in the mobile inline row (lg:hidden), once in the
-// desktop floating widget (hidden lg:flex) — jsdom doesn't evaluate media
+// Icons render twice: once in the mobile inline row (md:hidden), once in the
+// desktop floating widget (hidden md:flex) — jsdom doesn't evaluate media
 // queries, so both are present in the DOM and tests must account for that.
 describe('QuickLinks', () => {
   beforeEach(() => {
@@ -61,9 +61,12 @@ describe('QuickLinks', () => {
       },
     });
 
+    // button -> QuickLinksButtonList's own flex container (layout="column")
+    // -> the positioned wrapper div that attaches it to the sidebar edge.
     const [, desktopButton] = screen.getAllByTitle('Copy LinkedIn link');
-    const widget = desktopButton.parentElement!;
-    expect(widget.className).toContain('flex-col');
+    const buttonList = desktopButton.parentElement!;
+    const widget = buttonList.parentElement!;
+    expect(buttonList.className).toContain('flex-col');
     expect(widget.className).toContain('absolute');
     expect(widget.className).toContain('right-0');
     expect(widget.className).toContain('translate-x-full');
@@ -78,9 +81,10 @@ describe('QuickLinks', () => {
     });
 
     const [mobileButton] = screen.getAllByTitle('Copy LinkedIn link');
-    const row = mobileButton.parentElement!;
-    expect(row.className).toContain('lg:hidden');
-    expect(row.className).not.toContain('flex-col');
+    const buttonList = mobileButton.parentElement!;
+    const row = buttonList.parentElement!;
+    expect(row.className).toContain('md:hidden');
+    expect(buttonList.className).not.toContain('flex-col');
   });
 
   it('copies the LinkedIn link with its label when set, from either layout', () => {

@@ -5,11 +5,13 @@ interface SidebarToggleProps {
   onToggle: () => void;
 }
 
+// Only ever shown at `lg:` — collapsing/expanding is a desktop-only
+// affordance, the tablet rail below `lg:` has no variable width to toggle.
 const SidebarToggle = ({ isExpanded, onToggle }: SidebarToggleProps) => {
   return (
     <button
       onClick={onToggle}
-      className="h-8 w-full text-gray-400 dark:text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 border-t border-gray-100 dark:border-gray-700 hidden lg:flex items-center justify-center hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-300 group shrink-0"
+      className="min-h-10 w-full text-neutral-400 dark:text-neutral-500 hover:text-brand-600 dark:hover:text-brand-400 border-t border-neutral-100 dark:border-neutral-700 hidden lg:flex items-center justify-center hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all duration-300 group shrink-0"
       title={isExpanded ? 'Collapse Sidebar' : 'Expand Sidebar'}
     >
       {isExpanded ? (

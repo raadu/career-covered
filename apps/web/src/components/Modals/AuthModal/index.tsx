@@ -1,5 +1,5 @@
-import { FaTimes } from 'react-icons/fa';
 import { useAuthForm } from './useAuthForm';
+import Modal from 'components/common/Modal';
 import GoogleSignInButton from './GoogleSignInButton';
 import AuthFormFields from './AuthFormFields';
 
@@ -22,48 +22,31 @@ const AuthModal = () => {
     toggleMode,
   } = useAuthForm();
 
-  if (!isAuthModalOpen) return null;
-
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30 backdrop-blur-sm"
-      onClick={handleClose}
+    <Modal
+      isOpen={isAuthModalOpen}
+      onClose={handleClose}
+      title={isRegister ? 'Create account' : 'Sign in'}
+      maxWidth="max-w-sm"
     >
-      <div
-        className="relative bg-white dark:bg-gray-800 w-full max-w-sm rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 p-5 transition-all"
-        role="dialog"
-        aria-modal="true"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <button
-          onClick={handleClose}
-          className="absolute top-3 right-3 p-1.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700"
-        >
-          <FaTimes className="w-3.5 h-3.5" />
-        </button>
-
-        <div className="mb-4 text-center">
-          <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">
-            {isRegister ? 'Create account' : 'Sign in'}
-          </h2>
-          <p className="text-gray-400 dark:text-gray-500 text-[12px] mt-0.5">
-            {isRegister
-              ? 'Get access to hidden features'
-              : 'Sign in to get more features'}
-          </p>
-        </div>
+      <div className="space-y-4">
+        <p className="text-center text-neutral-400 dark:text-neutral-500 text-xs -mt-1">
+          {isRegister
+            ? 'Get access to hidden features'
+            : 'Sign in to get more features'}
+        </p>
 
         {errors.general && (
-          <div className="mb-3 px-3 py-2 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-[11px] text-red-600 dark:text-red-400 font-medium">
+          <div className="px-3 py-2 bg-danger-subtle dark:bg-danger-subtle-dark border border-danger-border dark:border-danger-border-dark text-[11px] text-danger dark:text-danger-fg-dark font-medium">
             {errors.general}
           </div>
         )}
 
         <GoogleSignInButton onClick={handleGoogleSignIn} />
 
-        <div className="relative flex items-center justify-center my-4">
-          <div className="border-t border-gray-200 dark:border-gray-700 w-full" />
-          <span className="absolute bg-white dark:bg-gray-800 px-2.5 text-[10px] text-gray-400 dark:text-gray-500 font-semibold uppercase tracking-wider">
+        <div className="relative flex items-center justify-center">
+          <div className="border-t border-neutral-200 dark:border-neutral-700 w-full" />
+          <span className="absolute bg-white dark:bg-neutral-900 px-2.5 text-[10px] text-neutral-400 dark:text-neutral-500 font-semibold uppercase tracking-wider">
             or
           </span>
         </div>
@@ -91,17 +74,17 @@ const AuthModal = () => {
           onForgotPasswordClick={handleClose}
         />
 
-        <div className="mt-4 text-center text-[12px] text-gray-500 dark:text-gray-400">
+        <div className="text-center text-xs text-neutral-500 dark:text-neutral-400">
           {isRegister ? 'Already have an account?' : "Don't have an account?"}{' '}
           <button
             onClick={toggleMode}
-            className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-semibold outline-none transition-colors"
+            className="text-brand-700 hover:text-brand-800 dark:text-brand-400 dark:hover:text-brand-300 font-semibold outline-none transition-colors"
           >
             {isRegister ? 'Sign in' : 'Sign up'}
           </button>
         </div>
       </div>
-    </div>
+    </Modal>
   );
 };
 

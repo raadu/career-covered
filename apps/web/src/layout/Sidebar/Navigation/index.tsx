@@ -73,7 +73,7 @@ const SidebarNavigation = ({ isExpanded }: SidebarNavigationProps) => {
   ];
 
   return (
-    <nav className="flex-1 flex flex-row lg:flex-col p-0.5 lg:p-1 gap-1 lg:gap-0 lg:space-y-0.5 w-full overflow-x-auto lg:overflow-visible items-center lg:items-stretch h-full no-scrollbar">
+    <nav className="flex-1 flex flex-row md:flex-col p-0.5 md:p-1 gap-1 md:gap-0 md:space-y-0.5 w-full overflow-x-auto md:overflow-visible items-center md:items-stretch h-full no-scrollbar">
       {menuItems.map((item) => {
         const Icon = item.icon;
         const isActive = currentPath === item.path;
@@ -87,14 +87,12 @@ const SidebarNavigation = ({ isExpanded }: SidebarNavigationProps) => {
             <div
               onClick={() => navigate(item.path)}
               className={clsx(
-                'group flex items-center cursor-pointer transition-all duration-300 relative',
-                'py-1.5 px-2 mx-0.5 rounded-md whitespace-nowrap',
-                isExpanded
-                  ? 'lg:rounded-md lg:gap-2 gap-1.5'
-                  : 'lg:justify-center gap-1.5',
+                'group flex items-center cursor-pointer transition-all duration-300 relative min-h-10',
+                'py-1.5 px-2 mx-0.5 whitespace-nowrap',
+                isExpanded ? 'md:gap-2 gap-1.5' : 'md:justify-center gap-1.5',
                 isExpandedItem
-                  ? 'bg-blue-50/80 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 shadow-sm shadow-blue-500/5'
-                  : 'text-gray-400 dark:text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-600 dark:hover:text-gray-300',
+                  ? 'bg-brand-100 dark:bg-brand-900 text-brand-700 dark:text-brand-300'
+                  : 'text-neutral-400 dark:text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-neutral-700 dark:hover:text-neutral-200',
               )}
               title={item.title}
             >
@@ -106,16 +104,16 @@ const SidebarNavigation = ({ isExpanded }: SidebarNavigationProps) => {
               >
                 <Icon
                   size={isExpanded ? 14 : 16}
-                  className="lg:w-4 lg:h-4 w-3.5 h-3.5"
+                  className="md:w-4 md:h-4 w-3.5 h-3.5"
                 />
               </div>
 
               <span
                 className={clsx(
-                  'text-[11px] lg:text-[12px] font-semibold tracking-tight transition-all truncate flex-1',
+                  'text-[11px] md:text-xs font-semibold tracking-tight transition-all truncate flex-1',
                   isExpandedItem ? 'opacity-100' : 'opacity-80',
-                  !isExpanded ? 'lg:hidden block' : 'block',
-                  'hidden sm:block',
+                  'hidden sm:block md:hidden',
+                  isExpanded && 'lg:block',
                 )}
               >
                 {item.label}
@@ -125,21 +123,20 @@ const SidebarNavigation = ({ isExpanded }: SidebarNavigationProps) => {
                 <FaChevronDown
                   size={10}
                   className={clsx(
-                    'transition-transform duration-200',
-                    isExpanded ? 'block' : 'lg:hidden block',
-                    'hidden sm:block',
+                    'transition-transform duration-200 hidden sm:block md:hidden',
+                    isExpanded && 'lg:block',
                     isExpandedItem ? 'rotate-0' : '-rotate-90',
                   )}
                 />
               )}
 
               {isExpandedItem && (
-                <div className="absolute bottom-0 lg:bottom-auto left-auto lg:left-0 w-4 lg:w-0.5 h-0.5 lg:h-3 bg-blue-500 rounded-full" />
+                <div className="absolute bottom-0 md:bottom-auto left-auto md:left-0 w-4 md:w-0.5 h-0.5 md:h-3 bg-brand-600" />
               )}
             </div>
 
             {hasChildren && isExpandedItem && (
-              <div className="flex flex-row lg:flex-col ml-2 lg:ml-2.5 mt-0.5 lg:mt-0.5 gap-0.5">
+              <div className="flex flex-row md:flex-col ml-2 md:ml-2.5 mt-0.5 md:mt-0.5 gap-0.5">
                 {item.children!.map((child) => {
                   const isChildRouteActive = currentPath === child.path;
                   return (
@@ -147,14 +144,12 @@ const SidebarNavigation = ({ isExpanded }: SidebarNavigationProps) => {
                       key={child.path}
                       onClick={() => navigate(child.path)}
                       className={clsx(
-                        'group flex items-center cursor-pointer transition-all duration-200 relative',
-                        'px-2 py-1 mx-0.5 rounded whitespace-nowrap',
-                        isExpanded
-                          ? 'lg:gap-1.5 gap-1'
-                          : 'lg:justify-center gap-1',
+                        'group flex items-center cursor-pointer transition-all duration-200 relative min-h-10',
+                        'px-2 py-1 mx-0.5 whitespace-nowrap',
+                        isExpanded ? 'md:gap-1.5 gap-1' : 'md:justify-center gap-1',
                         isChildRouteActive
-                          ? 'bg-blue-50/60 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'
-                          : 'text-gray-400 dark:text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-600 dark:hover:text-gray-300',
+                          ? 'bg-brand-50 dark:bg-brand-950 text-brand-700 dark:text-brand-300'
+                          : 'text-neutral-400 dark:text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-neutral-700 dark:hover:text-neutral-200',
                       )}
                       title={child.label}
                     >
@@ -162,15 +157,14 @@ const SidebarNavigation = ({ isExpanded }: SidebarNavigationProps) => {
                         className={clsx(
                           'w-1 h-1 rounded-full shrink-0 transition-all',
                           isChildRouteActive
-                            ? 'bg-blue-500'
-                            : 'bg-gray-300 dark:bg-gray-600',
+                            ? 'bg-brand-600'
+                            : 'bg-neutral-300 dark:bg-neutral-600',
                         )}
                       />
                       <span
                         className={clsx(
-                          'text-[10px] lg:text-[11px] font-semibold tracking-tight transition-all truncate',
-                          !isExpanded ? 'lg:hidden block' : 'block',
-                          'hidden sm:block',
+                          'text-[10px] md:text-[11px] font-semibold tracking-tight transition-all truncate hidden sm:block md:hidden',
+                          isExpanded && 'lg:block',
                         )}
                       >
                         {child.label}

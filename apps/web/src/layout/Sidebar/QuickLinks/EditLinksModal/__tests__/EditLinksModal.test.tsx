@@ -155,7 +155,7 @@ describe('EditLinksModal', () => {
       preloadedState: { auth: authState() },
     });
 
-    fireEvent.click(screen.getByLabelText('Close modal'));
+    fireEvent.click(screen.getByLabelText('Close'));
 
     expect(onClose).toHaveBeenCalledTimes(1);
     expect(fetch).not.toHaveBeenCalled();
