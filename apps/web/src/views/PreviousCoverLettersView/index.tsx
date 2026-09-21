@@ -5,7 +5,7 @@ import { showToast } from 'components/common/Toast';
 import ConfirmModal from 'components/common/ConfirmModal';
 import PdfDesignsModal from 'components/Modals/PdfDesignsModal';
 import Header from './Header';
-import BatchActionBar from './BatchActionBar';
+import BatchActionBar from 'components/common/BatchActionBar';
 import PreviousCoverLettersTable from './PreviousCoverLettersTable';
 import { usePreviousCoverLetters } from './usePreviousCoverLetters';
 import { useCopy } from 'hooks/useCopy';

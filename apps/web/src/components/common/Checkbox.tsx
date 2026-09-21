@@ -20,7 +20,7 @@ const Checkbox = ({ checked, onChange, id, indeterminate }: CheckboxProps) => (
         if (el && indeterminate !== undefined) el.indeterminate = indeterminate;
       }}
       onChange={onChange}
-      className="peer appearance-none w-5 h-5 border-2 border-gray-300 dark:border-gray-600 rounded-sm bg-white dark:bg-gray-900 checked:bg-cyan-500 checked:border-cyan-500 indeterminate:bg-cyan-500 indeterminate:border-cyan-500 transition-all cursor-pointer"
+      className="peer appearance-none w-5 h-5 border-2 border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-900 checked:bg-brand-600 checked:border-brand-600 indeterminate:bg-brand-600 indeterminate:border-brand-600 transition-all cursor-pointer"
     />
     <FaCheck
       size={10}

@@ -6,7 +6,6 @@ import {
   renderWithProviders,
   waitFor,
 } from '../../../../tests/test-utils';
-import BatchActionBar from 'views/PreviousCoverLettersView/BatchActionBar';
 import PreviousCoverLettersTable from 'views/PreviousCoverLettersView/PreviousCoverLettersTable';
 import PreviousCoverLettersView from 'views/PreviousCoverLettersView/index';
 import type { CoverLetterItem } from 'views/PreviousCoverLettersView/types';
@@ -89,46 +88,8 @@ const withDataProps = {
   totalPages: 1,
 };
 
-/* ============================================================
- * BatchActionBar
- * ============================================================ */
-describe('BatchActionBar', () => {
-  it('renders selected count', () => {
-    render(
-      <BatchActionBar selectedCount={3} onDelete={vi.fn()} onClear={vi.fn()} />,
-    );
-    expect(screen.getByText('3 selected')).toBeInTheDocument();
-  });
-
-  it('renders singular count', () => {
-    render(
-      <BatchActionBar selectedCount={1} onDelete={vi.fn()} onClear={vi.fn()} />,
-    );
-    expect(screen.getByText('1 selected')).toBeInTheDocument();
-  });
-
-  it('calls onDelete when delete button clicked', () => {
-    const onDelete = vi.fn();
-    render(
-      <BatchActionBar
-        selectedCount={2}
-        onDelete={onDelete}
-        onClear={vi.fn()}
-      />,
-    );
-    fireEvent.click(screen.getByText('Delete Selected'));
-    expect(onDelete).toHaveBeenCalledOnce();
-  });
-
-  it('calls onClear when clear button clicked', () => {
-    const onClear = vi.fn();
-    render(
-      <BatchActionBar selectedCount={2} onDelete={vi.fn()} onClear={onClear} />,
-    );
-    fireEvent.click(screen.getByText('Clear selection'));
-    expect(onClear).toHaveBeenCalledOnce();
-  });
-});
+// BatchActionBar is now a shared component — see
+// components/common/__tests__/BatchActionBar.test.tsx.
 
 /* ============================================================
  * PreviousCoverLettersTable (pure component tests)

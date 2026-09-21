@@ -1,6 +1,6 @@
-import ViewModeToggle from './ViewModeToggle';
+import ViewModeToggle from 'components/common/ViewModeToggle';
 import UploadHeaderButton from './UploadHeaderButton';
-import type { ViewMode } from './useResumeViewMode';
+import type { ViewMode } from 'hooks/useViewMode';
 
 interface HeaderProps {
   viewMode: ViewMode;

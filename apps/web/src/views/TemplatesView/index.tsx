@@ -1,11 +1,13 @@
 import { Navigate } from 'react-router-dom';
 import ConfirmModal from 'components/common/ConfirmModal';
 import TemplatesHeader from './TemplatesHeader';
-import BatchActionBar from './BatchActionBar';
+import BatchActionBar from 'components/common/BatchActionBar';
 import TemplateTable from './TemplateTable';
+import TemplateGrid from './TemplateGrid';
 import CreateTemplateModal from './CreateTemplateModal';
 import EditTemplateModal from './EditTemplateModal';
 import { useTemplates } from './useTemplates';
+import { useViewMode } from 'hooks/useViewMode';
 
 const TemplatesView = () => {
   const {
@@ -49,6 +51,7 @@ const TemplatesView = () => {
     handleDelete,
     handleBatchDelete,
   } = useTemplates();
+  const { viewMode, setViewMode } = useViewMode('templates_view_mode', 'list');
 
   if (authLoading) return null;
   if (!isAuthenticated) return <Navigate to="/" replace />;
@@ -57,6 +60,8 @@ const TemplatesView = () => {
     <div className="py-6 md:py-8 px-1 sm:px-2">
       <TemplatesHeader
         total={total}
+        viewMode={viewMode}
+        onViewModeChange={setViewMode}
         onCreateClick={() => setIsCreateOpen(true)}
       />
 
@@ -68,23 +73,31 @@ const TemplatesView = () => {
         />
       )}
 
-      <TemplateTable
-        data={data}
-        totalPages={totalPages}
-        page={page}
-        pageSize={pageSize}
-        total={total}
-        isLoading={isLoading}
-        selectedIds={selectedIds}
-        allSelected={allSelected}
-        someSelected={someSelected}
-        onToggleSelectAll={toggleSelectAll}
-        onToggleSelect={toggleSelect}
-        onPageChange={handlePageChange}
-        onPageSizeChange={handlePageSizeChange}
-        onEdit={openEditModal}
-        onDelete={setDeletingTemplateId}
-      />
+      {viewMode === 'grid' ? (
+        <TemplateGrid
+          templates={data}
+          onEdit={openEditModal}
+          onDelete={setDeletingTemplateId}
+        />
+      ) : (
+        <TemplateTable
+          data={data}
+          totalPages={totalPages}
+          page={page}
+          pageSize={pageSize}
+          total={total}
+          isLoading={isLoading}
+          selectedIds={selectedIds}
+          allSelected={allSelected}
+          someSelected={someSelected}
+          onToggleSelectAll={toggleSelectAll}
+          onToggleSelect={toggleSelect}
+          onPageChange={handlePageChange}
+          onPageSizeChange={handlePageSizeChange}
+          onEdit={openEditModal}
+          onDelete={setDeletingTemplateId}
+        />
+      )}
 
       <CreateTemplateModal
         isOpen={isCreateOpen}

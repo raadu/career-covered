@@ -10,7 +10,7 @@ import {
 import { LuLoader } from 'react-icons/lu';
 import InlineEditableText from 'components/common/InlineEditableText';
 import TableActions, { type TableAction } from 'components/common/TableActions';
-import Checkbox from 'views/TemplatesView/Checkbox';
+import Checkbox from 'components/common/Checkbox';
 import formatDate from 'utils/dateUtils';
 import { formatFileSize } from 'utils/fileSizeUtils';
 import { useHiddenFileInput } from 'hooks/useHiddenFileInput';

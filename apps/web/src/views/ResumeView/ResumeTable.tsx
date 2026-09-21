@@ -4,7 +4,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import Pagination from 'components/common/DataTable/Pagination';
-import Checkbox from 'views/TemplatesView/Checkbox';
+import Checkbox from 'components/common/Checkbox';
 import ResumeTableRow from './ResumeTableRow';
 import { useReorderDnd } from './useReorderDnd';
 import type { Resume } from './types';

@@ -2,8 +2,10 @@ import { useMemo } from 'react';
 import { type ColumnDef, type CellContext } from '@tanstack/react-table';
 import { FaPencilAlt, FaTrash } from 'react-icons/fa';
 import DataTable from 'components/common/DataTable';
+import { tableActionButtonClass } from 'components/common/DataTable/tableColumnMeta';
+import { ICON_SIZE } from 'components/common/iconSizes';
 import formatDate from 'utils/dateUtils';
-import Checkbox from './Checkbox';
+import Checkbox from 'components/common/Checkbox';
 import type { Template } from './types';
 
 interface TemplateTableProps {
@@ -67,7 +69,7 @@ const TemplateTable = ({
         header: 'Name',
         accessorKey: 'name',
         cell: ({ getValue }: CellContext<Template, unknown>) => (
-          <span className="truncate overflow-hidden text-ellipsis whitespace-nowrap max-w-[140px] sm:max-w-[180px] font-semibold text-gray-900 dark:text-gray-100 block">
+          <span className="truncate overflow-hidden text-ellipsis whitespace-nowrap max-w-[140px] sm:max-w-[180px] font-semibold text-neutral-900 dark:text-neutral-100 block">
             {getValue<string>()}
           </span>
         ),
@@ -75,9 +77,10 @@ const TemplateTable = ({
       {
         header: 'Content',
         accessorKey: 'content',
+        meta: { hideBelow: 'lg' },
         cell: ({ row }: CellContext<Template, unknown>) => (
           <span
-            className="truncate overflow-hidden text-ellipsis whitespace-nowrap max-w-[200px] sm:max-w-[300px] text-gray-500 dark:text-gray-400 block cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+            className="truncate overflow-hidden text-ellipsis whitespace-nowrap max-w-[200px] sm:max-w-[300px] text-neutral-500 dark:text-neutral-400 block cursor-pointer hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
             onClick={() => onEdit(row.original)}
             title="Click to edit"
           >
@@ -88,8 +91,9 @@ const TemplateTable = ({
       {
         header: 'Last Updated',
         accessorKey: 'updatedAt',
+        meta: { hideBelow: 'md' },
         cell: ({ getValue }: CellContext<Template, unknown>) => (
-          <span className="text-gray-500 dark:text-gray-400 whitespace-nowrap">
+          <span className="text-neutral-500 dark:text-neutral-400 whitespace-nowrap">
             {formatDate(getValue<string>())}
           </span>
         ),
@@ -98,21 +102,20 @@ const TemplateTable = ({
         header: 'Actions',
         id: 'actions',
         cell: ({ row }: CellContext<Template, unknown>) => (
-          <div className="border border-gray-200 dark:border-gray-600 rounded px-2 py-1 flex items-center gap-1 w-fit">
+          <div className="flex items-center gap-1 w-fit">
             <button
               onClick={() => onEdit(row.original)}
-              className="p-1.5 text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-sm transition-colors"
+              className={tableActionButtonClass}
               title="Edit Template"
             >
-              <FaPencilAlt size={12} />
+              <FaPencilAlt size={ICON_SIZE.xs} />
             </button>
-            <div className="w-px h-4 bg-gray-200 dark:bg-gray-600" />
             <button
               onClick={() => onDelete(row.original.id)}
-              className="p-1.5 text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-sm transition-colors"
+              className={tableActionButtonClass}
               title="Delete Template"
             >
-              <FaTrash size={12} />
+              <FaTrash size={ICON_SIZE.xs} />
             </button>
           </div>
         ),

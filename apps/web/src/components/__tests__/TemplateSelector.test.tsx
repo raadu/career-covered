@@ -185,8 +185,8 @@ describe('TemplateSelector', () => {
     );
 
     const boxes = screen.getAllByText(/Template/);
-    expect(boxes[0].parentElement).toHaveClass('bg-blue-50/80');
-    expect(boxes[1].parentElement).not.toHaveClass('bg-blue-50/80');
+    expect(boxes[0].parentElement).toHaveClass('bg-brand-50');
+    expect(boxes[1].parentElement).not.toHaveClass('bg-brand-50');
   });
 
   it('does not apply active class when activeId is null', () => {
@@ -202,7 +202,7 @@ describe('TemplateSelector', () => {
 
     const boxes = screen.getAllByText(/Template/);
     boxes.forEach((box) => {
-      expect(box.parentElement).not.toHaveClass('bg-blue-50/80');
+      expect(box.parentElement).not.toHaveClass('bg-brand-50');
     });
   });
 
@@ -220,7 +220,7 @@ describe('TemplateSelector', () => {
     fireEvent.click(screen.getByTitle('Rename Template'));
 
     expect(screen.queryByTitle('Rename Template')).not.toBeInTheDocument();
-    const checkBtn = document.querySelector('.text-green-500');
+    const checkBtn = document.querySelector('.text-success');
     expect(checkBtn).toBeInTheDocument();
   });
 

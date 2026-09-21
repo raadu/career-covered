@@ -6,14 +6,14 @@ function isViewMode(value: unknown): value is ViewMode {
   return value === 'grid' || value === 'list';
 }
 
-export function useResumeViewMode() {
+export function useViewMode(storageKey: string, defaultMode: ViewMode = 'grid') {
   const [viewMode, setViewMode] = useLocalStorageState<ViewMode>(
-    'resume_view_mode',
-    'grid',
+    storageKey,
+    defaultMode,
     {
       deserialize: (raw) => {
         const parsed = JSON.parse(raw);
-        return isViewMode(parsed) ? parsed : 'grid';
+        return isViewMode(parsed) ? parsed : defaultMode;
       },
     },
   );

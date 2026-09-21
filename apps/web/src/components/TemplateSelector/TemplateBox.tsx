@@ -47,10 +47,10 @@ const TemplateBox = ({
   return (
     <div
       onClick={!editing ? onSelect : undefined}
-      className={`group relative flex items-center gap-1 sm:gap-1.5 px-1 sm:px-1.5 py-0.5 sm:py-1 cursor-pointer transition-all duration-200 border text-xs sm:text-sm min-w-[160px] max-w-[280px] shrink-0 ${
+      className={`group relative flex items-center gap-1 sm:gap-1.5 px-1 sm:px-1.5 cursor-pointer transition-all duration-200 border text-xs sm:text-sm min-w-[160px] max-w-[280px] shrink-0 ${
         isActive
-          ? 'bg-blue-50/80 dark:bg-blue-900/30 border-blue-300 dark:border-blue-600 shadow-sm'
-          : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:border-blue-200 dark:hover:border-blue-700 hover:shadow-sm'
+          ? 'bg-brand-50 dark:bg-brand-900/30 border-brand-300 dark:border-brand-600 shadow-sm'
+          : 'bg-white dark:bg-neutral-900 border-neutral-200 dark:border-neutral-700 hover:border-brand-200 dark:hover:border-brand-700 hover:shadow-sm'
       }`}
     >
       {editing ? (
@@ -61,10 +61,10 @@ const TemplateBox = ({
           onBlur={commitRename}
           onKeyDown={handleKeyDown}
           onClick={(e) => e.stopPropagation()}
-          className="flex-1 min-w-0 bg-transparent text-sm font-bold text-gray-800 dark:text-gray-200 border-b-2 border-blue-400 outline-none py-0.5"
+          className="flex-1 min-w-0 bg-transparent text-sm font-bold text-neutral-800 dark:text-neutral-200 border-b-2 border-brand-400 outline-none py-0.5"
         />
       ) : (
-        <span className="flex-1 min-w-0 truncate text-sm font-bold text-gray-800 dark:text-gray-200">
+        <span className="flex-1 min-w-0 truncate text-sm font-bold text-neutral-800 dark:text-neutral-200">
           {template.name}
         </span>
       )}
@@ -76,7 +76,7 @@ const TemplateBox = ({
               e.stopPropagation();
               commitRename();
             }}
-            className="p-0.5 text-green-500 hover:text-green-600 transition-colors"
+            className="min-h-10 min-w-10 flex items-center justify-center text-success hover:text-success-hover transition-colors"
           >
             <LuCheck size={14} />
           </button>
@@ -87,7 +87,7 @@ const TemplateBox = ({
               setEditValue(template.name);
               setEditing(true);
             }}
-            className="p-0.5 text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 sm:opacity-0 sm:group-hover:opacity-100 transition-all duration-200"
+            className="min-h-10 min-w-10 flex items-center justify-center text-neutral-400 hover:text-brand-500 dark:hover:text-brand-400 sm:opacity-0 sm:group-hover:opacity-100 transition-all duration-200"
             title="Rename Template"
           >
             <LuPencil size={12} />
@@ -99,7 +99,7 @@ const TemplateBox = ({
             e.stopPropagation();
             onRemove();
           }}
-          className="p-0.5 text-gray-400 hover:text-red-500 dark:hover:text-red-400 sm:opacity-0 sm:group-hover:opacity-100 transition-all duration-200"
+          className="min-h-10 min-w-10 flex items-center justify-center text-neutral-400 hover:text-danger dark:hover:text-danger-fg-dark sm:opacity-0 sm:group-hover:opacity-100 transition-all duration-200"
           title="Delete Template"
         >
           <LuX size={12} />

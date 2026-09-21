@@ -1,13 +1,13 @@
 import { Navigate } from 'react-router-dom';
 import ConfirmModal from 'components/common/ConfirmModal';
 import ResumePreviewModal from 'components/common/ResumePreviewModal';
-import BatchActionBar from 'views/TemplatesView/BatchActionBar';
+import BatchActionBar from 'components/common/BatchActionBar';
 import { MAX_RESUMES } from 'utils/resumeConstants';
 import Header from './Header';
 import ResumeGrid from './ResumeGrid';
 import ResumeTable from './ResumeTable';
 import { useResume } from './useResume';
-import { useResumeViewMode } from './useResumeViewMode';
+import { useViewMode } from 'hooks/useViewMode';
 
 const ResumeView = () => {
   const {
@@ -43,7 +43,7 @@ const ResumeView = () => {
     setShowBatchConfirm,
     handleBatchDelete,
   } = useResume();
-  const { viewMode, setViewMode } = useResumeViewMode();
+  const { viewMode, setViewMode } = useViewMode('resume_view_mode');
 
   if (authLoading) return null;
   if (!isAuthenticated) return <Navigate to="/" replace />;
