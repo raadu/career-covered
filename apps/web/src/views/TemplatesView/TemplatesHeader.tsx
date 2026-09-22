@@ -8,6 +8,7 @@ interface TemplatesHeaderProps {
   total: number;
   viewMode: ViewMode;
   onViewModeChange: (mode: ViewMode) => void;
+  showViewModeToggle: boolean;
   onCreateClick: () => void;
 }
 
@@ -15,6 +16,7 @@ const TemplatesHeader = ({
   total,
   viewMode,
   onViewModeChange,
+  showViewModeToggle,
   onCreateClick,
 }: TemplatesHeaderProps) => (
   <div className="flex items-center justify-between mb-6">
@@ -27,7 +29,9 @@ const TemplatesHeader = ({
       </p>
     </div>
     <div className="flex items-center gap-2">
-      <ViewModeToggle viewMode={viewMode} onChange={onViewModeChange} />
+      {showViewModeToggle && (
+        <ViewModeToggle viewMode={viewMode} onChange={onViewModeChange} />
+      )}
       <CommonButton
         variant="primary"
         icon={<FaPlus size={ICON_SIZE.xs} />}

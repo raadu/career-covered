@@ -1,4 +1,5 @@
 import { useLocalStorageState } from 'hooks/useLocalStorageState';
+import { useIsMobile } from 'hooks/useIsMobile';
 
 export type ViewMode = 'grid' | 'list';
 
@@ -7,7 +8,7 @@ function isViewMode(value: unknown): value is ViewMode {
 }
 
 export function useViewMode(storageKey: string, defaultMode: ViewMode = 'grid') {
-  const [viewMode, setViewMode] = useLocalStorageState<ViewMode>(
+  const [storedMode, setViewMode] = useLocalStorageState<ViewMode>(
     storageKey,
     defaultMode,
     {
@@ -18,5 +19,11 @@ export function useViewMode(storageKey: string, defaultMode: ViewMode = 'grid') 
     },
   );
 
-  return { viewMode, setViewMode };
+  // On phones there's no horizontally-scrolling table fallback — grid is the
+  // only mode, regardless of the user's stored table/grid preference. The
+  // toggle itself should be hidden by consumers when `isMobile` is true.
+  const isMobile = useIsMobile();
+  const viewMode: ViewMode = isMobile ? 'grid' : storedMode;
+
+  return { viewMode, setViewMode, isMobile };
 }

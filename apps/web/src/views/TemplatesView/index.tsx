@@ -51,7 +51,10 @@ const TemplatesView = () => {
     handleDelete,
     handleBatchDelete,
   } = useTemplates();
-  const { viewMode, setViewMode } = useViewMode('templates_view_mode', 'list');
+  const { viewMode, setViewMode, isMobile } = useViewMode(
+    'templates_view_mode',
+    'list',
+  );
 
   if (authLoading) return null;
   if (!isAuthenticated) return <Navigate to="/" replace />;
@@ -62,6 +65,7 @@ const TemplatesView = () => {
         total={total}
         viewMode={viewMode}
         onViewModeChange={setViewMode}
+        showViewModeToggle={!isMobile}
         onCreateClick={() => setIsCreateOpen(true)}
       />
 

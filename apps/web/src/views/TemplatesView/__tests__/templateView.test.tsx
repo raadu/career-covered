@@ -435,6 +435,67 @@ describe('TemplatesView — CRUD operations', () => {
 });
 
 /* ============================================================
+ * Mobile — grid forced, toggle hidden
+ * ============================================================ */
+describe('TemplatesView — mobile', () => {
+  const mockPaginatedResponse = {
+    data: mockTemplates,
+    total: 3,
+    page: 1,
+    limit: 10,
+    totalPages: 1,
+  };
+
+  beforeEach(() => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve(mockPaginatedResponse),
+      }),
+    );
+    vi.stubGlobal(
+      'matchMedia',
+      vi.fn().mockImplementation((query: string) => ({
+        matches: true,
+        media: query,
+        onchange: null,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+    );
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('renders cards instead of the table on mobile', async () => {
+    renderWithProviders(<TemplatesView />, {
+      preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
+    });
+    await waitFor(() => {
+      expect(screen.getByText('Dev')).toBeInTheDocument();
+    });
+    expect(screen.queryAllByRole('checkbox')).toHaveLength(0);
+  });
+
+  it('hides the grid/list view mode toggle on mobile', async () => {
+    renderWithProviders(<TemplatesView />, {
+      preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
+    });
+    await waitFor(() => {
+      expect(screen.getByText('Dev')).toBeInTheDocument();
+    });
+    expect(screen.queryByTitle('Grid View')).not.toBeInTheDocument();
+    expect(screen.queryByTitle('List View')).not.toBeInTheDocument();
+  });
+});
+
+/* ============================================================
  * Edge cases
  * ============================================================ */
 describe('TemplatesView — edge cases', () => {

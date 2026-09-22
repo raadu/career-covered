@@ -7,7 +7,9 @@ import PdfDesignsModal from 'components/Modals/PdfDesignsModal';
 import Header from './Header';
 import BatchActionBar from 'components/common/BatchActionBar';
 import PreviousCoverLettersTable from './PreviousCoverLettersTable';
+import CoverLetterGrid from './CoverLetterGrid';
 import { usePreviousCoverLetters } from './usePreviousCoverLetters';
+import { useViewMode } from 'hooks/useViewMode';
 import { useCopy } from 'hooks/useCopy';
 import { buildFileName } from 'utils/fileNameUtils';
 import { generatePdf, generateWord } from 'utils/downloadUtils';
@@ -39,6 +41,10 @@ const PreviousCoverLettersView = () => {
     handleDelete,
     handleBatchDelete,
   } = usePreviousCoverLetters();
+  const { viewMode, setViewMode, isMobile } = useViewMode(
+    'previous_cover_letters_view_mode',
+    'list',
+  );
 
   const { handleCopy } = useCopy();
   const { user } = useSelector((state: RootState) => state.auth);
@@ -91,7 +97,12 @@ const PreviousCoverLettersView = () => {
 
   return (
     <div className="py-6 md:py-8 px-1 sm:px-2">
-      <Header total={total} />
+      <Header
+        total={total}
+        viewMode={viewMode}
+        onViewModeChange={setViewMode}
+        showViewModeToggle={!isMobile}
+      />
 
       {someSelected && (
         <BatchActionBar
@@ -101,27 +112,37 @@ const PreviousCoverLettersView = () => {
         />
       )}
 
-      <PreviousCoverLettersTable
-        data={data}
-        totalPages={totalPages}
-        page={page}
-        pageSize={pageSize}
-        total={total}
-        isLoading={isLoading}
-        selectedIds={selectedIds}
-        allSelected={
-          data.length > 0 && data.every((d) => selectedIds.has(d.id))
-        }
-        someSelected={someSelected}
-        onToggleSelectAll={toggleSelectAll}
-        onToggleSelect={toggleSelect}
-        onPageChange={handlePageChange}
-        onPageSizeChange={handlePageSizeChange}
-        onOpenDesigns={handleOpenDesigns}
-        onDownloadWord={handleDownloadWord}
-        onCopy={handleCopyItem}
-        onDelete={setDeletingId}
-      />
+      {viewMode === 'grid' ? (
+        <CoverLetterGrid
+          items={data}
+          onOpenDesigns={handleOpenDesigns}
+          onDownloadWord={handleDownloadWord}
+          onCopy={handleCopyItem}
+          onDelete={setDeletingId}
+        />
+      ) : (
+        <PreviousCoverLettersTable
+          data={data}
+          totalPages={totalPages}
+          page={page}
+          pageSize={pageSize}
+          total={total}
+          isLoading={isLoading}
+          selectedIds={selectedIds}
+          allSelected={
+            data.length > 0 && data.every((d) => selectedIds.has(d.id))
+          }
+          someSelected={someSelected}
+          onToggleSelectAll={toggleSelectAll}
+          onToggleSelect={toggleSelect}
+          onPageChange={handlePageChange}
+          onPageSizeChange={handlePageSizeChange}
+          onOpenDesigns={handleOpenDesigns}
+          onDownloadWord={handleDownloadWord}
+          onCopy={handleCopyItem}
+          onDelete={setDeletingId}
+        />
+      )}
 
       <PdfDesignsModal
         isOpen={designsItem !== null}
