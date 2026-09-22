@@ -23,3 +23,9 @@ export function hideBelowClass(hideBelow?: 'sm' | 'md' | 'lg'): string {
 // content (row actions are rendered by each view, not by DataTable itself).
 export const tableActionButtonClass =
   'min-h-10 min-w-10 flex items-center justify-center text-neutral-400 dark:text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors';
+
+// Shared page-size options for DataTable and its grid-view counterparts
+// (TemplateGrid, CoverLetterGrid) — kept here rather than DataTable/index.tsx
+// so pagination-less consumers don't trigger a fast-refresh warning importing
+// a constant from a component file.
+export const DEFAULT_PAGE_SIZES = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];

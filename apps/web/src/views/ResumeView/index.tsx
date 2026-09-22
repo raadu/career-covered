@@ -43,7 +43,7 @@ const ResumeView = () => {
     setShowBatchConfirm,
     handleBatchDelete,
   } = useResume();
-  const { viewMode, setViewMode } = useViewMode('resume_view_mode');
+  const { viewMode, setViewMode, isMobile } = useViewMode('resume_view_mode');
 
   if (authLoading) return null;
   if (!isAuthenticated) return <Navigate to="/" replace />;
@@ -58,6 +58,7 @@ const ResumeView = () => {
       <Header
         viewMode={viewMode}
         onViewModeChange={setViewMode}
+        showViewModeToggle={!isMobile}
         atCap={atCap}
         isUploading={isUploading}
         onUpload={uploadResume}

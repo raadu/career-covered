@@ -366,3 +366,43 @@ describe('ResumeView', () => {
     });
   });
 });
+
+describe('ResumeView — mobile', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    localStorage.clear();
+  });
+
+  it('hides the grid/list view mode toggle on mobile', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => ({
+        ok: true,
+        json: async () => [mockResume({ id: 'r1', name: 'Resume One' })],
+      })),
+    );
+    vi.stubGlobal(
+      'matchMedia',
+      vi.fn().mockImplementation((query: string) => ({
+        matches: true,
+        media: query,
+        onchange: null,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+    );
+
+    renderWithProviders(<ResumeView />, {
+      preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Resume One')).toBeInTheDocument();
+    });
+    expect(screen.queryByTitle('Grid View')).not.toBeInTheDocument();
+    expect(screen.queryByTitle('List View')).not.toBeInTheDocument();
+  });
+});

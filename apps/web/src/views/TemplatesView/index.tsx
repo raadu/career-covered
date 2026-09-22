@@ -82,6 +82,12 @@ const TemplatesView = () => {
           templates={data}
           onEdit={openEditModal}
           onDelete={setDeletingTemplateId}
+          page={page}
+          pageSize={pageSize}
+          totalPages={totalPages}
+          total={total}
+          onPageChange={handlePageChange}
+          onPageSizeChange={handlePageSizeChange}
         />
       ) : (
         <TemplateTable

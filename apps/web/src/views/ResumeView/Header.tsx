@@ -5,6 +5,7 @@ import type { ViewMode } from 'hooks/useViewMode';
 interface HeaderProps {
   viewMode: ViewMode;
   onViewModeChange: (mode: ViewMode) => void;
+  showViewModeToggle: boolean;
   atCap: boolean;
   isUploading: boolean;
   onUpload: (file: File) => void;
@@ -14,6 +15,7 @@ interface HeaderProps {
 const Header = ({
   viewMode,
   onViewModeChange,
+  showViewModeToggle,
   atCap,
   isUploading,
   onUpload,
@@ -29,7 +31,9 @@ const Header = ({
       </p>
     </div>
     <div className="flex items-center gap-2">
-      <ViewModeToggle viewMode={viewMode} onChange={onViewModeChange} />
+      {showViewModeToggle && (
+        <ViewModeToggle viewMode={viewMode} onChange={onViewModeChange} />
+      )}
       {viewMode === 'list' && (
         <UploadHeaderButton
           atCap={atCap}

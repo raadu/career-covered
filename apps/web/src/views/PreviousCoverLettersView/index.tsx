@@ -119,6 +119,12 @@ const PreviousCoverLettersView = () => {
           onDownloadWord={handleDownloadWord}
           onCopy={handleCopyItem}
           onDelete={setDeletingId}
+          page={page}
+          pageSize={pageSize}
+          totalPages={totalPages}
+          total={total}
+          onPageChange={handlePageChange}
+          onPageSizeChange={handlePageSizeChange}
         />
       ) : (
         <PreviousCoverLettersTable

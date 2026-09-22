@@ -6,6 +6,7 @@ import {
 import TableHeader from './TableHeader';
 import TableBody from './TableBody';
 import Pagination from './Pagination';
+import { DEFAULT_PAGE_SIZES } from './tableColumnMeta';
 
 interface DataTableProps<T> {
   columns: ColumnDef<T>[];
@@ -20,8 +21,6 @@ interface DataTableProps<T> {
   isLoading?: boolean;
   emptyMessage?: string;
 }
-
-const DEFAULT_PAGE_SIZES = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
 
 const DataTable = <T extends object>({
   columns,
