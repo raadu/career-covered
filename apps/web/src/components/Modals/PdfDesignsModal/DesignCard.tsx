@@ -30,7 +30,7 @@ const DesignSwatch = ({
 
   if (swatchStyle === 'fullSidebar') {
     return (
-      <div className="flex h-full w-full overflow-hidden rounded-sm">
+      <div className="flex h-full w-full overflow-hidden">
         <div
           className="h-full w-[30%] shrink-0"
           style={{ backgroundColor: accentColor }}

@@ -51,7 +51,8 @@ export function showToast(
         </div>
         <button
           onClick={() => toast.dismiss(t.id)}
-          className="p-0.5 text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 transition-colors shrink-0"
+          aria-label="Dismiss"
+          className="-m-1 min-h-10 min-w-10 flex items-center justify-center text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 transition-colors shrink-0"
         >
           <FaTimes className="w-3 h-3" />
         </button>

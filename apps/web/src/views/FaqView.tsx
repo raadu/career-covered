@@ -83,17 +83,17 @@ const FaqView = () => {
       </Helmet>
 
       <div className="max-w-5xl mx-auto py-6 md:py-12 px-4 sm:px-6">
-        <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700 p-5 sm:p-8 md:p-12 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="bg-white dark:bg-neutral-900 shadow-sm border border-neutral-200 dark:border-neutral-700 p-5 sm:p-8 md:p-12 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
           <div className="space-y-4 text-center">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-gray-900 dark:text-gray-100 tracking-tight">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-neutral-900 dark:text-neutral-100 tracking-tight">
               Frequently Asked Questions
             </h1>
-            <p className="text-gray-500 dark:text-gray-400 text-sm sm:text-lg leading-relaxed max-w-xl mx-auto">
+            <p className="text-neutral-500 dark:text-neutral-400 text-sm sm:text-lg leading-relaxed max-w-xl mx-auto">
               Everything you need to know about Career Covered. Can't find what
               you're looking for?{' '}
               <Link
                 to="/support"
-                className="text-blue-600 dark:text-blue-400 hover:underline font-semibold"
+                className="text-brand-700 dark:text-brand-400 hover:underline font-semibold"
               >
                 Get in touch
               </Link>
@@ -102,7 +102,7 @@ const FaqView = () => {
           </div>
 
           <div
-            className="divide-y divide-gray-100 dark:divide-gray-700/50"
+            className="divide-y divide-neutral-200 dark:divide-neutral-800"
             itemScope
             itemType="https://schema.org/FAQPage"
           >
@@ -124,14 +124,14 @@ const FaqView = () => {
                   >
                     <span
                       itemProp="name"
-                      className="text-[15px] md:text-base font-bold text-gray-900 dark:text-gray-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-200 leading-snug"
+                      className="text-[15px] md:text-base font-bold text-neutral-900 dark:text-neutral-100 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors duration-200 leading-snug"
                     >
                       {item.question}
                     </span>
                     <FaChevronDown
-                      className={`shrink-0 text-gray-400 dark:text-gray-500 transition-all duration-500 ${
+                      className={`shrink-0 text-neutral-400 dark:text-neutral-500 transition-all duration-500 ${
                         isOpen
-                          ? 'rotate-180 text-blue-500 dark:text-blue-400'
+                          ? 'rotate-180 text-brand-500 dark:text-brand-400'
                           : ''
                       }`}
                       size={14}
@@ -149,7 +149,7 @@ const FaqView = () => {
                     <div className="overflow-hidden min-h-0">
                       <p
                         itemProp="text"
-                        className="text-gray-600 dark:text-gray-300 leading-relaxed text-[15px] pb-4 pr-0 sm:pr-8"
+                        className="text-neutral-600 dark:text-neutral-300 leading-relaxed text-[15px] pb-4 pr-0 sm:pr-8"
                       >
                         {item.answer}
                       </p>
