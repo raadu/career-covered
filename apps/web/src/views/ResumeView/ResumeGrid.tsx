@@ -4,7 +4,7 @@ import UploadSlot from './UploadSlot';
 import ResumeCard from './ResumeCard';
 import type { Resume } from './types';
 import { MAX_RESUMES } from 'utils/resumeConstants';
-import { useReorderDnd } from './useReorderDnd';
+import { useReorderDnd } from 'hooks/useReorderDnd';
 
 interface ResumeGridProps {
   resumes: Resume[];
@@ -33,7 +33,11 @@ const ResumeGrid = ({
   onReplace,
   onDelete,
 }: ResumeGridProps) => {
-  const { handleDragEnd } = useReorderDnd(resumes, onReorder);
+  const { handleDragEnd } = useReorderDnd(
+    resumes,
+    (resume) => resume.id,
+    onReorder,
+  );
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">

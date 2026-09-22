@@ -7,6 +7,8 @@ import {
 } from 'react';
 import { createPortal } from 'react-dom';
 import { FaEllipsisV } from 'react-icons/fa';
+import { ICON_SIZE } from 'components/common/iconSizes';
+import { tableActionButtonClass } from 'components/common/DataTable/tableColumnMeta';
 
 export interface TableAction {
   key: string;
@@ -26,25 +28,24 @@ const MENU_WIDTH = 144; // w-36
 const MENU_CLOSE_DELAY_MS = 200;
 
 const iconButtonClasses: Record<'default' | 'danger', string> = {
-  default:
-    'p-1.5 text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-sm transition-colors',
+  default: tableActionButtonClass,
   danger:
-    'p-1.5 text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-sm transition-colors',
+    'min-h-10 min-w-10 flex items-center justify-center text-neutral-400 dark:text-neutral-500 hover:text-danger dark:hover:text-danger-fg-dark hover:bg-danger-subtle dark:hover:bg-danger-subtle-dark transition-colors',
 };
 
 const menuItemClasses: Record<'default' | 'danger', string> = {
   default:
-    'w-full flex items-center gap-2 px-3 py-1.5 text-xs text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 text-left transition-colors',
+    'w-full flex items-center gap-2 px-3 py-1.5 text-xs text-neutral-600 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-700 text-left transition-colors',
   danger:
-    'w-full flex items-center gap-2 px-3 py-1.5 text-xs text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 text-left transition-colors',
+    'w-full flex items-center gap-2 px-3 py-1.5 text-xs text-danger dark:text-danger-fg-dark hover:bg-danger-subtle dark:hover:bg-danger-subtle-dark text-left transition-colors',
 };
 
 const InlineActions = ({ actions }: { actions: TableAction[] }) => (
-  <div className="border border-gray-200 dark:border-gray-600 rounded px-2 py-1 flex items-center gap-1 w-fit">
+  <div className="flex items-center gap-1 w-fit">
     {actions.map((action) => (
       <div key={action.key} className="flex items-center gap-1">
         {action.dividerBefore && (
-          <div className="w-px h-4 bg-gray-200 dark:bg-gray-600" />
+          <div className="w-px h-4 bg-neutral-200 dark:bg-neutral-700" />
         )}
         <button
           type="button"
@@ -153,9 +154,9 @@ const MenuActions = ({ actions }: { actions: TableAction[] }) => {
         }}
         onMouseEnter={cancelScheduledClose}
         onMouseLeave={scheduleClose}
-        className="p-1.5 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-sm transition-colors"
+        className={tableActionButtonClass}
       >
-        <FaEllipsisV size={13} />
+        <FaEllipsisV size={ICON_SIZE.xs} />
       </button>
 
       {isOpen &&
@@ -165,7 +166,7 @@ const MenuActions = ({ actions }: { actions: TableAction[] }) => {
             ref={menuContentRef}
             role="menu"
             style={{ top: position.top, left: position.left }}
-            className="fixed z-50 w-36 rounded-sm border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-lg py-1"
+            className="fixed z-50 w-36 border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 shadow-lg py-1"
             onMouseEnter={cancelScheduledClose}
             onMouseLeave={scheduleClose}
           >

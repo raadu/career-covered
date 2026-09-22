@@ -8,10 +8,10 @@ const mockResume = (overrides: Partial<Resume> = {}): Resume => ({
   name: 'Resume',
   originalFileName: 'r.pdf',
   mimeType: 'application/pdf',
-  fileSize: 1024,
+  fileSize: 512 * 1024,
   order: 0,
-  createdAt: '2026-01-01T00:00:00.000Z',
-  updatedAt: '2026-01-01T00:00:00.000Z',
+  createdAt: '2026-08-05T00:00:00.000Z',
+  updatedAt: '2026-08-06T00:00:00.000Z',
   ...overrides,
 });
 
@@ -63,6 +63,13 @@ describe('ResumeTable', () => {
     ).toBeInTheDocument();
   });
 
+  it('renders the formatted size, created, and updated cells', () => {
+    render(<ResumeTable {...baseProps} resumes={[mockResume()]} />);
+    expect(screen.getByText('512 KB')).toBeInTheDocument();
+    expect(screen.getByText('Aug 5, 2026')).toBeInTheDocument();
+    expect(screen.getByText('Aug 6, 2026')).toBeInTheDocument();
+  });
+
   it('calls onToggleSelectAll when the header checkbox is clicked', () => {
     const onToggleSelectAll = vi.fn();
     render(
@@ -88,6 +95,101 @@ describe('ResumeTable', () => {
     const checkboxes = screen.getAllByRole('checkbox');
     fireEvent.click(checkboxes[1]); // 0 is select-all, 1 is the row
     expect(onToggleSelect).toHaveBeenCalledWith('r1');
+  });
+
+  it('reflects the isSelected state on the row checkbox', () => {
+    render(
+      <ResumeTable
+        {...baseProps}
+        resumes={[mockResume({ id: 'r1' })]}
+        selectedIds={new Set(['r1'])}
+      />,
+    );
+    const checkboxes = screen.getAllByRole('checkbox');
+    expect(checkboxes[1]).toBeChecked();
+  });
+
+  it('commits a rename through the inline-editable name cell', () => {
+    const onRename = vi.fn();
+    render(
+      <ResumeTable
+        {...baseProps}
+        resumes={[mockResume({ id: 'r1', name: 'My Resume' })]}
+        onRename={onRename}
+      />,
+    );
+
+    fireEvent.click(screen.getByText('My Resume'));
+    const input = screen.getByRole('textbox');
+    fireEvent.change(input, { target: { value: 'Renamed Resume' } });
+    fireEvent.keyDown(input, { key: 'Enter' });
+
+    expect(onRename).toHaveBeenCalledWith('r1', 'Renamed Resume');
+  });
+
+  it('renders a drag handle for each row', () => {
+    render(<ResumeTable {...baseProps} resumes={[mockResume()]} />);
+    expect(screen.getByTitle('Drag to reorder')).toBeInTheDocument();
+  });
+
+  it('opens the kebab menu and triggers each action with the row id', () => {
+    const onPreview = vi.fn();
+    const onDownload = vi.fn();
+    const onDelete = vi.fn();
+    render(
+      <ResumeTable
+        {...baseProps}
+        resumes={[mockResume({ id: 'r1' })]}
+        onPreview={onPreview}
+        onDownload={onDownload}
+        onDelete={onDelete}
+      />,
+    );
+
+    fireEvent.click(screen.getByTitle('Actions'));
+    fireEvent.click(screen.getByRole('menuitem', { name: /view/i }));
+    expect(onPreview).toHaveBeenCalledWith('r1');
+
+    fireEvent.click(screen.getByTitle('Actions'));
+    fireEvent.click(screen.getByRole('menuitem', { name: /download/i }));
+    expect(onDownload).toHaveBeenCalledWith('r1');
+
+    fireEvent.click(screen.getByTitle('Actions'));
+    fireEvent.click(screen.getByRole('menuitem', { name: /delete/i }));
+    expect(onDelete).toHaveBeenCalledWith('r1');
+  });
+
+  it('calls onReplace with the row id and selected file via the hidden input', () => {
+    const onReplace = vi.fn();
+    const { container } = render(
+      <ResumeTable
+        {...baseProps}
+        resumes={[mockResume({ id: 'r1' })]}
+        onReplace={onReplace}
+      />,
+    );
+
+    const file = new File(['%PDF-1.4'], 'new.pdf', {
+      type: 'application/pdf',
+    });
+    const input = container.querySelector(
+      'input[type="file"]',
+    ) as HTMLInputElement;
+    fireEvent.change(input, { target: { files: [file] } });
+
+    expect(onReplace).toHaveBeenCalledWith('r1', file);
+  });
+
+  it('shows a spinner and hides actions/drag-handle for the busy row', () => {
+    render(
+      <ResumeTable
+        {...baseProps}
+        resumes={[mockResume({ id: 'r1' })]}
+        busyId="r1"
+      />,
+    );
+    expect(screen.queryByTitle('Actions')).not.toBeInTheDocument();
+    expect(screen.queryByTitle('Drag to reorder')).not.toBeInTheDocument();
   });
 
   it('renders the pagination footer with the given total', () => {

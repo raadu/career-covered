@@ -7,6 +7,7 @@ interface TableBodyProps<T> {
   columnsLength: number;
   isLoading?: boolean;
   emptyMessage: string;
+  getRowClassName?: (row: T) => string;
 }
 
 const TableBody = <T extends object>({
@@ -14,6 +15,7 @@ const TableBody = <T extends object>({
   columnsLength,
   isLoading,
   emptyMessage,
+  getRowClassName,
 }: TableBodyProps<T>) => {
   if (isLoading) {
     return (
@@ -45,7 +47,7 @@ const TableBody = <T extends object>({
       {rowModel.rows.map((row) => (
         <tr
           key={row.id}
-          className="hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors"
+          className={`hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors ${getRowClassName?.(row.original) ?? ''}`}
         >
           {row.getVisibleCells().map((cell) => (
             <td
