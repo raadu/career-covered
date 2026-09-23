@@ -20,9 +20,14 @@ const ResultHeader = ({
 }: ResultHeaderProps) => {
   return (
     <div className="bg-brand-50 dark:bg-brand-950 p-2.5 md:p-5 border-b border-brand-100 dark:border-brand-900 flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-4">
-      <h3 className="font-bold text-brand-900 dark:text-brand-200 tracking-tight text-xs sm:text-sm md:text-base">
-        Generated Cover Letter
-      </h3>
+      <div>
+        <h3 className="font-bold text-brand-900 dark:text-brand-200 tracking-tight text-xs sm:text-sm md:text-base">
+          Generated Cover Letter
+        </h3>
+        <p className="text-[11px] text-brand-700/70 dark:text-brand-300/70">
+          You can edit the text below to personalize it further.
+        </p>
+      </div>
       <div className="flex items-center justify-center sm:justify-end gap-1.5 sm:gap-2 w-full sm:w-auto overflow-x-auto no-scrollbar">
         <CommonButton
           variant="outline"

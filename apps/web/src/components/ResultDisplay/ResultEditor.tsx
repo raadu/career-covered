@@ -30,9 +30,6 @@ const ResultEditor = ({ value, onChange }: ResultEditorProps) => {
         spellCheck="false"
         placeholder="Your generated cover letter will appear here..."
       />
-      <div className="mt-6 pt-4 border-t border-neutral-100 dark:border-neutral-800 text-[11px] text-neutral-400 dark:text-neutral-500 italic">
-        Tip: You can edit the text above to personalize it further.
-      </div>
     </div>
   );
 };
