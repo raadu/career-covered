@@ -6,7 +6,14 @@ import { showToast } from 'components/common/Toast';
 import Modal from 'components/common/Modal';
 import CommonButton from 'components/common/CommonButton';
 import { ICON_SIZE } from 'components/common/iconSizes';
-import { FaLinkedin, FaGithub, FaGlobe, FaEnvelope, FaPencilAlt } from 'react-icons/fa';
+import {
+  FaLinkedin,
+  FaGithub,
+  FaGlobe,
+  FaEnvelope,
+  FaPhone,
+  FaPencilAlt,
+} from 'react-icons/fa';
 
 interface EditLinksModalProps {
   isOpen: boolean;
@@ -26,6 +33,7 @@ const EditLinksModal = ({ isOpen, onClose }: EditLinksModalProps) => {
   const [githubUrl, setGithubUrl] = useState(user?.githubUrl ?? '');
   const [websiteUrl, setWebsiteUrl] = useState(user?.websiteUrl ?? '');
   const [contactEmail, setContactEmail] = useState(user?.contactEmail ?? '');
+  const [phoneNumber, setPhoneNumber] = useState(user?.phoneNumber ?? '');
   const [error, setError] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 
@@ -39,6 +47,7 @@ const EditLinksModal = ({ isOpen, onClose }: EditLinksModalProps) => {
           githubUrl: githubUrl.trim(),
           websiteUrl: websiteUrl.trim(),
           contactEmail: contactEmail.trim(),
+          phoneNumber: phoneNumber.trim(),
         }),
       ).unwrap();
       showToast('Links updated!', { type: 'success' });
@@ -64,9 +73,9 @@ const EditLinksModal = ({ isOpen, onClose }: EditLinksModalProps) => {
     >
       <div className="space-y-3">
         <p className="text-xs text-neutral-500 dark:text-neutral-400">
-          Add links of your LinkedIn, portfolio website, GitHub and email so
-          you can quickly copy from here and then paste in the job
-          application form.
+          Add links of your LinkedIn, portfolio website, GitHub, email and
+          phone number so you can quickly copy from here and then paste in
+          the job application form.
         </p>
 
         {error && (
@@ -115,6 +124,17 @@ const EditLinksModal = ({ isOpen, onClose }: EditLinksModalProps) => {
             placeholder="Contact email"
             value={contactEmail}
             onChange={(e) => setContactEmail(e.target.value)}
+            className={inputClass}
+          />
+        </div>
+
+        <div className="relative">
+          <FaPhone className={iconClass} size={ICON_SIZE.xs} />
+          <input
+            type="tel"
+            placeholder="Phone number"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
             className={inputClass}
           />
         </div>

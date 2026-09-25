@@ -67,6 +67,7 @@ describe('AuthController', () => {
     githubUrl: null,
     websiteUrl: null,
     contactEmail: null,
+    phoneNumber: null,
     passwordHash: 'super-secret-hash',
   } as db.User;
 
@@ -129,6 +130,7 @@ describe('AuthController', () => {
       githubUrl: mockUser.githubUrl,
       websiteUrl: mockUser.websiteUrl,
       contactEmail: mockUser.contactEmail,
+      phoneNumber: mockUser.phoneNumber,
     });
     expect(result).not.toHaveProperty('passwordHash');
   });
@@ -155,6 +157,7 @@ describe('AuthController', () => {
       githubUrl: mockUser.githubUrl,
       websiteUrl: mockUser.websiteUrl,
       contactEmail: mockUser.contactEmail,
+      phoneNumber: mockUser.phoneNumber,
     });
     expect(result).not.toHaveProperty('passwordHash');
   });
@@ -193,6 +196,7 @@ describe('AuthController', () => {
       githubUrl: mockUser.githubUrl,
       websiteUrl: mockUser.websiteUrl,
       contactEmail: mockUser.contactEmail,
+      phoneNumber: mockUser.phoneNumber,
     });
     expect(result).not.toHaveProperty('passwordHash');
   });

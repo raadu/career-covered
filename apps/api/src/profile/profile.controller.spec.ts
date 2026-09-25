@@ -18,6 +18,7 @@ describe('ProfileController', () => {
     githubUrl: null,
     websiteUrl: null,
     contactEmail: null,
+    phoneNumber: null,
   };
 
   beforeEach(async () => {

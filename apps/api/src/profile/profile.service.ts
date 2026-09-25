@@ -17,6 +17,7 @@ export class ProfileService {
       githubUrl: user.githubUrl,
       websiteUrl: user.websiteUrl,
       contactEmail: user.contactEmail,
+      phoneNumber: user.phoneNumber,
     };
   }
 
@@ -32,6 +33,9 @@ export class ProfileService {
         ...(dto.websiteUrl !== undefined && { websiteUrl: dto.websiteUrl }),
         ...(dto.contactEmail !== undefined && {
           contactEmail: dto.contactEmail,
+        }),
+        ...(dto.phoneNumber !== undefined && {
+          phoneNumber: dto.phoneNumber,
         }),
       },
     });

@@ -15,6 +15,7 @@ describe('ProfileService', () => {
     githubUrl: null,
     websiteUrl: null,
     contactEmail: null,
+    phoneNumber: null,
     passwordHash: 'super-secret-hash',
     createdAt: new Date('2026-01-01'),
     updatedAt: new Date('2026-01-01'),
@@ -64,6 +65,7 @@ describe('ProfileService', () => {
       expect('githubUrl' in call.data).toBe(false);
       expect('websiteUrl' in call.data).toBe(false);
       expect('contactEmail' in call.data).toBe(false);
+      expect('phoneNumber' in call.data).toBe(false);
     });
 
     it('writes null for a field explicitly cleared (post-transform null on the DTO)', async () => {
@@ -74,12 +76,13 @@ describe('ProfileService', () => {
       expect(call.data).toEqual({ githubUrl: null });
     });
 
-    it('includes all four fields when all are present on the DTO', async () => {
+    it('includes all five fields when all are present on the DTO', async () => {
       await service.updateLinks('user-1', {
         linkedinUrl: 'https://linkedin.com/in/x',
         githubUrl: 'https://github.com/x',
         websiteUrl: 'https://x.dev',
         contactEmail: 'x@example.com',
+        phoneNumber: '+14155552671',
       });
       expect(mockPrismaService.user.update).toHaveBeenCalledWith({
         where: { id: 'user-1' },
@@ -88,6 +91,7 @@ describe('ProfileService', () => {
           githubUrl: 'https://github.com/x',
           websiteUrl: 'https://x.dev',
           contactEmail: 'x@example.com',
+          phoneNumber: '+14155552671',
         },
       });
     });
@@ -104,6 +108,7 @@ describe('ProfileService', () => {
           'id',
           'linkedinUrl',
           'name',
+          'phoneNumber',
           'websiteUrl',
         ].sort(),
       );
@@ -126,6 +131,7 @@ describe('ProfileService', () => {
         githubUrl: null,
         websiteUrl: null,
         contactEmail: null,
+        phoneNumber: null,
       });
     });
   });

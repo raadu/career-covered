@@ -78,6 +78,20 @@ setInterval(
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  private serializeUser(user: db.User) {
+    return {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      avatarUrl: user.avatarUrl,
+      linkedinUrl: user.linkedinUrl,
+      githubUrl: user.githubUrl,
+      websiteUrl: user.websiteUrl,
+      contactEmail: user.contactEmail,
+      phoneNumber: user.phoneNumber,
+    };
+  }
+
   @Public()
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
@@ -95,16 +109,7 @@ export class AuthController {
     );
     const token = await this.authService.createSession(user.id);
     res.cookie(SESSION_COOKIE, token, COOKIE_OPTIONS);
-    return {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      avatarUrl: user.avatarUrl,
-      linkedinUrl: user.linkedinUrl,
-      githubUrl: user.githubUrl,
-      websiteUrl: user.websiteUrl,
-      contactEmail: user.contactEmail,
-    };
+    return this.serializeUser(user);
   }
 
   @Public()
@@ -120,32 +125,14 @@ export class AuthController {
     const user = await this.authService.login(dto.email, dto.password);
     const token = await this.authService.createSession(user.id);
     res.cookie(SESSION_COOKIE, token, COOKIE_OPTIONS);
-    return {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      avatarUrl: user.avatarUrl,
-      linkedinUrl: user.linkedinUrl,
-      githubUrl: user.githubUrl,
-      websiteUrl: user.websiteUrl,
-      contactEmail: user.contactEmail,
-    };
+    return this.serializeUser(user);
   }
 
   @Get('me')
   @ApiCookieAuth('session')
   @ApiOperation({ summary: 'Get current authenticated user' })
   me(@CurrentUser() user: db.User) {
-    return {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      avatarUrl: user.avatarUrl,
-      linkedinUrl: user.linkedinUrl,
-      githubUrl: user.githubUrl,
-      websiteUrl: user.websiteUrl,
-      contactEmail: user.contactEmail,
-    };
+    return this.serializeUser(user);
   }
 
   @Post('logout')

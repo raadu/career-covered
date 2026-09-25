@@ -10,6 +10,7 @@ export interface UserProfile {
   githubUrl?: string | null;
   websiteUrl?: string | null;
   contactEmail?: string | null;
+  phoneNumber?: string | null;
 }
 
 export interface AuthState {
@@ -58,6 +59,7 @@ export interface ProfileLinksPayload {
   githubUrl?: string;
   websiteUrl?: string;
   contactEmail?: string;
+  phoneNumber?: string;
 }
 
 export const updateProfileLinks = createApiThunk<

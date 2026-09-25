@@ -2,6 +2,7 @@ import {
   IsEmail,
   IsUrl,
   IsOptional,
+  IsPhoneNumber,
   MaxLength,
   ValidateIf,
 } from 'class-validator';
@@ -47,6 +48,18 @@ export class UpdateProfileLinksDto {
   @IsEmail({}, { message: 'contactEmail must be a valid email' })
   @MaxLength(320)
   contactEmail?: string | null;
+
+  @ApiPropertyOptional({ example: '+14155552671' })
+  @IsOptional()
+  @Transform(emptyStringToNull)
+  @ValidateIf((o: UpdateProfileLinksDto) => o.phoneNumber !== null)
+  // No region passed — accepts any country's number in international
+  // (E.164-recognizable) format, since job seekers aren't tied to one.
+  @IsPhoneNumber(undefined, {
+    message: 'phoneNumber must be a valid phone number',
+  })
+  @MaxLength(32)
+  phoneNumber?: string | null;
 }
 
 export interface ProfileResponseDto {
@@ -58,4 +71,5 @@ export interface ProfileResponseDto {
   githubUrl: string | null;
   websiteUrl: string | null;
   contactEmail: string | null;
+  phoneNumber: string | null;
 }

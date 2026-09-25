@@ -40,7 +40,7 @@ describe('QuickLinks', () => {
     expect(screen.queryByTitle('Edit links')).not.toBeInTheDocument();
   });
 
-  it('renders all 5 icons in both the mobile row and the desktop floating widget', () => {
+  it('renders all 6 icons in both the mobile row and the desktop floating widget', () => {
     renderWithProviders(<QuickLinks />, {
       preloadedState: {
         auth: authState({ user: baseUser, isAuthenticated: true }),
@@ -51,6 +51,7 @@ describe('QuickLinks', () => {
     expect(screen.getAllByTitle('Copy GitHub link')).toHaveLength(2);
     expect(screen.getAllByTitle('Copy website link')).toHaveLength(2);
     expect(screen.getAllByTitle('Copy contact email')).toHaveLength(2);
+    expect(screen.getAllByTitle('Copy phone number')).toHaveLength(2);
     expect(screen.getAllByTitle('Edit links')).toHaveLength(2);
   });
 
@@ -102,6 +103,25 @@ describe('QuickLinks', () => {
     expect(mockHandleCopy).toHaveBeenCalledWith(
       'https://linkedin.com/in/x',
       'LinkedIn link',
+      expect.anything(),
+    );
+  });
+
+  it('copies the phone number with its label when set, from either layout', () => {
+    renderWithProviders(<QuickLinks />, {
+      preloadedState: {
+        auth: authState({
+          user: { ...baseUser, phoneNumber: '+14155552671' },
+          isAuthenticated: true,
+        }),
+      },
+    });
+
+    const [, desktopButton] = screen.getAllByTitle('Copy phone number');
+    fireEvent.click(desktopButton);
+    expect(mockHandleCopy).toHaveBeenCalledWith(
+      '+14155552671',
+      'Phone number',
       expect.anything(),
     );
   });

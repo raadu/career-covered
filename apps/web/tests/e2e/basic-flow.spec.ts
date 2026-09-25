@@ -32,10 +32,79 @@ test.describe('Cover Letter Creator - Basic Flow', () => {
     });
 
     test('responsiveness - mobile viewport', async ({ page }) => {
-        // Playwright handles this via the config projects, 
+        // Playwright handles this via the config projects,
         // but we can also test specific layout changes here if needed.
         await page.setViewportSize({ width: 375, height: 667 }); // iPhone SE
         const header = page.getByRole('heading', { name: /Create Free Cover Letters/i });
         await expect(header).toBeVisible();
+    });
+
+    test('sidebar switches to a horizontal row on mobile with no horizontal page overflow', async ({ page }) => {
+        await page.setViewportSize({ width: 375, height: 667 });
+
+        const sidebar = page.locator('aside');
+        await expect(sidebar).toBeVisible();
+        const flexDirection = await sidebar.evaluate(
+            (el) => getComputedStyle(el).flexDirection,
+        );
+        expect(flexDirection).toBe('row');
+
+        const overflow = await page.evaluate(() => ({
+            scrollWidth: document.documentElement.scrollWidth,
+            clientWidth: document.documentElement.clientWidth,
+        }));
+        expect(overflow.scrollWidth).toBeLessThanOrEqual(overflow.clientWidth);
+    });
+
+    test('sidebar switches to a vertical column on tablet and desktop', async ({ page }) => {
+        await page.setViewportSize({ width: 1024, height: 768 });
+
+        const sidebar = page.locator('aside');
+        const flexDirection = await sidebar.evaluate(
+            (el) => getComputedStyle(el).flexDirection,
+        );
+        expect(flexDirection).toBe('column');
+    });
+});
+
+test.describe('Cover Letter Creator - Mobile Card/Grid Views (authenticated)', () => {
+    test('templates view renders cards on mobile and a table on desktop', async ({ page }) => {
+        // No stable seeded test-user fixture exists in this repo (and
+        // hardcoding one account's credentials here wouldn't survive a
+        // fresh/CI database anyway), so this signs up a fresh throwaway
+        // account through the real UI instead.
+        await page.goto('/');
+        await page.getByTitle('Sign In').click();
+        await page.getByRole('button', { name: 'Sign up' }).click();
+
+        const uniqueSuffix = Date.now();
+        await page.getByPlaceholder('Full name').fill('E2E Test User');
+        await page.getByPlaceholder('Email address').fill(`e2e-${uniqueSuffix}@example.com`);
+        await page.getByPlaceholder('Password').fill(`TestPass${uniqueSuffix}`);
+        await page.getByRole('button', { name: 'Create account' }).click();
+        // Wait on the success toast rather than a sidebar element — the
+        // labeled "Sign Out" button only renders on expanded desktop
+        // sidebars (hidden below lg), so it isn't a reliable signal on the
+        // mobile-viewport projects. The toast fires once regardless of
+        // viewport, right when registration actually succeeds.
+        await expect(
+            page.getByText("Awesome! You're now registered."),
+        ).toBeVisible({ timeout: 15000 });
+        await expect(page.getByTitle('Sign In')).not.toBeVisible();
+
+        // HashRouter is used app-wide, so routes live after the `#`.
+        await page.goto('/#/cover-letter/templates');
+        await expect(
+            page.getByRole('heading', { name: 'Cover Letter Templates' }),
+        ).toBeVisible();
+
+        // Mobile: the card/grid view is forced regardless of the user's
+        // stored table/grid preference, so no <table> should render at all.
+        await page.setViewportSize({ width: 375, height: 667 });
+        await expect(page.locator('table')).toHaveCount(0);
+
+        // Desktop: the table view (the default for this view) is back.
+        await page.setViewportSize({ width: 1280, height: 800 });
+        await expect(page.locator('table')).toHaveCount(1);
     });
 });

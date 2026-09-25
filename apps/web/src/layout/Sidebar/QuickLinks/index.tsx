@@ -7,6 +7,7 @@ import {
   FaGithub,
   FaGlobe,
   FaEnvelope,
+  FaPhone,
   FaPencilAlt,
 } from 'react-icons/fa';
 import { clsx } from 'clsx';
@@ -84,6 +85,7 @@ const QuickLinks = () => {
   const github = useCopy();
   const website = useCopy();
   const email = useCopy();
+  const phone = useCopy();
 
   if (!isAuthenticated || !user) return null;
 
@@ -123,6 +125,15 @@ const QuickLinks = () => {
       label: 'Contact email',
       hover: 'hover:text-brand-600 dark:hover:text-brand-400',
       handleCopy: email.handleCopy,
+    },
+    {
+      key: 'phone',
+      Icon: FaPhone,
+      title: 'Copy phone number',
+      value: user.phoneNumber,
+      label: 'Phone number',
+      hover: 'hover:text-brand-600 dark:hover:text-brand-400',
+      handleCopy: phone.handleCopy,
     },
   ];
 

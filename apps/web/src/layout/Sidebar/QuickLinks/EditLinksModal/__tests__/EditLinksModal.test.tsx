@@ -11,6 +11,7 @@ const baseUser = {
   githubUrl: 'https://github.com/existing',
   websiteUrl: 'https://existing.dev',
   contactEmail: 'existing@example.com',
+  phoneNumber: '+14155550100',
 };
 
 const authState = (overrides = {}) => ({
@@ -40,12 +41,12 @@ describe('EditLinksModal', () => {
 
     expect(
       screen.getByText(
-        'Add links of your LinkedIn, portfolio website, GitHub and email so you can quickly copy from here and then paste in the job application form.',
+        'Add links of your LinkedIn, portfolio website, GitHub, email and phone number so you can quickly copy from here and then paste in the job application form.',
       ),
     ).toBeInTheDocument();
   });
 
-  it('pre-populates all 4 fields from the current user', () => {
+  it('pre-populates all 5 fields from the current user', () => {
     renderWithProviders(<EditLinksModal isOpen onClose={onClose} />, {
       preloadedState: { auth: authState() },
     });
@@ -62,9 +63,12 @@ describe('EditLinksModal', () => {
     expect(screen.getByPlaceholderText('Contact email')).toHaveValue(
       'existing@example.com',
     );
+    expect(screen.getByPlaceholderText('Phone number')).toHaveValue(
+      '+14155550100',
+    );
   });
 
-  it('sends all 4 current field values on save, including untouched ones', async () => {
+  it('sends all 5 current field values on save, including untouched ones', async () => {
     const fetchMock = vi.fn(async () => ({
       ok: true,
       json: async () => baseUser,
@@ -91,6 +95,7 @@ describe('EditLinksModal', () => {
           githubUrl: 'https://github.com/existing',
           websiteUrl: 'https://existing.dev',
           contactEmail: 'existing@example.com',
+          phoneNumber: '+14155550100',
         }),
       }),
     );

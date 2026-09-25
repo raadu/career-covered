@@ -27,6 +27,14 @@ describe('UpdateProfileLinksDto', () => {
     expect(errors).toHaveLength(0);
   });
 
+  it('accepts a valid international phone number for phoneNumber', async () => {
+    const dto = plainToInstance(UpdateProfileLinksDto, {
+      phoneNumber: '+14155552671',
+    });
+    const errors = await validate(dto);
+    expect(errors).toHaveLength(0);
+  });
+
   it('rejects an invalid URL', async () => {
     const dto = plainToInstance(UpdateProfileLinksDto, {
       linkedinUrl: 'not-a-url',
@@ -43,15 +51,25 @@ describe('UpdateProfileLinksDto', () => {
     expect(errors.some((e) => e.property === 'contactEmail')).toBe(true);
   });
 
-  it('transforms an empty string to null and skips URL/email validation for it', async () => {
+  it('rejects an invalid phone number', async () => {
+    const dto = plainToInstance(UpdateProfileLinksDto, {
+      phoneNumber: 'not-a-phone-number',
+    });
+    const errors = await validate(dto);
+    expect(errors.some((e) => e.property === 'phoneNumber')).toBe(true);
+  });
+
+  it('transforms an empty string to null and skips URL/email/phone validation for it', async () => {
     const dto = plainToInstance(UpdateProfileLinksDto, {
       linkedinUrl: '',
       contactEmail: '',
+      phoneNumber: '',
     });
     const errors = await validate(dto);
     expect(errors).toHaveLength(0);
     expect(dto.linkedinUrl).toBeNull();
     expect(dto.contactEmail).toBeNull();
+    expect(dto.phoneNumber).toBeNull();
   });
 
   it('leaves an omitted field as undefined after transform (distinct from cleared)', async () => {
