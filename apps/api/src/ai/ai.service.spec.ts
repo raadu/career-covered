@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AiService } from './ai.service';
 import { ConfigService } from '@nestjs/config';
-import { InternalServerErrorException } from '@nestjs/common';
+import { InternalServerErrorException, Logger } from '@nestjs/common';
 
 describe('AiService', () => {
   let service: AiService;
@@ -166,6 +166,138 @@ describe('AiService', () => {
         messages: [{ role: 'user', content: 'test' }],
       }),
     ).rejects.toThrow('fetch failed');
+  });
+
+  it('never forwards userApiKey or the app-only rule fields to Groq in the request body', async () => {
+    const fetchMock = jest.fn().mockResolvedValue({
+      ok: true,
+      json: jest.fn().mockResolvedValue({
+        choices: [{ message: { content: 'hello' } }],
+      }),
+    });
+    global.fetch = fetchMock;
+
+    await service.generate({
+      model: 'openai/gpt-oss-120b',
+      messages: [{ role: 'user', content: 'test' }],
+      userApiKey: 'user-supplied-key',
+      jobDescription: 'JD',
+      templateId: 't1',
+      jobTitle: 'Engineer',
+      companyName: 'Acme',
+      wordLimit: 100,
+      minimalChanges: true,
+      sameLanguage: true,
+    });
+
+    const [, options] = fetchMock.mock.calls[0] as [string, RequestInit];
+    expect(JSON.parse(options.body as string)).toEqual({
+      model: 'openai/gpt-oss-120b',
+      messages: [{ role: 'user', content: 'test' }],
+    });
+  });
+
+  describe('rule validation (warn-only, never blocks the response)', () => {
+    let warnSpy: jest.SpyInstance;
+
+    const mockGroqReply = (content: string) => {
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: true,
+        json: jest
+          .fn()
+          .mockResolvedValue({ choices: [{ message: { content } }] }),
+      });
+    };
+
+    beforeEach(() => {
+      warnSpy = jest.spyOn(Logger.prototype, 'warn').mockImplementation();
+    });
+
+    afterEach(() => {
+      warnSpy.mockRestore();
+    });
+
+    it('warns when the output exceeds the requested word limit, but still returns it', async () => {
+      mockGroqReply('one two three four five six');
+
+      const result = await service.generate({
+        model: 'openai/gpt-oss-120b',
+        messages: [{ role: 'user', content: 'test' }],
+        wordLimit: 5,
+      });
+
+      expect(warnSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Output has 6 words, limit requested was 5'),
+      );
+      expect(result).toEqual({
+        choices: [{ message: { content: 'one two three four five six' } }],
+      });
+    });
+
+    it('does not warn when the output is exactly at the word limit, counting collapsed whitespace correctly', async () => {
+      mockGroqReply('  one\ttwo\n\nthree   four five  ');
+
+      await service.generate({
+        model: 'openai/gpt-oss-120b',
+        messages: [{ role: 'user', content: 'test' }],
+        wordLimit: 5,
+      });
+
+      expect(warnSpy).not.toHaveBeenCalled();
+    });
+
+    it('warns when sameLanguage is on and the output language profile differs from the job description', async () => {
+      mockGroqReply('Sehr geehrte Damen und Herren, ich bewerbe mich hiermit.');
+
+      await service.generate({
+        model: 'openai/gpt-oss-120b',
+        messages: [{ role: 'user', content: 'test' }],
+        sameLanguage: true,
+        jobDescription: 'We are looking for an engineer to join the team.',
+      });
+
+      expect(warnSpy).toHaveBeenCalledWith(
+        expect.stringContaining('Language Constraint'),
+      );
+    });
+
+    it('does not warn when sameLanguage is on and both texts share a language profile', async () => {
+      mockGroqReply('I am excited to apply for the role at your company.');
+
+      await service.generate({
+        model: 'openai/gpt-oss-120b',
+        messages: [{ role: 'user', content: 'test' }],
+        sameLanguage: true,
+        jobDescription: 'We are looking for an engineer to join the team.',
+      });
+
+      expect(warnSpy).not.toHaveBeenCalled();
+    });
+
+    it('skips the language check when sameLanguage is on but no job description was sent', async () => {
+      mockGroqReply('Sehr geehrte Damen und Herren.');
+
+      await service.generate({
+        model: 'openai/gpt-oss-120b',
+        messages: [{ role: 'user', content: 'test' }],
+        sameLanguage: true,
+      });
+
+      expect(warnSpy).not.toHaveBeenCalled();
+    });
+
+    it('skips the language check entirely when sameLanguage is off', async () => {
+      mockGroqReply('Sehr geehrte Damen und Herren.');
+
+      await service.generate({
+        model: 'openai/gpt-oss-120b',
+        messages: [{ role: 'user', content: 'test' }],
+        sameLanguage: false,
+        jobDescription: 'We are looking for an engineer to join the team.',
+      });
+
+      expect(warnSpy).not.toHaveBeenCalled();
+    });
   });
 
   it('should use the caller-supplied API key over the configured fallback', async () => {

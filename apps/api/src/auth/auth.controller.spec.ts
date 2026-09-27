@@ -4,6 +4,7 @@ import * as express from 'express';
 import {
   AuthController,
   buildCookieOptions,
+  registerThrottleLimit,
   sweepExpiredOAuthStates,
 } from './auth.controller';
 import { AuthService } from './auth.service';
@@ -51,6 +52,31 @@ describe('buildCookieOptions', () => {
       sameSite: 'lax',
       path: '/',
     });
+  });
+});
+
+describe('registerThrottleLimit', () => {
+  it('allows 15 signups per window under NODE_ENV=test', () => {
+    expect(registerThrottleLimit('test')).toBe(15);
+  });
+
+  it.each(['production', 'development', 'staging', 'TEST', ' test', ''])(
+    'keeps the production cap of 5 for NODE_ENV=%j',
+    (nodeEnv) => {
+      expect(registerThrottleLimit(nodeEnv)).toBe(5);
+    },
+  );
+
+  it('reads process.env.NODE_ENV at call time when no value is passed', () => {
+    const original = process.env.NODE_ENV;
+    try {
+      process.env.NODE_ENV = 'production';
+      expect(registerThrottleLimit()).toBe(5);
+      process.env.NODE_ENV = 'test';
+      expect(registerThrottleLimit()).toBe(15);
+    } finally {
+      process.env.NODE_ENV = original;
+    }
   });
 });
 

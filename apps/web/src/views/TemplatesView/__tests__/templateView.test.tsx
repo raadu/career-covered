@@ -198,10 +198,12 @@ describe('TemplatesView — selection logic', () => {
     renderWithProviders(<TemplatesView />, {
       preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
     });
-    await waitFor(() => {
-      expect(screen.getByText('Cover Letter Templates')).toBeInTheDocument();
-    });
-    expect(screen.getByText('You have 3 templates')).toBeInTheDocument();
+    expect(screen.getByText('Cover Letter Templates')).toBeInTheDocument();
+    // The heading renders immediately; the count only appears once the
+    // templates fetch resolves, so wait on the count itself.
+    expect(
+      await screen.findByText('You have 3 templates'),
+    ).toBeInTheDocument();
   });
 
   it('renders all template rows after fetch', async () => {

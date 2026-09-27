@@ -12,6 +12,7 @@ import { TemplateModule } from './template/template.module';
 import { CoverLetterModule } from './cover-letter/cover-letter.module';
 import { ResumeModule } from './resume/resume.module';
 import { ProfileModule } from './profile/profile.module';
+import { THROTTLE_ERROR_MESSAGE } from './common/throttle.constants';
 
 @Module({
   imports: [
@@ -45,7 +46,13 @@ import { ProfileModule } from './profile/profile.module';
     // Default rate limit for every route (30 req/min per IP); routes that
     // are expensive or brute-force-sensitive (AI generation, login,
     // register) override this with a stricter @Throttle() of their own.
-    ThrottlerModule.forRoot([{ name: 'default', ttl: 60_000, limit: 30 }]),
+    // The library's default 429 body ("ThrottlerException: Too Many
+    // Requests") is surfaced verbatim by the frontend, so replace it with
+    // copy a user can act on.
+    ThrottlerModule.forRoot({
+      throttlers: [{ name: 'default', ttl: 60_000, limit: 30 }],
+      errorMessage: THROTTLE_ERROR_MESSAGE,
+    }),
 
     PrismaModule,
     AiModule,

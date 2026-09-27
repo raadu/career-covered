@@ -241,6 +241,37 @@ describe('AuthModal', () => {
       vi.unstubAllGlobals();
     });
 
+    it('shows the server-provided friendly message when rate limited (429), without switching modes', async () => {
+      const friendly =
+        "You're going a little too fast. Please wait a minute and try again.";
+      const mockFetch = vi.fn().mockResolvedValue({
+        ok: false,
+        status: 429,
+        json: () => Promise.resolve({ statusCode: 429, message: friendly }),
+      });
+      vi.stubGlobal('fetch', mockFetch);
+
+      renderWithProviders(<AuthModal />, { preloadedState: openState });
+
+      fireEvent.click(screen.getByText('Sign up'));
+      fireEvent.change(screen.getByPlaceholderText('Full name'), {
+        target: { value: 'Test' },
+      });
+      fireEvent.change(screen.getByPlaceholderText('Email address'), {
+        target: { value: 'test@test.com' },
+      });
+      fireEvent.change(screen.getByPlaceholderText('Password'), {
+        target: { value: 'Strong123' },
+      });
+      fireEvent.click(screen.getAllByText('Create account')[1]);
+
+      expect(await screen.findByText(friendly)).toBeInTheDocument();
+      expect(screen.queryByText(/ThrottlerException/)).not.toBeInTheDocument();
+      expect(mockShowToast).not.toHaveBeenCalled();
+      expect(screen.getByPlaceholderText('Full name')).toBeInTheDocument();
+      vi.unstubAllGlobals();
+    });
+
     it('shows success toast and dispatches setUser on successful sign in', async () => {
       const mockFetch = vi.fn().mockResolvedValue({
         ok: true,

@@ -48,6 +48,93 @@ describe('TemplateService', () => {
     );
   });
 
+  describe('findAll', () => {
+    it('returns an unpaginated list scoped by userId, newest-created first, when no page/limit is given', async () => {
+      mockPrismaService.template.findMany.mockResolvedValueOnce([{ id: 't1' }]);
+      const result = await service.findAll('user-1');
+
+      expect(mockPrismaService.template.findMany).toHaveBeenCalledWith({
+        where: { userId: 'user-1' },
+        orderBy: { createdAt: 'desc' },
+      });
+      expect(mockPrismaService.$transaction).not.toHaveBeenCalled();
+      expect(result).toEqual([{ id: 't1' }]);
+    });
+
+    it('orders by updatedAt instead of createdAt when sortByUpdateTime is set', async () => {
+      await service.findAll('user-1', undefined, undefined, true);
+      expect(mockPrismaService.template.findMany).toHaveBeenCalledWith({
+        where: { userId: 'user-1' },
+        orderBy: { updatedAt: 'desc' },
+      });
+    });
+
+    it('returns a paginated envelope with skip/take derived from page and limit', async () => {
+      mockPrismaService.template.findMany.mockResolvedValueOnce([{ id: 't3' }]);
+      mockPrismaService.template.count.mockResolvedValueOnce(21);
+
+      const result = await service.findAll('user-1', 3, 10);
+
+      expect(mockPrismaService.template.findMany).toHaveBeenCalledWith({
+        where: { userId: 'user-1' },
+        skip: 20,
+        take: 10,
+        orderBy: { createdAt: 'desc' },
+      });
+      expect(mockPrismaService.template.count).toHaveBeenCalledWith({
+        where: { userId: 'user-1' },
+      });
+      expect(result).toEqual({
+        data: [{ id: 't3' }],
+        total: 21,
+        page: 3,
+        limit: 10,
+        totalPages: 3,
+      });
+    });
+
+    it('reports zero totalPages for a user with no templates', async () => {
+      mockPrismaService.template.findMany.mockResolvedValueOnce([]);
+      mockPrismaService.template.count.mockResolvedValueOnce(0);
+
+      const result = await service.findAll('user-1', 1, 10);
+      expect(result).toMatchObject({ data: [], total: 0, totalPages: 0 });
+    });
+
+    it.each([
+      ['page without limit', 2, undefined],
+      ['limit without page', undefined, 10],
+    ])(
+      'falls back to the unpaginated list when given %s',
+      async (_label, page, limit) => {
+        await service.findAll('user-1', page, limit);
+        expect(mockPrismaService.$transaction).not.toHaveBeenCalled();
+        expect(mockPrismaService.template.findMany).toHaveBeenCalledWith({
+          where: { userId: 'user-1' },
+          orderBy: { createdAt: 'desc' },
+        });
+      },
+    );
+  });
+
+  describe('create', () => {
+    it('creates the template owned by the given user with only name and content', async () => {
+      const result = await service.create('user-1', {
+        name: 'My template',
+        content: 'Dear hiring manager',
+      });
+
+      expect(mockPrismaService.template.create).toHaveBeenCalledWith({
+        data: {
+          userId: 'user-1',
+          name: 'My template',
+          content: 'Dear hiring manager',
+        },
+      });
+      expect(result).toEqual({ id: 't2' });
+    });
+  });
+
   describe('findOne', () => {
     it('scopes the lookup by both id and userId, so another user cannot read it by id alone', async () => {
       await service.findOne('t1', 'user-1');
@@ -88,6 +175,23 @@ describe('TemplateService', () => {
           content: 'New content',
         }),
       ).rejects.toThrow(NotFoundException);
+      expect(mockPrismaService.template.findFirst).not.toHaveBeenCalled();
+    });
+
+    it('returns the freshly re-read template, scoped by the same user', async () => {
+      mockPrismaService.template.findFirst.mockResolvedValueOnce({
+        id: 't1',
+        name: 'New name',
+      });
+      const result = await service.update('t1', 'user-1', {
+        name: 'New name',
+        content: 'New content',
+      });
+
+      expect(mockPrismaService.template.findFirst).toHaveBeenCalledWith({
+        where: { id: 't1', userId: 'user-1' },
+      });
+      expect(result).toEqual({ id: 't1', name: 'New name' });
     });
   });
 

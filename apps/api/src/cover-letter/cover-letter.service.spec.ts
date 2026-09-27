@@ -35,8 +35,10 @@ describe('CoverLetterService', () => {
     mockPrismaService.coverLetter.deleteMany.mockResolvedValue({ count: 1 });
     mockPrismaService.$executeRaw.mockResolvedValue(undefined);
     mockPrismaService.$transaction.mockImplementation((arg: unknown) => {
-      // create() passes a callback receiving a tx client; the mock client
-      // is the same object, so callers can assert against it directly.
+      // paginate() passes an array of queries; create() passes a callback
+      // receiving a tx client — the mock client is the same object, so
+      // callers can assert against it directly.
+      if (Array.isArray(arg)) return Promise.all(arg);
       return (arg as (tx: typeof mockPrismaService) => unknown)(
         mockPrismaService,
       );
@@ -51,6 +53,73 @@ describe('CoverLetterService', () => {
     mockPrismaService.coverLetter.findFirst.mockResolvedValueOnce(null);
     await expect(service.findOne('non-existent', 'user-1')).rejects.toThrow(
       NotFoundException,
+    );
+  });
+
+  describe('findAll', () => {
+    const includeTemplate = {
+      template: { select: { name: true, id: true } },
+    };
+
+    it('returns an unpaginated list scoped by userId, newest first, with the template name', async () => {
+      mockPrismaService.coverLetter.findMany.mockResolvedValueOnce([
+        { id: 'cl-1' },
+      ]);
+      const result = await service.findAll('user-1');
+
+      expect(mockPrismaService.coverLetter.findMany).toHaveBeenCalledWith({
+        where: { userId: 'user-1' },
+        orderBy: { createdAt: 'desc' },
+        include: includeTemplate,
+      });
+      expect(mockPrismaService.$transaction).not.toHaveBeenCalled();
+      expect(result).toEqual([{ id: 'cl-1' }]);
+    });
+
+    it('returns a paginated envelope with skip/take derived from page and limit', async () => {
+      mockPrismaService.coverLetter.findMany.mockResolvedValueOnce([
+        { id: 'cl-6' },
+      ]);
+      mockPrismaService.coverLetter.count.mockResolvedValueOnce(11);
+
+      const result = await service.findAll('user-1', 2, 5);
+
+      expect(mockPrismaService.coverLetter.findMany).toHaveBeenCalledWith({
+        where: { userId: 'user-1' },
+        skip: 5,
+        take: 5,
+        orderBy: { createdAt: 'desc' },
+        include: includeTemplate,
+      });
+      expect(mockPrismaService.coverLetter.count).toHaveBeenCalledWith({
+        where: { userId: 'user-1' },
+      });
+      expect(result).toEqual({
+        data: [{ id: 'cl-6' }],
+        total: 11,
+        page: 2,
+        limit: 5,
+        totalPages: 3,
+      });
+    });
+
+    it('returns an empty page, not an error, when the page is past the last one', async () => {
+      mockPrismaService.coverLetter.findMany.mockResolvedValueOnce([]);
+      mockPrismaService.coverLetter.count.mockResolvedValueOnce(3);
+
+      const result = await service.findAll('user-1', 99, 10);
+      expect(result).toMatchObject({ data: [], total: 3, totalPages: 1 });
+    });
+
+    it.each([
+      ['page without limit', 2, undefined],
+      ['limit without page', undefined, 10],
+    ])(
+      'falls back to the unpaginated list when given %s',
+      async (_label, page, limit) => {
+        await service.findAll('user-1', page, limit);
+        expect(mockPrismaService.$transaction).not.toHaveBeenCalled();
+      },
     );
   });
 
@@ -99,6 +168,82 @@ describe('CoverLetterService', () => {
           data: expect.objectContaining({ characterLimit: 2000 }),
         }),
       );
+    });
+
+    it('takes the per-user advisory lock before inserting', async () => {
+      await service.create('user-1', {
+        jobDescription: 'JD',
+        generatedText: 'Letter text',
+      });
+
+      expect(mockPrismaService.$executeRaw).toHaveBeenCalledTimes(1);
+      const lockOrder =
+        mockPrismaService.$executeRaw.mock.invocationCallOrder[0];
+      const createOrder =
+        mockPrismaService.coverLetter.create.mock.invocationCallOrder[0];
+      expect(lockOrder).toBeLessThan(createOrder);
+    });
+
+    it('fills omitted optional fields with empty-string / null defaults', async () => {
+      await service.create('user-1', {});
+
+      expect(mockPrismaService.coverLetter.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: {
+            userId: 'user-1',
+            templateId: null,
+            jobTitle: '',
+            companyName: '',
+            jobDescription: '',
+            generatedText: '',
+            model: '',
+            wordLimit: null,
+            characterLimit: null,
+            minimalChanges: null,
+            sameLanguage: null,
+            customPrompt: null,
+            jobMarket: null,
+          },
+        }),
+      );
+    });
+
+    it('stores an empty-string templateId as null rather than a dangling FK', async () => {
+      await service.create('user-1', { templateId: '' });
+
+      expect(mockPrismaService.coverLetter.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({ templateId: null }),
+        }),
+      );
+    });
+
+    it('keeps explicit falsy settings (false toggles) instead of nulling them', async () => {
+      await service.create('user-1', {
+        minimalChanges: false,
+        sameLanguage: false,
+      });
+
+      expect(mockPrismaService.coverLetter.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            minimalChanges: false,
+            sameLanguage: false,
+          }),
+        }),
+      );
+    });
+
+    it('propagates a failed insert without running the retention trim', async () => {
+      mockPrismaService.coverLetter.create.mockRejectedValueOnce(
+        new Error('FK violation'),
+      );
+
+      await expect(
+        service.create('user-1', { templateId: 'missing-template' }),
+      ).rejects.toThrow('FK violation');
+      expect(mockPrismaService.coverLetter.findMany).not.toHaveBeenCalled();
+      expect(mockPrismaService.coverLetter.deleteMany).not.toHaveBeenCalled();
     });
 
     it('does not trim anything when the user is under the cap', async () => {
@@ -150,6 +295,48 @@ describe('CoverLetterService', () => {
       await expect(
         service.update('cl-1', 'user-1', { jobTitle: 'Engineer' }),
       ).rejects.toThrow(NotFoundException);
+      expect(mockPrismaService.coverLetter.findFirst).not.toHaveBeenCalled();
+    });
+
+    it('only writes the fields present in the DTO, leaving the rest untouched', async () => {
+      await service.update('cl-1', 'user-1', {
+        generatedText: 'Edited letter',
+        jobMarket: 'US',
+      });
+
+      expect(mockPrismaService.coverLetter.updateMany).toHaveBeenCalledWith({
+        where: { id: 'cl-1', userId: 'user-1' },
+        data: { generatedText: 'Edited letter', jobMarket: 'US' },
+      });
+    });
+
+    it('writes explicit falsy values (0, false, empty string) rather than skipping them', async () => {
+      await service.update('cl-1', 'user-1', {
+        jobTitle: '',
+        wordLimit: 0,
+        minimalChanges: false,
+        sameLanguage: false,
+      });
+
+      expect(mockPrismaService.coverLetter.updateMany).toHaveBeenCalledWith({
+        where: { id: 'cl-1', userId: 'user-1' },
+        data: {
+          jobTitle: '',
+          wordLimit: 0,
+          minimalChanges: false,
+          sameLanguage: false,
+        },
+      });
+    });
+
+    it('sends an empty data object for an empty DTO and still returns the letter', async () => {
+      const result = await service.update('cl-1', 'user-1', {});
+
+      expect(mockPrismaService.coverLetter.updateMany).toHaveBeenCalledWith({
+        where: { id: 'cl-1', userId: 'user-1' },
+        data: {},
+      });
+      expect(result).toEqual({ id: 'cl-1' });
     });
   });
 
