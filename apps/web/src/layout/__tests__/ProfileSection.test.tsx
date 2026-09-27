@@ -30,7 +30,43 @@ describe('ProfileSection', () => {
       },
     });
 
-    expect(screen.getByTitle('Sign In')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Sign In' })).toBeInTheDocument();
+  });
+
+  it('opens the auth modal when Sign In is clicked', () => {
+    const { store } = renderWithProviders(
+      <ProfileSection isExpanded={true} />,
+      {
+        preloadedState: {
+          auth: { user: null, isAuthenticated: false, isLoading: false },
+        },
+      },
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Sign In' }));
+    expect(store.getState().auth.isAuthModalOpen).toBe(true);
+  });
+
+  it('dispatches logout only after the sign-out is confirmed', () => {
+    mockLogout.mockReturnValue({ unwrap: () => Promise.resolve() });
+    renderWithProviders(<ProfileSection isExpanded={true} />, {
+      preloadedState: {
+        auth: {
+          user: { id: '1', email: 'test@test.com', name: 'Test User' },
+          isAuthenticated: true,
+          isLoading: false,
+        },
+      },
+    });
+
+    const [, signOutButton] = screen.getAllByRole('button', {
+      name: 'Sign Out',
+    });
+    fireEvent.click(signOutButton);
+    expect(mockLogout).not.toHaveBeenCalled();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Sure!' }));
+    expect(mockLogout).toHaveBeenCalledOnce();
   });
 
   it('renders user avatar when authenticated', () => {

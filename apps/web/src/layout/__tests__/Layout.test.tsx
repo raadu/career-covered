@@ -83,9 +83,9 @@ describe('Layout Component', () => {
       </Layout>,
     );
 
-    // When collapsed, SidebarNavigation items have specific classes or hidden text.
-    // We can check if the title "Career Covered" is visible or has opacity-0
+    // Collapsed: the header title never gains its expanded-desktop lg:block.
     const title = screen.getByText(/Career Covered/i);
-    expect(title).toHaveClass('opacity-0');
+    expect(title).toHaveClass('hidden');
+    expect(title).not.toHaveClass('lg:block');
   });
 });

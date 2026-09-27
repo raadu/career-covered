@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { openSignIn } from './helpers/sidebar';
 
 test.describe('Cover Letter Creator - Basic Flow', () => {
     test.beforeEach(async ({ page }) => {
@@ -65,6 +66,52 @@ test.describe('Cover Letter Creator - Basic Flow', () => {
         );
         expect(flexDirection).toBe('column');
     });
+
+    test('phone top bar keeps FAQ/Support in the hamburger menu', async ({ page }) => {
+        await page.setViewportSize({ width: 375, height: 667 });
+
+        await expect(page.getByRole('link', { name: 'Cover Letter' })).toBeVisible();
+        await expect(page.getByRole('link', { name: 'FAQ', exact: true })).toBeHidden();
+
+        await page.getByRole('button', { name: 'Open menu' }).click();
+        const menu = page.getByRole('menu');
+        await expect(menu.getByRole('menuitem')).toHaveText([
+            /^(Dark|Light) Mode$/,
+            'FAQ',
+            'Support',
+            'Sign In',
+        ]);
+
+        // The open menu must not introduce horizontal page scroll.
+        const overflow = await page.evaluate(
+            () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+        );
+        expect(overflow).toBeLessThanOrEqual(0);
+
+        await page.keyboard.press('Escape');
+        await expect(menu).toBeHidden();
+    });
+
+    test('hovering a sidebar icon shows its name in a tooltip', async ({ page }, testInfo) => {
+        test.skip(testInfo.project.name.startsWith('Mobile'), 'hover needs a mouse');
+        await page.setViewportSize({ width: 1024, height: 768 });
+
+        await page.getByRole('link', { name: 'Support', exact: true }).hover();
+        await expect(page.getByRole('tooltip')).toHaveText('Support');
+
+        await page.mouse.move(700, 400);
+        await expect(page.getByRole('tooltip')).toBeHidden();
+    });
+
+    test('expanded desktop sidebar is 180px wide', async ({ page }, testInfo) => {
+        test.skip(testInfo.project.name.startsWith('Mobile'), 'desktop layout only');
+        await page.setViewportSize({ width: 1280, height: 800 });
+        await page.evaluate(() => localStorage.setItem('cl_sidebar_expanded', 'true'));
+        await page.reload();
+
+        const box = await page.locator('aside').boundingBox();
+        expect(box?.width).toBe(180);
+    });
 });
 
 test.describe('Cover Letter Creator - Mobile Card/Grid Views (authenticated)', () => {
@@ -74,7 +121,7 @@ test.describe('Cover Letter Creator - Mobile Card/Grid Views (authenticated)', (
         // fresh/CI database anyway), so this signs up a fresh throwaway
         // account through the real UI instead.
         await page.goto('/');
-        await page.getByTitle('Sign In').click();
+        await openSignIn(page);
         await page.getByRole('button', { name: 'Sign up' }).click();
 
         const uniqueSuffix = Date.now();
@@ -90,7 +137,8 @@ test.describe('Cover Letter Creator - Mobile Card/Grid Views (authenticated)', (
         await expect(
             page.getByText("Awesome! You're now registered."),
         ).toBeVisible({ timeout: 15000 });
-        await expect(page.getByTitle('Sign In')).not.toBeVisible();
+        // Signed-in-only nav proves the session took, on every viewport.
+        await expect(page.getByRole('link', { name: 'Templates' })).toBeVisible();
 
         // HashRouter is used app-wide, so routes live after the `#`.
         await page.goto('/#/cover-letter/templates');

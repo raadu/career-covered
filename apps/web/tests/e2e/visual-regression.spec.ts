@@ -42,7 +42,7 @@ test.describe('Visual regression', () => {
 
   test('home view - desktop - dark', async ({ page }) => {
     await page.setViewportSize({ width: 1400, height: 900 });
-    await page.getByTitle('Switch to Dark Mode').click();
+    await page.getByRole('button', { name: 'Switch to Dark Mode' }).click();
     await expect(page.locator('html')).toHaveClass(/dark/);
     await expect(page).toHaveScreenshot('home-desktop-dark.png', {
       ...screenshotOptions,
@@ -60,11 +60,21 @@ test.describe('Visual regression', () => {
 
   test('sidebar - collapsed on desktop', async ({ page }) => {
     await page.setViewportSize({ width: 1400, height: 900 });
-    await page.getByTitle(/ollapse/i).click();
+    await page.getByRole('button', { name: 'Collapse Sidebar' }).click();
+    // Park the pointer away from the rail so no tooltip is captured.
+    await page.mouse.move(1000, 600);
     await expect(page.locator('aside')).toHaveScreenshot(
       'sidebar-collapsed.png',
       screenshotOptions,
     );
+  });
+
+  test('home view - mobile - hamburger menu open', async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 667 });
+    await page.getByRole('button', { name: 'Open menu' }).click();
+    await page.mouse.move(10, 600);
+    await expect(page.getByRole('menu')).toBeVisible();
+    await expect(page).toHaveScreenshot('home-mobile-menu.png', screenshotOptions);
   });
 
   test('sidebar - tablet row-to-rail breakpoint', async ({ page }) => {
@@ -77,7 +87,8 @@ test.describe('Visual regression', () => {
 
   test('faq view', async ({ page }) => {
     await page.setViewportSize({ width: 1400, height: 900 });
-    await page.getByTitle('Frequently Asked Questions').click();
+    await page.getByRole('link', { name: 'FAQ', exact: true }).click();
+    await page.mouse.move(1000, 600);
     await expect(
       page.getByRole('heading', { name: 'Frequently Asked Questions' }),
     ).toBeVisible();
@@ -89,7 +100,8 @@ test.describe('Visual regression', () => {
 
   test('support view', async ({ page }) => {
     await page.setViewportSize({ width: 1400, height: 900 });
-    await page.getByTitle('Get Support').click();
+    await page.getByRole('link', { name: 'Support', exact: true }).click();
+    await page.mouse.move(1000, 600);
     await expect(
       page.getByRole('heading', { name: /always here to help/i }),
     ).toBeVisible();

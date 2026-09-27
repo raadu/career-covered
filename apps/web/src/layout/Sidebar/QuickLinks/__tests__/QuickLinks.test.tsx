@@ -23,9 +23,17 @@ const authState = (overrides = {}) => ({
   ...overrides,
 });
 
-// Icons render twice: once in the mobile inline row (md:hidden), once in the
-// desktop floating widget (hidden md:flex) — jsdom doesn't evaluate media
-// queries, so both are present in the DOM and tests must account for that.
+const LINK_NAMES = [
+  'Copy LinkedIn link',
+  'Copy GitHub link',
+  'Copy website link',
+  'Copy contact email',
+  'Copy phone number',
+  'Edit links',
+];
+
+// Tablet/desktop floating widget only — the phone equivalent is the
+// hamburger menu's Quick Links submenu (see MobileMenu tests).
 describe('QuickLinks', () => {
   beforeEach(() => {
     mockHandleCopy.mockClear();
@@ -36,59 +44,43 @@ describe('QuickLinks', () => {
       preloadedState: { auth: authState() },
     });
 
-    expect(screen.queryByTitle('Copy LinkedIn link')).not.toBeInTheDocument();
-    expect(screen.queryByTitle('Edit links')).not.toBeInTheDocument();
+    for (const name of LINK_NAMES) {
+      expect(screen.queryByRole('button', { name })).not.toBeInTheDocument();
+    }
   });
 
-  it('renders all 6 icons in both the mobile row and the desktop floating widget', () => {
+  it('renders each of the 5 links plus edit exactly once', () => {
     renderWithProviders(<QuickLinks />, {
       preloadedState: {
         auth: authState({ user: baseUser, isAuthenticated: true }),
       },
     });
 
-    expect(screen.getAllByTitle('Copy LinkedIn link')).toHaveLength(2);
-    expect(screen.getAllByTitle('Copy GitHub link')).toHaveLength(2);
-    expect(screen.getAllByTitle('Copy website link')).toHaveLength(2);
-    expect(screen.getAllByTitle('Copy contact email')).toHaveLength(2);
-    expect(screen.getAllByTitle('Copy phone number')).toHaveLength(2);
-    expect(screen.getAllByTitle('Edit links')).toHaveLength(2);
+    for (const name of LINK_NAMES) {
+      expect(screen.getAllByRole('button', { name })).toHaveLength(1);
+    }
   });
 
-  it('renders the desktop widget as an absolutely-positioned, vertically-stacked panel attached to the sidebar edge', () => {
+  it('renders the widget as an absolutely-positioned, vertically-stacked panel attached to the sidebar edge, hidden on phones', () => {
     renderWithProviders(<QuickLinks />, {
       preloadedState: {
         auth: authState({ user: baseUser, isAuthenticated: true }),
       },
     });
 
-    // button -> QuickLinksButtonList's own flex container (layout="column")
-    // -> the positioned wrapper div that attaches it to the sidebar edge.
-    const [, desktopButton] = screen.getAllByTitle('Copy LinkedIn link');
-    const buttonList = desktopButton.parentElement!;
-    const widget = buttonList.parentElement!;
-    expect(buttonList.className).toContain('flex-col');
-    expect(widget.className).toContain('absolute');
-    expect(widget.className).toContain('right-0');
-    expect(widget.className).toContain('translate-x-full');
-    expect(widget.className).toContain('top-1/2');
+    const widget = screen
+      .getByRole('button', { name: 'Copy LinkedIn link' })
+      .closest('.absolute')!;
+    expect(widget).toHaveClass(
+      'hidden',
+      'md:flex',
+      'right-0',
+      'translate-x-full',
+      'top-1/2',
+    );
   });
 
-  it('renders the mobile row as a horizontal, inline flex row hidden on desktop', () => {
-    renderWithProviders(<QuickLinks />, {
-      preloadedState: {
-        auth: authState({ user: baseUser, isAuthenticated: true }),
-      },
-    });
-
-    const [mobileButton] = screen.getAllByTitle('Copy LinkedIn link');
-    const buttonList = mobileButton.parentElement!;
-    const row = buttonList.parentElement!;
-    expect(row.className).toContain('md:hidden');
-    expect(buttonList.className).not.toContain('flex-col');
-  });
-
-  it('copies the LinkedIn link with its label when set, from either layout', () => {
+  it('copies the LinkedIn link with its label when set', () => {
     renderWithProviders(<QuickLinks />, {
       preloadedState: {
         auth: authState({
@@ -98,8 +90,7 @@ describe('QuickLinks', () => {
       },
     });
 
-    const [, desktopButton] = screen.getAllByTitle('Copy LinkedIn link');
-    fireEvent.click(desktopButton);
+    fireEvent.click(screen.getByRole('button', { name: 'Copy LinkedIn link' }));
     expect(mockHandleCopy).toHaveBeenCalledWith(
       'https://linkedin.com/in/x',
       'LinkedIn link',
@@ -107,7 +98,7 @@ describe('QuickLinks', () => {
     );
   });
 
-  it('copies the phone number with its label when set, from either layout', () => {
+  it('copies the phone number with its label when set', () => {
     renderWithProviders(<QuickLinks />, {
       preloadedState: {
         auth: authState({
@@ -117,8 +108,7 @@ describe('QuickLinks', () => {
       },
     });
 
-    const [, desktopButton] = screen.getAllByTitle('Copy phone number');
-    fireEvent.click(desktopButton);
+    fireEvent.click(screen.getByRole('button', { name: 'Copy phone number' }));
     expect(mockHandleCopy).toHaveBeenCalledWith(
       '+14155552671',
       'Phone number',
@@ -133,8 +123,7 @@ describe('QuickLinks', () => {
       },
     });
 
-    const [mobileButton] = screen.getAllByTitle('Copy GitHub link');
-    fireEvent.click(mobileButton);
+    fireEvent.click(screen.getByRole('button', { name: 'Copy GitHub link' }));
     expect(mockHandleCopy).toHaveBeenCalledWith(
       '',
       'GitHub link',
@@ -142,7 +131,7 @@ describe('QuickLinks', () => {
     );
   });
 
-  it('applies a muted style to unset links and not to set ones, in both layouts', () => {
+  it('applies a muted style to unset links and not to set ones', () => {
     renderWithProviders(<QuickLinks />, {
       preloadedState: {
         auth: authState({
@@ -152,23 +141,35 @@ describe('QuickLinks', () => {
       },
     });
 
-    for (const btn of screen.getAllByTitle('Copy LinkedIn link')) {
-      expect(btn.className).not.toContain('opacity-40');
-    }
-    for (const btn of screen.getAllByTitle('Copy GitHub link')) {
-      expect(btn.className).toContain('opacity-40');
-    }
+    expect(
+      screen.getByRole('button', { name: 'Copy LinkedIn link' }),
+    ).not.toHaveClass('opacity-40');
+    expect(
+      screen.getByRole('button', { name: 'Copy GitHub link' }),
+    ).toHaveClass('opacity-40');
   });
 
-  it('opens the edit modal when either edit icon is clicked', () => {
+  it('shows the action name in a tooltip on hover', () => {
     renderWithProviders(<QuickLinks />, {
       preloadedState: {
         auth: authState({ user: baseUser, isAuthenticated: true }),
       },
     });
 
-    const [, desktopEditButton] = screen.getAllByTitle('Edit links');
-    fireEvent.click(desktopEditButton);
+    fireEvent.mouseEnter(
+      screen.getByRole('button', { name: 'Copy website link' }).parentElement!,
+    );
+    expect(screen.getByRole('tooltip')).toHaveTextContent('Copy website link');
+  });
+
+  it('opens the edit modal when the edit icon is clicked', () => {
+    renderWithProviders(<QuickLinks />, {
+      preloadedState: {
+        auth: authState({ user: baseUser, isAuthenticated: true }),
+      },
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: 'Edit links' }));
     expect(screen.getByRole('dialog')).toBeInTheDocument();
     expect(screen.getByText('Edit Quick Links')).toBeInTheDocument();
   });

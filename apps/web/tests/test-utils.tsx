@@ -39,16 +39,19 @@ function renderWithProviders(
     {
         preloadedState,
         store = createTestStore(preloadedState),
+        route = '/',
         ...renderOptions
     }: {
         preloadedState?: DeepPartial<RootState>;
         store?: TestStore;
+        /** Initial router location, e.g. '/faq'. */
+        route?: string;
     } & Omit<RenderOptions, 'queries'> = {}
 ) {
     function Wrapper({ children }: { children: React.ReactNode }): ReactElement {
         return (
             <Provider store={store}>
-                <MemoryRouter>{children}</MemoryRouter>
+                <MemoryRouter initialEntries={[route]}>{children}</MemoryRouter>
             </Provider>
         );
     }
