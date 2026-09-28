@@ -13,6 +13,18 @@ describe('Modal', () => {
     expect(screen.queryByText('Rename template')).not.toBeInTheDocument();
   });
 
+  it('uses the reduced py-1.5 header padding shared by every modal', () => {
+    render(
+      <Modal isOpen onClose={vi.fn()} title="Sign in">
+        <p>Body</p>
+      </Modal>,
+    );
+    const header = screen.getByRole('heading', { name: 'Sign in' })
+      .parentElement!.parentElement!;
+    expect(header).toHaveClass('py-1.5');
+    expect(header).not.toHaveClass('py-3');
+  });
+
   it('renders the title, body, and optional footer when open', () => {
     render(
       <Modal

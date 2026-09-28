@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { FaChevronDown, FaLink, FaPencilAlt } from 'react-icons/fa';
+import { FaChevronDown, FaLink } from 'react-icons/fa';
 import { clsx } from 'clsx';
 import type { QuickLinkItem } from 'layout/Sidebar/QuickLinks/useQuickLinkItems';
 import MobileMenuItem from './MobileMenuItem';
+import QuickLinkMenuItems from './QuickLinkMenuItems';
 
 interface MobileQuickLinksProps {
   links: QuickLinkItem[];
@@ -33,21 +34,10 @@ const MobileQuickLinks = ({ links, onEditLinks }: MobileQuickLinksProps) => {
       />
       {isOpen && (
         <div role="group" aria-label="Quick Links">
-          {links.map(({ key, Icon, name, value, label, handleCopy }) => (
-            <MobileMenuItem
-              key={key}
-              Icon={Icon}
-              label={name}
-              isNested
-              isMuted={!value}
-              onClick={() => handleCopy(value ?? '', label)}
-            />
-          ))}
-          <MobileMenuItem
-            Icon={FaPencilAlt}
-            label="Edit links"
+          <QuickLinkMenuItems
+            links={links}
+            onEditLinks={onEditLinks}
             isNested
-            onClick={onEditLinks}
           />
         </div>
       )}

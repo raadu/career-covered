@@ -1,6 +1,7 @@
 import React, { type ReactNode } from 'react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { TEXT_BUTTON_HEIGHT } from 'components/common/buttonSizes';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -16,10 +17,12 @@ interface CommonButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement
   fullWidth?: boolean;
 }
 
-// 40px min-height, not derived from padding — padding can shrink for a
-// denser look without silently reintroducing an undersized touch target.
-const baseStyles =
-  'relative flex items-center justify-center gap-2 min-h-10 px-4 text-sm font-semibold transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 overflow-hidden';
+// Height comes from TEXT_BUTTON_HEIGHT, not padding — so it can be denser
+// on mouse devices without shrinking the touch target on phones.
+const baseStyles = clsx(
+  'relative flex items-center justify-center gap-2 px-4 text-sm font-semibold transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 overflow-hidden',
+  TEXT_BUTTON_HEIGHT,
+);
 
 const variants: Record<ButtonVariant, string> = {
   primary: 'bg-brand-600 text-white hover:bg-brand-700',

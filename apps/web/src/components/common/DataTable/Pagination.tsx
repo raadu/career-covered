@@ -1,4 +1,10 @@
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import {
+  ICON_BUTTON_SIZE,
+  TEXT_BUTTON_HEIGHT,
+} from 'components/common/buttonSizes';
+
+const stepButtonClass = `${TEXT_BUTTON_HEIGHT} flex items-center gap-1 px-2 text-xs font-medium text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200 disabled:opacity-30 disabled:cursor-not-allowed transition-colors`;
 
 interface PaginationProps {
   pageCount: number;
@@ -61,7 +67,7 @@ const Pagination = ({
           <button
             onClick={() => onPageChange(pageIndex - 1)}
             disabled={pageIndex === 0}
-            className="min-h-10 flex items-center gap-1 px-2 text-xs font-medium text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            className={stepButtonClass}
           >
             <FaChevronLeft size={10} />
             Prev
@@ -71,7 +77,7 @@ const Pagination = ({
             <button
               key={p}
               onClick={() => onPageChange(p - 1)}
-              className={`min-h-10 min-w-10 text-xs font-semibold transition-colors ${
+              className={`${ICON_BUTTON_SIZE} text-xs font-semibold transition-colors ${
                 p === pageIndex + 1
                   ? 'bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900'
                   : 'text-neutral-500 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-700'
@@ -84,7 +90,7 @@ const Pagination = ({
           <button
             onClick={() => onPageChange(pageIndex + 1)}
             disabled={pageIndex >= pageCount - 1}
-            className="min-h-10 flex items-center gap-1 px-2 text-xs font-medium text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            className={stepButtonClass}
           >
             Next
             <FaChevronRight size={10} />

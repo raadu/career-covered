@@ -55,8 +55,9 @@ const QuickLinksButtonList = ({
   </div>
 );
 
-// Tablet/desktop only — on phones the same links live in the hamburger
-// menu's Quick Links submenu (MobileMenu/MobileQuickLinks).
+// Desktop only (lg+). Phones get these links in the hamburger menu's Quick
+// Links submenu (MobileMenu/MobileQuickLinks); tablets get a rail icon that
+// opens them in a panel (QuickLinksFlyout).
 const QuickLinks = () => {
   const links = useQuickLinkItems();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -72,7 +73,7 @@ const QuickLinks = () => {
           but it does need to sit outside the rail's own box via
           translate-x-full to read as "attached to the edge," not "part of
           the sidebar." */}
-      <div className="hidden md:flex flex-col items-center gap-1 absolute top-1/2 -translate-y-1/2 right-0 translate-x-full bg-white dark:bg-neutral-900 border border-l-0 border-neutral-200 dark:border-neutral-700 shadow-sm py-2 px-1.5 z-20">
+      <div className="hidden lg:flex flex-col items-center gap-1 absolute top-1/2 -translate-y-1/2 right-0 translate-x-full bg-white dark:bg-neutral-900 border border-l-0 border-neutral-200 dark:border-neutral-700 shadow-sm py-2 px-1.5 z-20">
         <QuickLinksButtonList
           links={links}
           onEditClick={() => setIsModalOpen(true)}

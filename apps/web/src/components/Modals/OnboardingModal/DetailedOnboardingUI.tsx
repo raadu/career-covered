@@ -1,5 +1,6 @@
 import { PROVIDER_URL } from 'utils/AIModelUtils';
 import { FaExternalLinkAlt, FaArrowLeft } from 'react-icons/fa';
+import { TEXT_BUTTON_HEIGHT } from 'components/common/buttonSizes';
 
 interface DetailedOnboardingUIProps {
   onBack: () => void;
@@ -10,7 +11,7 @@ const DetailedOnboardingUI = ({ onBack }: DetailedOnboardingUIProps) => {
     <div className="text-left space-y-3 animate-in fade-in slide-in-from-right-4 duration-300">
       <button
         onClick={onBack}
-        className="min-h-10 flex items-center gap-2 text-xs text-neutral-500 dark:text-neutral-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors group"
+        className={`${TEXT_BUTTON_HEIGHT} flex items-center gap-2 text-xs text-neutral-500 dark:text-neutral-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors group`}
       >
         <FaArrowLeft className="group-hover:-translate-x-1 transition-transform" />
         Back to simple guide

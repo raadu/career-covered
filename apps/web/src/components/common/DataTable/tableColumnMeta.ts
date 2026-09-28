@@ -1,4 +1,5 @@
 import type { RowData } from '@tanstack/react-table';
+import { ICON_BUTTON_SIZE, TEXT_BUTTON_HEIGHT } from 'components/common/buttonSizes';
 
 // Opt-in column capability: a column tagged `hideBelow` collapses out of the
 // table below that breakpoint. Nothing wires this into a real table yet
@@ -18,11 +19,16 @@ export function hideBelowClass(hideBelow?: 'sm' | 'md' | 'lg'): string {
   return `hidden ${hideBelow}:table-cell`;
 }
 
-// Shared sizing for a table row's icon-only action buttons — 40px min
-// target regardless of the icon's own size, for callers building cell
+// Shared sizing for a table row's icon-only action buttons — the shared
+// icon-button size (40px touch / 34px mouse) regardless of the icon's size, for callers building cell
 // content (row actions are rendered by each view, not by DataTable itself).
-export const tableActionButtonClass =
-  'min-h-10 min-w-10 flex items-center justify-center text-neutral-400 dark:text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors';
+export const tableActionButtonClass = `${ICON_BUTTON_SIZE} flex items-center justify-center text-neutral-400 dark:text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors`;
+
+// Grid-card variant: each button takes an equal share of the card's action
+// row (flex-1, no 40px min-width), so the icons spread across the full
+// width with even spacing and can never overflow a narrow two-column phone
+// card. Keeps the shared button height.
+export const cardActionButtonClass = `flex-1 min-w-0 ${TEXT_BUTTON_HEIGHT} flex items-center justify-center text-neutral-400 dark:text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors`;
 
 // Shared page-size options for DataTable and its grid-view counterparts
 // (TemplateGrid, CoverLetterGrid) — kept here rather than DataTable/index.tsx

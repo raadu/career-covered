@@ -45,6 +45,28 @@ describe('ApiKeySection', () => {
       expect(props.setShowKeyInput).toHaveBeenCalledWith(true);
     });
 
+    it('splits the row 70/30 between the key and Help buttons on phones, and flattens into the parent grid on tablets', () => {
+      renderSection();
+      const keyButton = screen.getByRole('button', { name: /Add Custom API Key/i });
+      const helpButton = screen.getByRole('button', { name: /Help/i });
+      const row = keyButton.parentElement!;
+
+      expect(row).toHaveClass('grid', 'grid-cols-[7fr_3fr]', 'w-full', 'md:contents', 'lg:flex');
+      expect(row.children[0]).toBe(keyButton);
+      expect(row.children[1]).toBe(helpButton);
+
+      // Tablet: first and third thirds of row 1 (the model select is 2nd).
+      expect(keyButton).toHaveClass('md:order-1', 'md:col-span-2', 'lg:order-none');
+      expect(helpButton).toHaveClass('md:order-3', 'md:col-span-2', 'lg:order-none');
+    });
+
+    it('spans the whole first tablet row while the key input is open', () => {
+      renderSection({ showKeyInput: true, apiKey: 'gsk_abc' });
+      const input = screen.getByPlaceholderText('Enter Groq API Key');
+      const wrapper = input.closest('.md\\:col-span-6');
+      expect(wrapper).toHaveClass('md:order-1', 'lg:order-none');
+    });
+
     it('opens the help modal', () => {
       const props = renderSection();
       fireEvent.click(screen.getByRole('button', { name: /Help/i }));

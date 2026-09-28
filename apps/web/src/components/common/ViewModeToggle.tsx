@@ -11,7 +11,7 @@ const inactiveClasses =
   'text-neutral-400 dark:text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:text-neutral-700 dark:hover:text-neutral-300';
 
 const ViewModeToggle = ({ viewMode, onChange }: ViewModeToggleProps) => (
-  <div className="inline-flex items-center h-9 border border-neutral-200 dark:border-neutral-700 overflow-hidden">
+  <div className="inline-flex items-center h-9 [@media(pointer:fine)]:h-[34px] border border-neutral-200 dark:border-neutral-700 overflow-hidden">
     <button
       type="button"
       title="Grid View"

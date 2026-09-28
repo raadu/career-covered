@@ -60,7 +60,10 @@ const TextAreaHeader = ({
           </label>
           <div className="sm:hidden">{chevron}</div>
         </div>
-        <div className="flex items-center gap-1.5 mt-1 sm:mt-0">
+        {/* Below sm the actions get their own row and together fill its full
+            width — flex-auto sizes each share to its label, so "Save as
+            Template" stays on one line. From sm up they sit inline. */}
+        <div className="flex items-center gap-1.5 mt-1 sm:mt-0 [&>button]:flex-auto [&>button]:whitespace-nowrap sm:[&>button]:flex-none">
           {value && (
             <>
               {onAddTemplate && (

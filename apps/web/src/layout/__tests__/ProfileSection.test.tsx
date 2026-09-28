@@ -87,6 +87,33 @@ describe('ProfileSection', () => {
     expect(screen.getByText('test@test.com')).toBeInTheDocument();
   });
 
+  it.each([
+    ['name', 'A Very Long Display Name That Truncates'],
+    ['email', 'a.very.long.address.that.truncates@example-domain.com'],
+  ])('shows the full %s in a tooltip on hover', (_field, text) => {
+    renderWithProviders(<ProfileSection isExpanded={true} />, {
+      preloadedState: {
+        auth: {
+          user: {
+            id: '1',
+            name: 'A Very Long Display Name That Truncates',
+            email: 'a.very.long.address.that.truncates@example-domain.com',
+          },
+          isAuthenticated: true,
+          isLoading: false,
+        },
+      },
+    });
+
+    const line = screen.getByText(text, { selector: 'p' });
+    expect(line).toHaveClass('truncate');
+    fireEvent.mouseEnter(line.parentElement!);
+    expect(screen.getByRole('tooltip')).toHaveTextContent(text);
+
+    fireEvent.mouseLeave(line.parentElement!);
+    expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+  });
+
   it('does not show name/email when collapsed', () => {
     renderWithProviders(<ProfileSection isExpanded={false} />, {
       preloadedState: {

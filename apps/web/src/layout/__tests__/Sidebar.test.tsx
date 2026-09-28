@@ -178,6 +178,15 @@ describe('Sidebar Components', () => {
       expect(collapsedContainer.firstChild).not.toHaveClass('lg:w-[180px]');
     });
 
+    it('adds the Quick Links rail icon for tablets only', () => {
+      renderWithProviders(<Sidebar isExpanded={true} onToggle={vi.fn()} />, {
+        preloadedState: signedIn,
+      });
+      const railButton = screen.getByRole('button', { name: 'Quick Links' });
+      expect(railButton.closest('.lg\\:hidden')).not.toBeNull();
+      expect(railButton.closest('.hidden.md\\:flex')).not.toBeNull();
+    });
+
     it('renders the hamburger for phones and the control cluster for tablet/desktop', () => {
       renderWithProviders(<Sidebar isExpanded={true} onToggle={vi.fn()} />, {
         preloadedState: signedOut,

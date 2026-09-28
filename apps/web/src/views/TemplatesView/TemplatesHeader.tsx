@@ -32,12 +32,15 @@ const TemplatesHeader = ({
       {showViewModeToggle && (
         <ViewModeToggle viewMode={viewMode} onChange={onViewModeChange} />
       )}
+      {/* Short label on phones, matching Previously Created's "New". */}
       <CommonButton
         variant="primary"
         icon={<FaPlus size={ICON_SIZE.xs} />}
         onClick={onCreateClick}
+        className="shrink-0 whitespace-nowrap"
       >
-        New Template
+        <span className="md:hidden">New</span>
+        <span className="hidden md:inline">New Template</span>
       </CommonButton>
     </div>
   </div>

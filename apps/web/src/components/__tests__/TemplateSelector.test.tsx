@@ -26,6 +26,47 @@ describe('TemplateSelector', () => {
     expect(container.firstChild).toBeNull();
   });
 
+  describe('rename/delete icons', () => {
+    const renderOne = () =>
+      render(
+        <TemplateSelector
+          templates={[tplA]}
+          activeId={null}
+          onSelect={vi.fn()}
+          onRename={vi.fn()}
+          onRemove={vi.fn()}
+        />,
+      );
+
+    it('are always visible, not revealed only on hover, at every screen size', () => {
+      renderOne();
+      for (const title of ['Rename Template', 'Delete Template']) {
+        const button = screen.getByTitle(title);
+        expect(button.className).not.toMatch(/opacity-0/);
+        expect(button.className).not.toMatch(/group-hover:opacity/);
+      }
+    });
+
+    it('use compact 24px buttons everywhere so the two icons sit together', () => {
+      renderOne();
+      for (const title of ['Rename Template', 'Delete Template']) {
+        const button = screen.getByTitle(title);
+        expect(button).toHaveClass('min-w-6', 'min-h-10');
+        expect(button.className).not.toMatch(/min-w-10/);
+      }
+    });
+
+    it('are grouped together at the far right of the chip, after the name', () => {
+      renderOne();
+      const rename = screen.getByTitle('Rename Template');
+      const group = rename.parentElement!;
+      expect(group).toBe(screen.getByTitle('Delete Template').parentElement);
+      expect(group).toHaveClass('ml-auto', 'shrink-0');
+      expect(group.parentElement!.lastElementChild).toBe(group);
+      expect(screen.getByText('Template A')).toHaveClass('flex-1');
+    });
+  });
+
   it('renders template boxes for each template', () => {
     render(
       <TemplateSelector

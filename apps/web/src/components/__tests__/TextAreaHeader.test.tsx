@@ -13,6 +13,26 @@ describe('TextAreaHeader', () => {
     handleCopy: vi.fn() as (e: MouseEvent) => void,
   };
 
+  it('lets the Save/Copy/Clear buttons fill the row on phones, one line each, and size naturally from sm up', () => {
+    render(
+      <TextAreaHeader
+        {...defaultProps}
+        onClear={vi.fn()}
+        onAddTemplate={vi.fn()}
+      />,
+    );
+    const save = screen.getByRole('button', { name: /Save as Template/ });
+    const row = save.parentElement!;
+    expect(row).toHaveClass(
+      '[&>button]:flex-auto',
+      '[&>button]:whitespace-nowrap',
+      'sm:[&>button]:flex-none',
+    );
+    for (const name of [/Save as Template/, /^Copy/, /Clear/]) {
+      expect(screen.getByRole('button', { name }).parentElement).toBe(row);
+    }
+  });
+
   it('renders the label', () => {
     render(<TextAreaHeader {...defaultProps} />);
     expect(screen.getByText('Test Label')).toBeInTheDocument();

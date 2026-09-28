@@ -143,6 +143,47 @@ describe('useResumeUpload', () => {
     );
   });
 
+  it('passes the created resume from the response to onUploaded', async () => {
+    const created = { id: 'new-1', name: 'My CV', order: 3 };
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => ({ ok: true, json: async () => created })),
+    );
+    const onUploaded = vi.fn();
+    const { result } = renderHook(() => useResumeUpload(onUploaded));
+
+    await act(async () => {
+      await result.current.uploadResume(pdfFile(), 0);
+    });
+
+    expect(onUploaded).toHaveBeenCalledWith(created);
+  });
+
+  it('keeps isUploading true until an async onUploaded finishes', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => ({ ok: true, json: async () => ({ id: 'r1' }) })),
+    );
+    let finishOnUploaded!: () => void;
+    const onUploaded = vi.fn(
+      () => new Promise<void>((resolve) => (finishOnUploaded = resolve)),
+    );
+    const { result } = renderHook(() => useResumeUpload(onUploaded));
+
+    let upload!: Promise<void>;
+    act(() => {
+      upload = result.current.uploadResume(pdfFile(), 0);
+    });
+    await waitFor(() => expect(onUploaded).toHaveBeenCalled());
+    expect(result.current.isUploading).toBe(true);
+
+    await act(async () => {
+      finishOnUploaded();
+      await upload;
+    });
+    expect(result.current.isUploading).toBe(false);
+  });
+
   it('sets isUploading while the request is in flight', async () => {
     let resolveFetch!: (value: unknown) => void;
     const fetchPromise = new Promise((resolve) => {

@@ -27,7 +27,7 @@ const faqItems = [
   {
     question: 'Can I customize the tone and style of my cover letter?',
     answer:
-      'Yes. Click the Customize button to choose a writing style. You can pick Minimal Balanced or Full. You can also set a word or character limit. Add your own custom instructions too. The AI follows your preferences while matching the job description.',
+      'Yes. Click the Customize button to choose a writing style. You can pick Minimal, Balanced or Full. You can also set a word or character limit. Add your own custom instructions too. The AI follows your preferences while matching the job description.',
   },
   {
     question: 'How do I export my cover letter?',
@@ -37,7 +37,7 @@ const faqItems = [
   {
     question: 'What templates can I use?',
     answer:
-      'You can paste your own cover letter template. Cover letter template is the common cover letter that you already wrote by The AI keeps your voice and style while adapting it to the job. Save multiple templates and switch between them easily. You can rename or delete templates anytime.',
+      'You can paste your own cover letter template. Cover letter template is the common cover letter that you already wrote by yourself. The AI keeps your voice and style while adapting it to the job. Save multiple templates and switch between them easily. You can rename or delete templates anytime.',
   },
 ];
 

@@ -1,6 +1,7 @@
 import { PROVIDER_URL } from 'utils/AIModelUtils';
 import { FaExternalLinkAlt, FaLifeRing } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import { TEXT_BUTTON_HEIGHT } from 'components/common/buttonSizes';
 
 interface PrimaryOnboardingUIProps {
   onShowDetailed: () => void;
@@ -74,7 +75,7 @@ const PrimaryOnboardingUI = ({
       <div className="text-center">
         <button
           onClick={onShowDetailed}
-          className="min-h-10 px-2 text-xs text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 underline underline-offset-2 transition-colors font-medium cursor-pointer"
+          className={`${TEXT_BUTTON_HEIGHT} px-2 text-xs text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 underline underline-offset-2 transition-colors font-medium cursor-pointer`}
         >
           Still stuck? Click here for more information.
         </button>
@@ -82,7 +83,7 @@ const PrimaryOnboardingUI = ({
         <div className="pt-4 border-t border-neutral-100 dark:border-neutral-700 mt-4 flex justify-center">
           <Link
             to="/support"
-            className="min-h-10 flex items-center gap-2 text-[11px] text-neutral-400 dark:text-neutral-500 hover:text-brand-600 dark:hover:text-brand-400 transition-colors font-bold uppercase tracking-widest"
+            className={`${TEXT_BUTTON_HEIGHT} flex items-center gap-2 text-[11px] text-neutral-400 dark:text-neutral-500 hover:text-brand-600 dark:hover:text-brand-400 transition-colors font-bold uppercase tracking-widest`}
           >
             <FaLifeRing size={12} />
             Contact Support

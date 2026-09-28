@@ -61,7 +61,7 @@ describe('QuickLinks', () => {
     }
   });
 
-  it('renders the widget as an absolutely-positioned, vertically-stacked panel attached to the sidebar edge, hidden on phones', () => {
+  it('renders the widget as an absolutely-positioned, vertically-stacked panel attached to the sidebar edge, shown on desktop only (phones and tablets use menus instead)', () => {
     renderWithProviders(<QuickLinks />, {
       preloadedState: {
         auth: authState({ user: baseUser, isAuthenticated: true }),
@@ -73,11 +73,12 @@ describe('QuickLinks', () => {
       .closest('.absolute')!;
     expect(widget).toHaveClass(
       'hidden',
-      'md:flex',
+      'lg:flex',
       'right-0',
       'translate-x-full',
       'top-1/2',
     );
+    expect(widget).not.toHaveClass('md:flex');
   });
 
   it('copies the LinkedIn link with its label when set', () => {

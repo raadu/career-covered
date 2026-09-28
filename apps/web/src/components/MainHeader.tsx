@@ -1,6 +1,8 @@
 const MainHeader = () => {
   return (
-    <header className="-mt-2 md:-mt-4 lg:-mt-6 mb-4 md:mb-6 px-1">
+    // Phones: pt-0.5 leaves 2px above the headline, which -mt-2 would
+    // otherwise pull flush against the top bar.
+    <header className="-mt-2 pt-0.5 md:pt-0 md:-mt-4 lg:-mt-6 mb-4 md:mb-6 px-1">
       <h1 className="text-xl md:text-2xl font-black text-neutral-800 dark:text-neutral-100 tracking-tight leading-tight">
         Create Free Cover Letters in 2 Seconds
       </h1>

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useId, useRef, useState } from 'react';
+import { useId, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useSelector } from 'react-redux';
 import {
@@ -14,7 +14,7 @@ import {
 import { type RootState, useAppDispatch } from 'store';
 import { setAuthModalOpen } from 'store/authSlice';
 import { useDarkMode } from 'hooks/useDarkMode';
-import { useOnClickOutside } from 'hooks/useOnClickOutside';
+import { useAnchoredPopover } from 'hooks/useAnchoredPopover';
 import Tooltip from 'components/common/Tooltip';
 import EditLinksModal from 'layout/Sidebar/QuickLinks/EditLinksModal';
 import { useQuickLinkItems } from 'layout/Sidebar/QuickLinks/useQuickLinkItems';
@@ -23,14 +23,7 @@ import { useSignOut } from 'layout/Sidebar/useSignOut';
 import MobileMenuItem from './MobileMenuItem';
 import MobileQuickLinks from './MobileQuickLinks';
 
-interface PanelPosition {
-  top: number;
-  right: number;
-}
-
-// Phone-only (<md) home for everything that doesn't fit the top bar. The
-// panel is portaled for the same stacking-context reason as Modal.tsx, which
-// is why the outside-click check needs both the trigger and the panel refs.
+// Phone-only (<md) home for everything that doesn't fit the top bar.
 const MobileMenu = () => {
   const dispatch = useAppDispatch();
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
@@ -39,38 +32,13 @@ const MobileMenu = () => {
   const { isConfirmOpen, requestSignOut, cancelSignOut, confirmSignOut } =
     useSignOut();
 
-  const [position, setPosition] = useState<PanelPosition | null>(null);
   const [isEditLinksOpen, setIsEditLinksOpen] = useState(false);
-  const triggerRef = useRef<HTMLButtonElement>(null);
-  const panelRef = useRef<HTMLDivElement>(null);
-  const [refs] = useState(() => [triggerRef, panelRef]);
   const panelId = useId();
-  const isOpen = position !== null;
-
-  const close = useCallback(() => setPosition(null), []);
-  useOnClickOutside(refs, close, isOpen);
-
-  useEffect(() => {
-    if (!isOpen) return;
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        close();
-        triggerRef.current?.focus();
-      }
-    };
-    document.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('resize', close);
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('resize', close);
-    };
-  }, [isOpen, close]);
-
-  const toggle = () => {
-    const rect = triggerRef.current?.getBoundingClientRect();
-    if (isOpen || !rect) return close();
-    setPosition({ top: rect.bottom, right: window.innerWidth - rect.right });
-  };
+  const { isOpen, style, triggerRef, panelRef, toggle, close } =
+    useAnchoredPopover((rect) => ({
+      top: rect.bottom,
+      right: window.innerWidth - rect.right,
+    }));
 
   // Runs an item's action and closes the menu, so the next tap on the page
   // isn't swallowed by an outside-click close.
@@ -102,14 +70,14 @@ const MobileMenu = () => {
         </button>
       </Tooltip>
 
-      {position &&
+      {style &&
         createPortal(
           <div
             ref={panelRef}
             id={panelId}
             role="menu"
             aria-label="Menu"
-            style={{ top: position.top, right: position.right }}
+            style={style}
             className="fixed z-40 w-56 max-h-[calc(100vh-4rem)] overflow-y-auto border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 shadow-lg py-1 animate-in fade-in slide-in-from-top-2 duration-150"
           >
             <MobileMenuItem

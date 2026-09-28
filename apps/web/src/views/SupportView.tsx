@@ -26,7 +26,7 @@ const SupportView = () => {
             href={linkedinUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="group flex items-center gap-3 sm:gap-4 p-3 sm:p-4 pr-4 sm:pr-8 bg-brand-50 dark:bg-brand-950 hover:bg-brand-600 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-brand-500/20"
+            className="group flex items-center gap-3 sm:gap-4 p-3 sm:p-4 pr-4 sm:pr-8 rounded-full bg-brand-50 dark:bg-brand-950 hover:bg-brand-600 transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-brand-500/20"
           >
             <div className="w-10 h-10 sm:w-12 sm:h-12 bg-brand-600 group-hover:bg-white rounded-full flex items-center justify-center text-white group-hover:text-brand-600 transition-colors shadow-lg shrink-0">
               <FaLinkedin size={20} className="sm:w-6 sm:h-6" />

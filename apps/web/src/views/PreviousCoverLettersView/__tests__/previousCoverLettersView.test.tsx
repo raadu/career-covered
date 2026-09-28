@@ -288,6 +288,19 @@ describe('PreviousCoverLettersView — integration', () => {
     });
   });
 
+  it('labels the create button "New" on phones and "Create New" from md up', async () => {
+    renderWithProviders(<PreviousCoverLettersView />, {
+      preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
+    });
+    const full = await screen.findByText('Create New');
+    const short = screen.getByText('New', { exact: true });
+
+    expect(short).toHaveClass('md:hidden');
+    expect(full).toHaveClass('hidden', 'md:inline');
+    expect(short.closest('button')).toBe(full.closest('button'));
+    expect(short.closest('button')).toHaveClass('whitespace-nowrap');
+  });
+
   it('does not show batch action bar initially', async () => {
     renderWithProviders(<PreviousCoverLettersView />, {
       preloadedState: { auth: { isAuthenticated: true, isLoading: false } },

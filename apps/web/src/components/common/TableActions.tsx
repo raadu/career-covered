@@ -9,6 +9,7 @@ import { createPortal } from 'react-dom';
 import { FaEllipsisV } from 'react-icons/fa';
 import { ICON_SIZE } from 'components/common/iconSizes';
 import { tableActionButtonClass } from 'components/common/DataTable/tableColumnMeta';
+import { ICON_BUTTON_SIZE } from 'components/common/buttonSizes';
 
 export interface TableAction {
   key: string;
@@ -29,8 +30,7 @@ const MENU_CLOSE_DELAY_MS = 200;
 
 const iconButtonClasses: Record<'default' | 'danger', string> = {
   default: tableActionButtonClass,
-  danger:
-    'min-h-10 min-w-10 flex items-center justify-center text-neutral-400 dark:text-neutral-500 hover:text-danger dark:hover:text-danger-fg-dark hover:bg-danger-subtle dark:hover:bg-danger-subtle-dark transition-colors',
+  danger: `${ICON_BUTTON_SIZE} flex items-center justify-center text-neutral-400 dark:text-neutral-500 hover:text-danger dark:hover:text-danger-fg-dark hover:bg-danger-subtle dark:hover:bg-danger-subtle-dark transition-colors`,
 };
 
 const menuItemClasses: Record<'default' | 'danger', string> = {

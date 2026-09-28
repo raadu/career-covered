@@ -39,12 +39,16 @@ const Header = ({
         {showViewModeToggle && (
           <ViewModeToggle viewMode={viewMode} onChange={onViewModeChange} />
         )}
+        {/* "Create New" wraps onto two lines on phones — a short label keeps
+            the button on one line there. */}
         <CommonButton
           variant="primary"
           icon={<FaPlus size={ICON_SIZE.xs} />}
           onClick={() => navigate('/')}
+          className="shrink-0 whitespace-nowrap"
         >
-          Create New
+          <span className="md:hidden">New</span>
+          <span className="hidden md:inline">Create New</span>
         </CommonButton>
       </div>
     </div>

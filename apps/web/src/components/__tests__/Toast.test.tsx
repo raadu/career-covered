@@ -54,6 +54,20 @@ describe('showToast', () => {
       return render(<>{renderFn({ id: 't-1', visible })}</>);
     };
 
+    it('uses tight, even vertical padding around the text', () => {
+      const { container } = renderToast('Saved');
+      const card = container.firstChild as HTMLElement;
+      expect(card).toHaveClass('py-1.5', 'items-center');
+      expect(card).not.toHaveClass('py-3', 'items-start');
+
+      // The 40px dismiss target is pulled out of the flow vertically so it
+      // can't stretch the toast.
+      expect(screen.getByRole('button', { name: 'Dismiss' })).toHaveClass(
+        'min-h-10',
+        '-my-1.5',
+      );
+    });
+
     it('renders the message text', () => {
       renderToast('Test message');
       expect(screen.getByText('Test message')).toBeInTheDocument();

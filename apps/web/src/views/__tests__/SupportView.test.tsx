@@ -42,6 +42,13 @@ describe('SupportView', () => {
     ).toBeInTheDocument();
   });
 
+  it('renders the LinkedIn button as a fully rounded pill', () => {
+    renderWithProviders(<SupportView />);
+    expect(
+      screen.getByRole('link', { name: /Connect on LinkedIn/i }),
+    ).toHaveClass('rounded-full');
+  });
+
   it('opens LinkedIn link in new tab', () => {
     renderWithProviders(<SupportView />);
     const linkedinLink = screen.getByText('Connect on LinkedIn').closest('a');

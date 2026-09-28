@@ -5,6 +5,7 @@ import {
   MAX_FILE_BYTES,
   MAX_RESUMES_MESSAGE,
 } from 'utils/resumeConstants';
+import type { Resume } from 'views/ResumeView/types';
 
 async function extractErrorMessage(
   res: Response,
@@ -27,8 +28,11 @@ function validateFile(file: File): string | null {
 // Shared between the Resume management page and the homepage's resume
 // selector — both upload against the same endpoint with the same
 // validation/cap rules, just react to a successful upload differently
-// (full refetch vs. a smaller local list), hence the onUploaded callback.
-export function useResumeUpload(onUploaded: () => void) {
+// (the selector also auto-selects the new resume), hence the onUploaded
+// callback, which receives the created resume.
+export function useResumeUpload(
+  onUploaded: (created: Resume) => void | Promise<void>,
+) {
   const [isUploading, setIsUploading] = useState(false);
 
   const notifyMaxResumesReached = useCallback(() => {
@@ -59,8 +63,9 @@ export function useResumeUpload(onUploaded: () => void) {
           await extractErrorMessage(res, 'Failed to upload resume'),
         );
       }
+      const created: Resume = await res.json();
       showToast('Resume uploaded', { duration: 2000 });
-      onUploaded();
+      await onUploaded(created);
     } catch (err) {
       showToast(
         err instanceof Error ? err.message : 'Failed to upload resume',

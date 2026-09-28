@@ -3,6 +3,7 @@ import SidebarNavigation from 'layout/Sidebar/Navigation';
 import SidebarToggle from 'layout/Sidebar/Toggle';
 import DarkModeToggle from 'layout/Sidebar/DarkModeToggle';
 import QuickLinks from 'layout/Sidebar/QuickLinks';
+import QuickLinksFlyout from 'layout/Sidebar/QuickLinks/QuickLinksFlyout';
 import MobileMenu from 'layout/Sidebar/MobileMenu';
 import ProfileSection from './ProfileSection';
 import { clsx } from 'clsx';
@@ -32,6 +33,9 @@ const Sidebar = ({ isExpanded, onToggle }: SidebarProps) => {
       <div className="hidden md:flex flex-col mt-auto items-stretch w-full">
         <ProfileSection isExpanded={isExpanded} />
         <QuickLinks />
+        <div className="lg:hidden">
+          <QuickLinksFlyout />
+        </div>
         <DarkModeToggle isExpanded={isExpanded} />
         <SidebarToggle isExpanded={isExpanded} onToggle={onToggle} />
       </div>

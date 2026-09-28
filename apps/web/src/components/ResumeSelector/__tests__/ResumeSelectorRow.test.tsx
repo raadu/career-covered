@@ -28,6 +28,24 @@ describe('ResumeSelectorRow', () => {
     expect(screen.getByText('My Resume')).toBeInTheDocument();
   });
 
+  it('is compact: tight row padding, and the preview button does not set the row height', () => {
+    render(
+      <ResumeSelectorRow
+        resume={mockResume()}
+        isSelected={false}
+        onToggleSelect={vi.fn()}
+        onPreview={vi.fn()}
+      />,
+    );
+    const row = screen.getByText('My Resume').parentElement!;
+    expect(row).toHaveClass('py-1.5', 'px-1');
+    expect(row).not.toHaveClass('p-1');
+
+    const preview = screen.getByTitle('Preview');
+    expect(preview).toHaveClass('min-h-8', '-my-1.5', 'min-w-10');
+    expect(preview).not.toHaveClass('min-h-10');
+  });
+
   it('calls onToggleSelect when the row is clicked', () => {
     const onToggleSelect = vi.fn();
     render(

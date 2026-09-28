@@ -1,7 +1,9 @@
 import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProviders } from '../../../tests/test-utils';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import AuthModal from '../Modals/AuthModal';
+import { setAuthModalOpen } from 'store/authSlice';
 
 const mockShowToast = vi.hoisted(() => vi.fn());
 vi.mock('../common/Toast', () => ({
@@ -174,6 +176,92 @@ describe('AuthModal', () => {
     renderWithProviders(<AuthModal />, { preloadedState: openState });
 
     expect(screen.getByText('Forgot password?')).toBeInTheDocument();
+  });
+
+  describe('forgot password', () => {
+    const LocationProbe = () => (
+      <span data-testid="location">{useLocation().pathname}</span>
+    );
+
+    const renderAndOpenForgot = () => {
+      renderWithProviders(
+        <>
+          <AuthModal />
+          <Routes>
+            <Route path="*" element={<LocationProbe />} />
+          </Routes>
+        </>,
+        { preloadedState: openState },
+      );
+      fireEvent.click(screen.getByRole('button', { name: 'Forgot password?' }));
+    };
+
+    it('is not shown on the sign-up form', () => {
+      renderWithProviders(<AuthModal />, { preloadedState: openState });
+      fireEvent.click(screen.getByText('Sign up'));
+      expect(
+        screen.queryByRole('button', { name: 'Forgot password?' }),
+      ).not.toBeInTheDocument();
+    });
+
+    it('switches the modal to a forgot-password screen instead of leaving the page', () => {
+      renderAndOpenForgot();
+
+      expect(
+        screen.getByRole('heading', { name: 'Forgot your password?' }),
+      ).toBeInTheDocument();
+      expect(screen.getByText(/aren't automated yet/)).toBeInTheDocument();
+      expect(screen.queryByPlaceholderText('Password')).not.toBeInTheDocument();
+      expect(screen.getByTestId('location')).toHaveTextContent('/');
+      expect(mockDispatch).not.toHaveBeenCalled();
+    });
+
+    it('goes back to the sign-in form, keeping the typed email', () => {
+      renderWithProviders(<AuthModal />, { preloadedState: openState });
+      fireEvent.change(screen.getByPlaceholderText('Email address'), {
+        target: { value: 'me@test.com' },
+      });
+      fireEvent.click(screen.getByRole('button', { name: 'Forgot password?' }));
+      fireEvent.click(screen.getByRole('button', { name: /Back to sign in/ }));
+
+      expect(screen.getByRole('heading', { name: 'Sign in' })).toBeInTheDocument();
+      expect(screen.getByPlaceholderText('Email address')).toHaveValue(
+        'me@test.com',
+      );
+    });
+
+    it('Contact Support closes the modal and opens the Support page', () => {
+      renderAndOpenForgot();
+      fireEvent.click(screen.getByRole('button', { name: 'Contact Support' }));
+
+      expect(mockDispatch).toHaveBeenCalledWith(setAuthModalOpen(false));
+      expect(screen.getByTestId('location')).toHaveTextContent('/support');
+    });
+
+    it('clears any previous error when opened', async () => {
+      vi.stubGlobal(
+        'fetch',
+        vi.fn().mockResolvedValue({
+          ok: false,
+          status: 401,
+          json: () => Promise.resolve({ message: 'Invalid credentials' }),
+        }),
+      );
+      renderWithProviders(<AuthModal />, { preloadedState: openState });
+      fireEvent.change(screen.getByPlaceholderText('Email address'), {
+        target: { value: 'me@test.com' },
+      });
+      fireEvent.change(screen.getByPlaceholderText('Password'), {
+        target: { value: 'Wrong123' },
+      });
+      fireEvent.click(screen.getAllByText('Sign in')[1]);
+      expect(await screen.findByText('Invalid credentials')).toBeInTheDocument();
+
+      fireEvent.click(screen.getByRole('button', { name: 'Forgot password?' }));
+      fireEvent.click(screen.getByRole('button', { name: /Back to sign in/ }));
+      expect(screen.queryByText('Invalid credentials')).not.toBeInTheDocument();
+      vi.unstubAllGlobals();
+    });
   });
 
   describe('API interactions', () => {

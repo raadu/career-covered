@@ -346,6 +346,22 @@ describe('TemplatesView — CRUD operations', () => {
     vi.unstubAllGlobals();
   });
 
+  it('labels the create button "New" on phones and "New Template" from md up', async () => {
+    renderWithProviders(<TemplatesView />, {
+      preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
+    });
+    const full = await screen.findByText('New Template');
+    const short = screen.getByText('New', { exact: true });
+
+    expect(short).toHaveClass('md:hidden');
+    expect(full).toHaveClass('hidden', 'md:inline');
+    expect(short.closest('button')).toBe(full.closest('button'));
+    expect(short.closest('button')).toHaveClass('whitespace-nowrap');
+
+    fireEvent.click(short);
+    expect(screen.getByText('Add a New Template')).toBeInTheDocument();
+  });
+
   it('opens create modal when New Template is clicked', async () => {
     renderWithProviders(<TemplatesView />, {
       preloadedState: { auth: { isAuthenticated: true, isLoading: false } },

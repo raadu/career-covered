@@ -1,6 +1,7 @@
 import { FaKey, FaQuestionCircle, FaTimes } from 'react-icons/fa';
 import CommonButton from 'components/common/CommonButton';
 import { PROVIDER_NAME } from 'utils/AIModelUtils';
+import { ICON_BUTTON_SIZE } from 'components/common/buttonSizes';
 
 interface ApiKeySectionProps {
   apiKey: string;
@@ -19,7 +20,7 @@ const ApiKeySection = ({
 }: ApiKeySectionProps) => {
   if (showKeyInput) {
     return (
-      <div className="flex-1 w-full lg:w-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-2 animate-in flex-in slide-in-from-left-2 duration-300">
+      <div className="flex-1 w-full lg:w-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-2 md:order-1 md:col-span-6 lg:order-none animate-in flex-in slide-in-from-left-2 duration-300">
         <div className="relative flex-1 group">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors group-focus-within:text-brand-500">
             <FaKey
@@ -40,7 +41,7 @@ const ApiKeySection = ({
           {apiKey && (
             <button
               onClick={() => setShowKeyInput(false)}
-              className="min-h-10 min-w-10 flex items-center justify-center text-neutral-400 dark:text-neutral-500 hover:text-danger dark:hover:text-danger-fg-dark transition-colors hover:bg-danger-subtle dark:hover:bg-danger-subtle-dark"
+              className={`${ICON_BUTTON_SIZE} flex items-center justify-center text-neutral-400 dark:text-neutral-500 hover:text-danger dark:hover:text-danger-fg-dark transition-colors hover:bg-danger-subtle dark:hover:bg-danger-subtle-dark`}
               title="Cancel editing"
             >
               <FaTimes size={14} />
@@ -64,7 +65,10 @@ const ApiKeySection = ({
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+    // Phones: a 70/30 split across the full row. Tablet: display:contents,
+    // so the two buttons join the parent's grid as the 1st and 3rd thirds of
+    // row 1 (the model select sits between them). lg: side by side.
+    <div className="grid grid-cols-[7fr_3fr] gap-2 w-full md:contents lg:flex lg:flex-wrap lg:items-center lg:gap-3 lg:w-auto">
       <CommonButton
         variant="outline"
         onClick={() => setShowKeyInput(true)}
@@ -74,7 +78,7 @@ const ApiKeySection = ({
             className="group-hover:rotate-12 transition-transform"
           />
         }
-        className="group"
+        className="group md:order-1 md:col-span-2 lg:order-none"
       >
         {apiKey ? 'Update API Key' : 'Add Custom API Key'}
       </CommonButton>
@@ -82,6 +86,7 @@ const ApiKeySection = ({
         variant="ghost"
         onClick={() => setShowHelpModal(true)}
         icon={<FaQuestionCircle size={11} />}
+        className="md:order-3 md:col-span-2 lg:order-none"
       >
         Help
       </CommonButton>

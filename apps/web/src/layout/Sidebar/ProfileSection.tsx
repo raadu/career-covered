@@ -56,13 +56,19 @@ const ProfileSection = ({ isExpanded }: ProfileSectionProps) => {
 
           {isExpanded && (
             <span className="hidden lg:contents">
+              {/* Both lines truncate at 180px, so each reveals its full
+                  text in a tooltip on hover. */}
               <div className="flex-1 min-w-0">
-                <p className="text-[11px] font-semibold text-neutral-700 dark:text-neutral-200 truncate leading-tight">
-                  {user.name}
-                </p>
-                <p className="text-[10px] text-neutral-400 truncate leading-tight">
-                  {user.email}
-                </p>
+                <Tooltip label={user.name} side="right" className="min-w-0">
+                  <p className="min-w-0 text-[11px] font-semibold text-neutral-700 dark:text-neutral-200 truncate leading-tight">
+                    {user.name}
+                  </p>
+                </Tooltip>
+                <Tooltip label={user.email} side="right" className="min-w-0">
+                  <p className="min-w-0 text-[10px] text-neutral-400 truncate leading-tight">
+                    {user.email}
+                  </p>
+                </Tooltip>
               </div>
               <Tooltip label="Sign Out" side="right" className="shrink-0">
                 <button

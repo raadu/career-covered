@@ -1,7 +1,7 @@
 import { FaFilePdf, FaFileWord, FaCopy, FaTrash } from 'react-icons/fa';
 import { ICON_SIZE } from 'components/common/iconSizes';
-import { tableActionButtonClass } from 'components/common/DataTable/tableColumnMeta';
 import formatDate from 'utils/dateUtils';
+import { cardActionButtonClass } from 'components/common/DataTable/tableColumnMeta';
 import type { CoverLetterItem } from './types';
 
 interface CoverLetterCardProps {
@@ -30,12 +30,12 @@ const CoverLetterCard = ({
       {formatDate(item.createdAt)}
     </p>
 
-    <div className="mt-auto pt-2.5 flex items-center gap-1 border-t border-neutral-100 dark:border-neutral-800">
+    <div className="mt-auto pt-2.5 flex items-center border-t border-neutral-100 dark:border-neutral-800">
       <button
         type="button"
         onClick={onOpenDesigns}
         title="Choose a PDF design"
-        className={tableActionButtonClass}
+        className={cardActionButtonClass}
       >
         <FaFilePdf size={ICON_SIZE.xs} />
       </button>
@@ -43,7 +43,7 @@ const CoverLetterCard = ({
         type="button"
         onClick={onDownloadWord}
         title="Download as Word"
-        className={tableActionButtonClass}
+        className={cardActionButtonClass}
       >
         <FaFileWord size={ICON_SIZE.xs} />
       </button>
@@ -51,7 +51,7 @@ const CoverLetterCard = ({
         type="button"
         onClick={onCopy}
         title="Copy to clipboard"
-        className={tableActionButtonClass}
+        className={cardActionButtonClass}
       >
         <FaCopy size={ICON_SIZE.xs} />
       </button>
@@ -59,7 +59,7 @@ const CoverLetterCard = ({
         type="button"
         onClick={onDelete}
         title="Delete"
-        className={`ml-auto ${tableActionButtonClass}`}
+        className={cardActionButtonClass}
       >
         <FaTrash size={ICON_SIZE.xs} />
       </button>

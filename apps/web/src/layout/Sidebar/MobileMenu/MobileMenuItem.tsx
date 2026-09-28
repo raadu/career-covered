@@ -33,9 +33,12 @@ const MobileMenuItem = ({
   const className = clsx(
     'w-full min-h-10 flex items-center gap-3 text-sm font-medium text-left transition-colors',
     isNested ? 'pl-9 pr-4' : 'px-4',
+    // Touch browsers keep the last-tapped element in :hover, which left a
+    // tapped row looking selected. Hover styles only apply where real hover
+    // exists; taps get brief active-state feedback instead.
     variant === 'danger'
-      ? 'text-danger dark:text-danger-fg-dark hover:bg-danger-subtle dark:hover:bg-danger-subtle-dark'
-      : 'text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800',
+      ? 'text-danger dark:text-danger-fg-dark active:bg-danger-subtle dark:active:bg-danger-subtle-dark [@media(hover:hover)]:hover:bg-danger-subtle dark:[@media(hover:hover)]:hover:bg-danger-subtle-dark'
+      : 'text-neutral-700 dark:text-neutral-200 active:bg-neutral-100 dark:active:bg-neutral-800 [@media(hover:hover)]:hover:bg-neutral-100 dark:[@media(hover:hover)]:hover:bg-neutral-800',
     isMuted && 'opacity-50',
   );
   const content = (

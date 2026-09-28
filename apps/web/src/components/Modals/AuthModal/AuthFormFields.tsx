@@ -1,8 +1,8 @@
 import type { FormEvent } from 'react';
-import { Link } from 'react-router-dom';
 import { FaEnvelope, FaLock, FaUser } from 'react-icons/fa';
 import CommonButton from 'components/common/CommonButton';
 import type { FormErrors } from './useAuthForm';
+import { TEXT_BUTTON_HEIGHT } from 'components/common/buttonSizes';
 
 interface AuthFormFieldsProps {
   isRegister: boolean;
@@ -99,13 +99,13 @@ const AuthFormFields = ({
 
     {!isRegister && (
       <div className="text-center">
-        <Link
-          to="/support"
+        <button
+          type="button"
           onClick={onForgotPasswordClick}
-          className="text-[11px] text-neutral-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors font-medium"
+          className={`${TEXT_BUTTON_HEIGHT} px-2 text-[11px] text-neutral-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors font-medium`}
         >
           Forgot password?
-        </Link>
+        </button>
       </div>
     )}
 

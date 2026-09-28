@@ -12,8 +12,9 @@ import {
 import { LuLoader } from 'react-icons/lu';
 import InlineEditableText from 'components/common/InlineEditableText';
 import { ICON_SIZE } from 'components/common/iconSizes';
-import { tableActionButtonClass } from 'components/common/DataTable/tableColumnMeta';
+import { cardActionButtonClass } from 'components/common/DataTable/tableColumnMeta';
 import type { Resume } from './types';
+import { ICON_BUTTON_SIZE } from 'components/common/buttonSizes';
 
 interface ResumeCardProps {
   resume: Resume;
@@ -65,7 +66,7 @@ const ResumeCard = ({
           type="button"
           {...attributes}
           {...listeners}
-          className="min-h-10 min-w-10 flex items-center justify-center text-neutral-300 dark:text-neutral-600 hover:text-neutral-500 dark:hover:text-neutral-400 cursor-grab active:cursor-grabbing touch-none transition-colors"
+          className={`${ICON_BUTTON_SIZE} flex items-center justify-center text-neutral-300 dark:text-neutral-600 hover:text-neutral-500 dark:hover:text-neutral-400 cursor-grab active:cursor-grabbing touch-none transition-colors`}
           title="Drag to reorder"
         >
           <FaGripVertical size={ICON_SIZE.xs} />
@@ -83,12 +84,12 @@ const ResumeCard = ({
         {(resume.fileSize / 1024).toFixed(0)} KB
       </p>
 
-      <div className="mt-auto pt-2.5 flex items-center gap-1 border-t border-neutral-100 dark:border-neutral-800">
+      <div className="mt-auto pt-2.5 flex items-center border-t border-neutral-100 dark:border-neutral-800">
         <button
           type="button"
           onClick={onPreview}
           title="View"
-          className={tableActionButtonClass}
+          className={cardActionButtonClass}
         >
           <FaEye size={ICON_SIZE.xs} />
         </button>
@@ -96,7 +97,7 @@ const ResumeCard = ({
           type="button"
           onClick={onDownload}
           title="Download"
-          className={tableActionButtonClass}
+          className={cardActionButtonClass}
         >
           <FaDownload size={ICON_SIZE.xs} />
         </button>
@@ -104,7 +105,7 @@ const ResumeCard = ({
           type="button"
           onClick={() => replaceInputRef.current?.click()}
           title="Replace file"
-          className={tableActionButtonClass}
+          className={cardActionButtonClass}
         >
           <FaSyncAlt size={ICON_SIZE.xs} />
         </button>
@@ -123,7 +124,7 @@ const ResumeCard = ({
           type="button"
           onClick={onDelete}
           title="Delete"
-          className={`ml-auto ${tableActionButtonClass}`}
+          className={cardActionButtonClass}
         >
           <FaTrash size={ICON_SIZE.xs} />
         </button>

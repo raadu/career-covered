@@ -1,7 +1,11 @@
 import { screen, fireEvent, within } from '@testing-library/react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { renderWithProviders } from '../../../../../tests/test-utils';
+import {
+  renderWithProviders,
+  type DeepPartial,
+} from '../../../../../tests/test-utils';
+import type { RootState } from 'store';
 import MobileMenu from '..';
 
 const mockHandleCopy = vi.fn();
@@ -35,7 +39,7 @@ const LocationProbe = () => (
   <span data-testid="location">{useLocation().pathname}</span>
 );
 
-const renderMenu = (preloadedState = signedIn) =>
+const renderMenu = (preloadedState: DeepPartial<RootState> = signedIn) =>
   renderWithProviders(
     <>
       <MobileMenu />
@@ -277,6 +281,17 @@ describe('MobileMenu', () => {
         'LinkedIn link',
       );
       expect(menu()).toBeInTheDocument();
+    });
+
+    it('only applies hover styling where real hover exists, so a tapped link does not stay highlighted', () => {
+      openQuickLinks();
+      const linkedin = within(menu()).getByRole('menuitem', { name: 'LinkedIn' });
+
+      expect(linkedin.className).not.toMatch(/(^|\s)hover:bg-/);
+      expect(linkedin).toHaveClass(
+        '[@media(hover:hover)]:hover:bg-neutral-100',
+        'active:bg-neutral-100',
+      );
     });
 
     it('passes an empty value for an unset link and mutes that row', () => {

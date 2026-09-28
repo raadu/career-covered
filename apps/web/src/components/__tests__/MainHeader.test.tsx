@@ -10,6 +10,12 @@ describe('MainHeader', () => {
     ).toBeInTheDocument();
   });
 
+  it('leaves 2px above the headline on phones only', () => {
+    render(<MainHeader />);
+    const header = screen.getByRole('banner');
+    expect(header).toHaveClass('-mt-2', 'pt-0.5', 'md:pt-0');
+  });
+
   it('renders the description text', () => {
     render(<MainHeader />);
     expect(

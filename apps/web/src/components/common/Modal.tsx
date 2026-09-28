@@ -2,6 +2,7 @@ import { type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { FaTimes } from 'react-icons/fa';
 import { ICON_SIZE } from './iconSizes';
+import { ICON_BUTTON_SIZE } from './buttonSizes';
 
 interface ModalProps {
   isOpen: boolean;
@@ -50,7 +51,11 @@ const Modal = ({
         aria-modal="true"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="shrink-0 flex items-center justify-between gap-2 px-4 py-3 border-b border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800">
+        {/* The header is 52px either way, leaving 14px above and below the
+            title (30% less than the previous 20px): py-1.5 around the 40px
+            touch close button, py-[9px] around the 34px mouse one. Every
+            modal uses this shell, so all headers share it. */}
+        <div className="shrink-0 flex items-center justify-between gap-2 px-4 py-1.5 [@media(pointer:fine)]:py-[9px] border-b border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800">
           <div className="flex items-center gap-2 min-w-0">
             {icon && (
               <div className="shrink-0 bg-brand-100 dark:bg-brand-900 text-brand-700 dark:text-brand-300 p-1.5">
@@ -64,7 +69,7 @@ const Modal = ({
           <button
             onClick={onClose}
             aria-label="Close"
-            className="shrink-0 min-h-10 min-w-10 flex items-center justify-center text-neutral-400 dark:text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors"
+            className={`shrink-0 ${ICON_BUTTON_SIZE} flex items-center justify-center text-neutral-400 dark:text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors`}
           >
             <FaTimes size={ICON_SIZE.sm} />
           </button>

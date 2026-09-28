@@ -69,14 +69,18 @@ const TemplateBox = ({
         </span>
       )}
 
-      <div className="flex items-center gap-0 shrink-0">
+      {/* Always visible (touch has no hover to reveal them), grouped at the
+          chip's right edge — the name's flex-1 pushes them there. 24px-wide
+          buttons keep the two icons close together; on mouse devices they're
+          32px tall so the chip (with its border) matches the 34px buttons. */}
+      <div className="flex items-center gap-0 shrink-0 ml-auto">
         {editing ? (
           <button
             onClick={(e) => {
               e.stopPropagation();
               commitRename();
             }}
-            className="min-h-10 min-w-10 flex items-center justify-center text-success hover:text-success-hover transition-colors"
+            className="min-h-10 [@media(pointer:fine)]:min-h-8 min-w-6 flex items-center justify-center text-success hover:text-success-hover transition-colors"
           >
             <LuCheck size={14} />
           </button>
@@ -87,7 +91,7 @@ const TemplateBox = ({
               setEditValue(template.name);
               setEditing(true);
             }}
-            className="min-h-10 min-w-10 flex items-center justify-center text-neutral-400 hover:text-brand-500 dark:hover:text-brand-400 sm:opacity-0 sm:group-hover:opacity-100 transition-all duration-200"
+            className="min-h-10 [@media(pointer:fine)]:min-h-8 min-w-6 flex items-center justify-center text-neutral-400 hover:text-brand-500 dark:hover:text-brand-400 transition-all duration-200"
             title="Rename Template"
           >
             <LuPencil size={12} />
@@ -99,7 +103,7 @@ const TemplateBox = ({
             e.stopPropagation();
             onRemove();
           }}
-          className="min-h-10 min-w-10 flex items-center justify-center text-neutral-400 hover:text-danger dark:hover:text-danger-fg-dark sm:opacity-0 sm:group-hover:opacity-100 transition-all duration-200"
+          className="min-h-10 [@media(pointer:fine)]:min-h-8 min-w-6 flex items-center justify-center text-neutral-400 hover:text-danger dark:hover:text-danger-fg-dark transition-all duration-200"
           title="Delete Template"
         >
           <LuX size={12} />

@@ -300,6 +300,26 @@ describe('ResumeView', () => {
     });
   });
 
+  describe('grid card actions', () => {
+    it('spreads the four action icons evenly across the card with none pushed to the edge', async () => {
+      stubFetch(async () => ({ ok: true, json: async () => [mockResume()] }));
+      renderWithProviders(<ResumeView />, {
+        preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
+      });
+      await waitFor(() => screen.getByText('My Resume'));
+
+      const titles = ['View', 'Download', 'Replace file', 'Delete'];
+      const buttons = titles.map((t) => screen.getByTitle(t));
+      for (const button of buttons) {
+        expect(button).toHaveClass('flex-1', 'min-w-0', 'min-h-10');
+        expect(button).not.toHaveClass('ml-auto', 'min-w-10');
+      }
+      const row = buttons[0].parentElement!;
+      expect(buttons.every((b) => b.parentElement === row)).toBe(true);
+      expect(row).not.toHaveClass('gap-1');
+    });
+  });
+
   describe('view mode toggle', () => {
     it('defaults to grid view', async () => {
       stubFetch(async () => ({ ok: true, json: async () => [] }));
