@@ -24,11 +24,11 @@ const authState = (overrides = {}) => ({
 });
 
 const LINK_NAMES = [
-  'Copy LinkedIn link',
-  'Copy GitHub link',
-  'Copy website link',
-  'Copy contact email',
-  'Copy phone number',
+  'Copy LinkedIn Link',
+  'Copy GitHub Link',
+  'Copy Website Link',
+  'Copy Contact Email',
+  'Copy Phone Number',
   'Edit links',
 ];
 
@@ -69,7 +69,7 @@ describe('QuickLinks', () => {
     });
 
     const widget = screen
-      .getByRole('button', { name: 'Copy LinkedIn link' })
+      .getByRole('button', { name: 'Copy LinkedIn Link' })
       .closest('.absolute')!;
     expect(widget).toHaveClass(
       'hidden',
@@ -90,7 +90,7 @@ describe('QuickLinks', () => {
       },
     });
 
-    fireEvent.click(screen.getByRole('button', { name: 'Copy LinkedIn link' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Copy LinkedIn Link' }));
     expect(mockHandleCopy).toHaveBeenCalledWith(
       'https://linkedin.com/in/x',
       'LinkedIn link',
@@ -108,7 +108,7 @@ describe('QuickLinks', () => {
       },
     });
 
-    fireEvent.click(screen.getByRole('button', { name: 'Copy phone number' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Copy Phone Number' }));
     expect(mockHandleCopy).toHaveBeenCalledWith(
       '+14155552671',
       'Phone number',
@@ -123,7 +123,7 @@ describe('QuickLinks', () => {
       },
     });
 
-    fireEvent.click(screen.getByRole('button', { name: 'Copy GitHub link' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Copy GitHub Link' }));
     expect(mockHandleCopy).toHaveBeenCalledWith(
       '',
       'GitHub link',
@@ -142,10 +142,10 @@ describe('QuickLinks', () => {
     });
 
     expect(
-      screen.getByRole('button', { name: 'Copy LinkedIn link' }),
+      screen.getByRole('button', { name: 'Copy LinkedIn Link' }),
     ).not.toHaveClass('opacity-40');
     expect(
-      screen.getByRole('button', { name: 'Copy GitHub link' }),
+      screen.getByRole('button', { name: 'Copy GitHub Link' }),
     ).toHaveClass('opacity-40');
   });
 
@@ -157,9 +157,9 @@ describe('QuickLinks', () => {
     });
 
     fireEvent.mouseEnter(
-      screen.getByRole('button', { name: 'Copy website link' }).parentElement!,
+      screen.getByRole('button', { name: 'Copy Website Link' }).parentElement!,
     );
-    expect(screen.getByRole('tooltip')).toHaveTextContent('Copy website link');
+    expect(screen.getByRole('tooltip')).toHaveTextContent('Copy Website Link');
   });
 
   it('opens the edit modal when the edit icon is clicked', () => {
