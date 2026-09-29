@@ -16,6 +16,13 @@ describe('ResultHeader', () => {
     expect(screen.getByText('Generated Cover Letter')).toBeInTheDocument();
   });
 
+  it('renders the edit tip under the heading', () => {
+    render(<ResultHeader {...defaultProps} />);
+    expect(
+      screen.getByText('You can edit the text below to personalize it further.'),
+    ).toBeInTheDocument();
+  });
+
   it('renders PDF, Word, and Copy buttons', () => {
     render(<ResultHeader {...defaultProps} />);
     expect(screen.getByText('PDF')).toBeInTheDocument();

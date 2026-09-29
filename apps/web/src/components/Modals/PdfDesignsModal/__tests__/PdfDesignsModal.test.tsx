@@ -66,16 +66,15 @@ describe('PdfDesignsModal', () => {
   it('calls onClose when the close button is clicked', () => {
     const onClose = vi.fn();
     render(<PdfDesignsModal {...defaultProps} onClose={onClose} />);
-    fireEvent.click(screen.getByLabelText('Close modal'));
+    fireEvent.click(screen.getByLabelText('Close'));
     expect(onClose).toHaveBeenCalledOnce();
   });
 
   it('calls onClose when the backdrop is clicked', () => {
     const onClose = vi.fn();
-    const { container } = render(
-      <PdfDesignsModal {...defaultProps} onClose={onClose} />,
-    );
-    fireEvent.click(container.firstChild as HTMLElement);
+    render(<PdfDesignsModal {...defaultProps} onClose={onClose} />);
+    // Modal portals to document.body, so the backdrop is the dialog's parent.
+    fireEvent.click(screen.getByRole('dialog').parentElement!);
     expect(onClose).toHaveBeenCalledOnce();
   });
 

@@ -39,9 +39,9 @@ const WritingStyleSection = ({
 }: WritingStyleSectionProps) => {
   return (
     <>
-      <hr className="border-gray-100 dark:border-gray-700" />
+      <hr className="border-neutral-200 dark:border-neutral-700" />
       <div className="flex flex-col">
-        <span className="text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
+        <span className="text-sm font-medium text-neutral-700 dark:text-neutral-200 mb-1">
           Writing Style
         </span>
         <div className="space-y-1.5">
@@ -50,12 +50,12 @@ const WritingStyleSection = ({
             return (
               <label
                 key={option.value}
-                className={`flex items-start gap-2 p-2 rounded-md border transition-colors ${
+                className={`flex items-start gap-2 p-2 border transition-colors ${
                   isDisabled
-                    ? 'opacity-50 cursor-not-allowed border-gray-200 dark:border-gray-700'
+                    ? 'opacity-50 cursor-not-allowed border-neutral-200 dark:border-neutral-700'
                     : writingStyle === option.value
-                      ? 'border-cyan-400 dark:border-cyan-500 bg-cyan-50/50 dark:bg-cyan-900/20 cursor-pointer'
-                      : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 cursor-pointer'
+                      ? 'border-brand-400 dark:border-brand-500 bg-brand-50 dark:bg-brand-900/20 cursor-pointer'
+                      : 'border-neutral-200 dark:border-neutral-700 hover:border-neutral-300 dark:hover:border-neutral-600 cursor-pointer'
                 }`}
               >
                 <input
@@ -65,13 +65,13 @@ const WritingStyleSection = ({
                   checked={writingStyle === option.value}
                   disabled={isDisabled}
                   onChange={() => onChange(option.value)}
-                  className="mt-0.5 accent-cyan-500"
+                  className="mt-0.5 accent-brand-600"
                 />
                 <div className="flex flex-col">
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
+                  <span className="text-sm font-medium text-neutral-700 dark:text-neutral-200">
                     {option.label}
                   </span>
-                  <span className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                  <span className="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">
                     {isDisabled
                       ? 'Please add cover letter template to enable it.'
                       : option.description}

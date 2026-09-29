@@ -23,7 +23,7 @@ const UploadSlot = ({
       disabled={isUploading}
       onClick={() => (atCap ? onCapReached() : inputRef.current?.click())}
       title={atCap ? 'You can have up to 8 resumes' : 'Upload a resume'}
-      className="relative flex flex-col items-center justify-center gap-2 rounded-sm border-2 border-dashed border-gray-200 dark:border-gray-700 p-2.5 sm:p-3 min-h-[168px] text-gray-400 dark:text-gray-500 hover:border-blue-400 dark:hover:border-blue-500 hover:text-blue-500 dark:hover:text-blue-400 hover:bg-blue-50/50 dark:hover:bg-blue-900/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-gray-200 dark:disabled:hover:border-gray-700 disabled:hover:text-gray-400 disabled:hover:bg-transparent"
+      className="relative flex flex-col items-center justify-center gap-2 border-2 border-dashed border-neutral-200 dark:border-neutral-700 p-2.5 sm:p-3 min-h-[168px] text-neutral-400 dark:text-neutral-500 hover:border-brand-400 dark:hover:border-brand-500 hover:text-brand-500 dark:hover:text-brand-400 hover:bg-brand-50/50 dark:hover:bg-brand-900/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-neutral-200 dark:disabled:hover:border-neutral-700 disabled:hover:text-neutral-400 disabled:hover:bg-transparent"
     >
       {isUploading ? (
         <LuLoader className="animate-spin" size={24} />

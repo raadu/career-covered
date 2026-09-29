@@ -23,6 +23,19 @@ describe('CommonButton', () => {
     expect(button).toBeDisabled();
   });
 
+  it('is 34px tall on mouse devices but keeps the 40px touch target elsewhere', () => {
+    render(<CommonButton>Click Me</CommonButton>);
+    expect(screen.getByRole('button')).toHaveClass(
+      'min-h-10',
+      '[@media(pointer:fine)]:min-h-[34px]',
+    );
+  });
+
+  it('does not add vertical padding that would undo the reduced height', () => {
+    render(<CommonButton>Click Me</CommonButton>);
+    expect(screen.getByRole('button').className).not.toMatch(/\bpy-/);
+  });
+
   it('is disabled when disabled prop is true', () => {
     render(<CommonButton disabled={true}>Click Me</CommonButton>);
     const button = screen.getByRole('button');

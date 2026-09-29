@@ -21,7 +21,7 @@ const CharacterLimitSection = ({
         <div className="relative flex items-center justify-center">
           <input
             type="checkbox"
-            className="peer appearance-none w-5 h-5 border-2 border-gray-300 dark:border-gray-600 rounded focus:ring-2 focus:ring-cyan-500/30 checked:bg-cyan-500 checked:border-cyan-500 transition-colors"
+            className="peer appearance-none w-5 h-5 border-2 border-neutral-300 dark:border-neutral-600 rounded focus:ring-2 focus:ring-brand-500/30 checked:bg-brand-600 checked:border-brand-600 transition-colors"
             checked={limitCharacters}
             onChange={(e) => setLimitCharacters(e.target.checked)}
           />
@@ -37,7 +37,7 @@ const CharacterLimitSection = ({
             />
           </svg>
         </div>
-        <span className="text-sm font-medium text-gray-700 dark:text-gray-200 group-hover:text-gray-900 dark:group-hover:text-gray-100 transition-colors">
+        <span className="text-sm font-medium text-neutral-700 dark:text-neutral-200 group-hover:text-neutral-900 dark:group-hover:text-neutral-100 transition-colors">
           Limit characters
         </span>
       </label>
@@ -50,14 +50,14 @@ const CharacterLimitSection = ({
               value={charCountStr}
               onChange={onCharCountChange}
               placeholder="e.g. 2000 (200 - 5000)"
-              className={`flex-1 p-1.5 text-sm border ${error ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'} rounded-md focus:ring-2 ${error ? 'focus:ring-red-500' : 'focus:ring-cyan-500'} focus:border-transparent outline-none transition-all bg-transparent text-gray-900 dark:text-gray-100`}
+              className={`flex-1 p-1.5 text-sm border ${error ? 'border-danger' : 'border-neutral-300 dark:border-neutral-600'} focus:ring-2 ${error ? 'focus:ring-danger' : 'focus:ring-brand-500'} focus:border-transparent outline-none transition-all bg-transparent text-neutral-900 dark:text-neutral-100`}
             />
-            <span className="text-sm text-gray-500 dark:text-gray-400">
+            <span className="text-sm text-neutral-500 dark:text-neutral-400">
               characters
             </span>
           </div>
           {error && (
-            <p className="text-red-500 dark:text-red-400 text-xs mt-1">
+            <p className="text-danger dark:text-danger-fg-dark text-xs mt-1">
               {error}
             </p>
           )}

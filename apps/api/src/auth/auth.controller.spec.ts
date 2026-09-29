@@ -4,6 +4,7 @@ import * as express from 'express';
 import {
   AuthController,
   buildCookieOptions,
+  registerThrottleLimit,
   sweepExpiredOAuthStates,
 } from './auth.controller';
 import { AuthService } from './auth.service';
@@ -54,6 +55,31 @@ describe('buildCookieOptions', () => {
   });
 });
 
+describe('registerThrottleLimit', () => {
+  it('allows 15 signups per window under NODE_ENV=test', () => {
+    expect(registerThrottleLimit('test')).toBe(15);
+  });
+
+  it.each(['production', 'development', 'staging', 'TEST', ' test', ''])(
+    'keeps the production cap of 5 for NODE_ENV=%j',
+    (nodeEnv) => {
+      expect(registerThrottleLimit(nodeEnv)).toBe(5);
+    },
+  );
+
+  it('reads process.env.NODE_ENV at call time when no value is passed', () => {
+    const original = process.env.NODE_ENV;
+    try {
+      process.env.NODE_ENV = 'production';
+      expect(registerThrottleLimit()).toBe(5);
+      process.env.NODE_ENV = 'test';
+      expect(registerThrottleLimit()).toBe(15);
+    } finally {
+      process.env.NODE_ENV = original;
+    }
+  });
+});
+
 describe('AuthController', () => {
   let controller: AuthController;
   let service: AuthService;
@@ -63,6 +89,12 @@ describe('AuthController', () => {
     email: 'test@example.com',
     name: 'Test User',
     avatarUrl: null,
+    linkedinUrl: null,
+    githubUrl: null,
+    websiteUrl: null,
+    contactEmail: null,
+    phoneNumber: null,
+    passwordHash: 'super-secret-hash',
   } as db.User;
 
   const mockRes = () =>
@@ -119,12 +151,22 @@ describe('AuthController', () => {
       id: mockUser.id,
       email: mockUser.email,
       name: mockUser.name,
+      avatarUrl: mockUser.avatarUrl,
+      linkedinUrl: mockUser.linkedinUrl,
+      githubUrl: mockUser.githubUrl,
+      websiteUrl: mockUser.websiteUrl,
+      contactEmail: mockUser.contactEmail,
+      phoneNumber: mockUser.phoneNumber,
     });
+    expect(result).not.toHaveProperty('passwordHash');
   });
 
   it('sets the session cookie on login', async () => {
     const res = mockRes();
-    await controller.login({ email: 'test@example.com', password: 'pw' }, res);
+    const result = await controller.login(
+      { email: 'test@example.com', password: 'pw' },
+      res,
+    );
 
     expect(service.login).toHaveBeenCalledWith('test@example.com', 'pw');
     expect(res.cookie).toHaveBeenCalledWith(
@@ -132,6 +174,18 @@ describe('AuthController', () => {
       'session-token',
       expect.objectContaining({ httpOnly: true, path: '/' }),
     );
+    expect(result).toEqual({
+      id: mockUser.id,
+      email: mockUser.email,
+      name: mockUser.name,
+      avatarUrl: mockUser.avatarUrl,
+      linkedinUrl: mockUser.linkedinUrl,
+      githubUrl: mockUser.githubUrl,
+      websiteUrl: mockUser.websiteUrl,
+      contactEmail: mockUser.contactEmail,
+      phoneNumber: mockUser.phoneNumber,
+    });
+    expect(result).not.toHaveProperty('passwordHash');
   });
 
   it('clears the session cookie on logout using the same path/domain it was set with', async () => {
@@ -157,13 +211,20 @@ describe('AuthController', () => {
     expect(res.clearCookie).toHaveBeenCalled();
   });
 
-  it('returns the current user on me', () => {
-    expect(controller.me(mockUser)).toEqual({
+  it('returns the current user on me, including the quick-copy links but never passwordHash', () => {
+    const result = controller.me(mockUser);
+    expect(result).toEqual({
       id: mockUser.id,
       email: mockUser.email,
       name: mockUser.name,
       avatarUrl: mockUser.avatarUrl,
+      linkedinUrl: mockUser.linkedinUrl,
+      githubUrl: mockUser.githubUrl,
+      websiteUrl: mockUser.websiteUrl,
+      contactEmail: mockUser.contactEmail,
+      phoneNumber: mockUser.phoneNumber,
     });
+    expect(result).not.toHaveProperty('passwordHash');
   });
 
   describe('Google OAuth', () => {

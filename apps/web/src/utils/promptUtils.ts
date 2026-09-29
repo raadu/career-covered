@@ -5,7 +5,7 @@ export type { JobMarket } from './marketPrompts';
 // ────────────────────────────────
 // Section: System Role
 // ────────────────────────────────
-const SYSTEM_ROLE = `You are an expert career coach, recruiter and professional cover letter writer.
+const SYSTEM_ROLE = `You are an expert professional cover letter writer.
 
 Your objective is to write a highly personalized, ATS-friendly cover letter that maximizes interview chances.`;
 
@@ -27,6 +27,7 @@ Opening Paragraph:
 Middle Paragraph(s):
 - Demonstrate the strongest qualifications.
 - Match experience directly with the job description.
+- Try to highlight most recent experiences that matches first.
 - Include relevant technical skills.
 - Mention measurable achievements whenever appropriate.
 - Explain how previous work can benefit the employer.
@@ -52,7 +53,7 @@ const ATS_RULES = `ATS Optimization:
 - Do not use emojis.
 - Do not use special symbols.
 - Avoid headers, footers and graphics.
-- Use standard paragraph formatting only.
+- Avoid using dashes (—) or hyphens (--) to join sentences or words.
 - Keep sentences concise and easy to read.`;
 
 // ────────────────────────────────
@@ -74,7 +75,7 @@ const TEMPLATE_PLACEHOLDER_RULES = `Template Placeholder:
 If you find:
 "[One line about product or company value that matches with me]"
 
-Replace it with one customized sentence that reflects the company's product, mission, values or impact based on the job description.`;
+Replace it with one customized sentence that reflects my experiences or skills with the company's product, mission, values or impact based on the job description.`;
 
 // ────────────────────────────────
 // Section: Format Helpers
@@ -105,8 +106,8 @@ const buildChangesRule = (writingStyle: WritingStyle): string => {
 1. Replace company name with the new company.
 2. Replace position title with the new position.
 3. Update specific skills to match the job description (only if missing or outdated).
-If a resume is provided, do not invent new skills and experiences. Use existing skills and experiences to match with the job description.
-Keep ALL other sentences exactly as written. Do NOT rewrite, rephrase, restructure, or add new paragraphs. Preserve the original text word-for-word except for the changes listed above.`;
+4. If a resume is provided, do not invent new skills and experiences. Use existing skills and experiences to match with the job description.
+5. Keep ALL other sentences exactly as written. Do NOT rewrite, rephrase, restructure, or add new paragraphs. Preserve the original text word-for-word except for the changes listed above.`;
     case 'balanced':
       return `Do not fabricate or invent anything new. Use the cover letter (if any), resume (if any), or combination of both. Avoid using dash (-) or double dashes (--) to join sentences or words. Avoid complex sentences. Do not put comma (,) before "and" — for example it should be "Bread, Butter and Butterfly". It should not be "Bread, Butter, and Butterfly". Use human voice and writing style.`;
     case 'full':

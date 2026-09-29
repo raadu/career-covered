@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { navigateFromSidebar, toggleDarkMode } from './helpers/sidebar';
 
 test.describe('Cover Letter Creator - Advanced Features', () => {
     test.beforeEach(async ({ page }) => {
@@ -6,33 +7,32 @@ test.describe('Cover Letter Creator - Advanced Features', () => {
     });
 
     test('should toggle dark mode and update HTML element class', async ({ page }) => {
-        const darkToggle = page.getByTitle(/Switch to (Dark|Light) Mode/);
-        await expect(darkToggle).toBeVisible();
-
         const html = page.locator('html');
+        const wasDark = /dark/.test((await html.getAttribute('class')) ?? '');
 
-        const initialTitle = await darkToggle.getAttribute('title');
-        if (initialTitle === 'Switch to Dark Mode') {
+        await toggleDarkMode(page);
+        if (wasDark) {
             await expect(html).not.toHaveClass(/dark/);
-            await darkToggle.click();
-            await expect(html).toHaveClass(/dark/);
-            await expect(darkToggle).toHaveAttribute('title', 'Switch to Light Mode');
         } else {
             await expect(html).toHaveClass(/dark/);
-            await darkToggle.click();
+        }
+
+        await toggleDarkMode(page);
+        if (wasDark) {
+            await expect(html).toHaveClass(/dark/);
+        } else {
             await expect(html).not.toHaveClass(/dark/);
-            await expect(darkToggle).toHaveAttribute('title', 'Switch to Dark Mode');
         }
     });
 
     test('should navigate to FAQ and toggle accordion items', async ({ page }) => {
-        const faqLink = page.getByTitle('Frequently Asked Questions');
-        await faqLink.click();
+        await navigateFromSidebar(page, 'FAQ');
         await expect(page).toHaveURL(/.*\/faq/);
 
         await expect(page.getByRole('heading', { name: /Frequently Asked Questions/i })).toBeVisible();
 
-        const accordionBtns = page.locator('button[aria-expanded]');
+        // Scoped to <main> — the sidebar's hamburger also carries aria-expanded.
+        const accordionBtns = page.locator('main button[aria-expanded]');
         const count = await accordionBtns.count();
         expect(count).toBeGreaterThan(0);
 
@@ -51,8 +51,7 @@ test.describe('Cover Letter Creator - Advanced Features', () => {
     });
 
     test('should navigate to Support page and display contact details', async ({ page }) => {
-        const supportLink = page.getByTitle('Get Support');
-        await supportLink.click();
+        await navigateFromSidebar(page, 'Support');
         await expect(page).toHaveURL(/.*\/support/);
 
         await expect(page.getByRole('heading', { name: /always here to help/i })).toBeVisible();

@@ -28,6 +28,7 @@ export function useAuthForm() {
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
 
   const clearError = (field: keyof FormErrors) => {
     setErrors((prev) => {
@@ -63,7 +64,15 @@ export function useAuthForm() {
     setPassword('');
     setName('');
     setErrors({});
+    setIsForgotPassword(false);
   };
+
+  const openForgotPassword = () => {
+    setIsForgotPassword(true);
+    setErrors({});
+  };
+
+  const closeForgotPassword = () => setIsForgotPassword(false);
 
   const switchToLogin = () => {
     setIsRegister(false);
@@ -161,5 +170,8 @@ export function useAuthForm() {
     handleSubmit,
     handleGoogleSignIn,
     toggleMode,
+    isForgotPassword,
+    openForgotPassword,
+    closeForgotPassword,
   };
 }

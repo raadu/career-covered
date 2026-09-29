@@ -1,10 +1,11 @@
-import ViewModeToggle from './ViewModeToggle';
+import ViewModeToggle from 'components/common/ViewModeToggle';
 import UploadHeaderButton from './UploadHeaderButton';
-import type { ViewMode } from './useResumeViewMode';
+import type { ViewMode } from 'hooks/useViewMode';
 
 interface HeaderProps {
   viewMode: ViewMode;
   onViewModeChange: (mode: ViewMode) => void;
+  showViewModeToggle: boolean;
   atCap: boolean;
   isUploading: boolean;
   onUpload: (file: File) => void;
@@ -14,6 +15,7 @@ interface HeaderProps {
 const Header = ({
   viewMode,
   onViewModeChange,
+  showViewModeToggle,
   atCap,
   isUploading,
   onUpload,
@@ -21,15 +23,17 @@ const Header = ({
 }: HeaderProps) => (
   <div className="flex items-center justify-between mb-6">
     <div>
-      <h1 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-gray-100 tracking-tight">
+      <h1 className="text-xl sm:text-2xl font-black text-neutral-900 dark:text-neutral-100 tracking-tight">
         Resumes
       </h1>
-      <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+      <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-1">
         Upload and manage your resumes here
       </p>
     </div>
     <div className="flex items-center gap-2">
-      <ViewModeToggle viewMode={viewMode} onChange={onViewModeChange} />
+      {showViewModeToggle && (
+        <ViewModeToggle viewMode={viewMode} onChange={onViewModeChange} />
+      )}
       {viewMode === 'list' && (
         <UploadHeaderButton
           atCap={atCap}

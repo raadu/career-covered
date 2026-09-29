@@ -6,8 +6,6 @@ import {
   renderWithProviders,
   waitFor,
 } from '../../../../tests/test-utils';
-import Checkbox from 'views/TemplatesView/Checkbox';
-import BatchActionBar from 'views/TemplatesView/BatchActionBar';
 import TemplateTable from 'views/TemplatesView/TemplateTable';
 import TemplatesView from 'views/TemplatesView/index';
 import type { Template } from 'views/TemplatesView/types';
@@ -61,99 +59,8 @@ const withDataProps = {
   totalPages: 1,
 };
 
-/* ============================================================
- * Checkbox
- * ============================================================ */
-describe('Checkbox', () => {
-  it('renders unchecked by default', () => {
-    render(<Checkbox checked={false} onChange={vi.fn()} />);
-    const input = screen.getByRole('checkbox');
-    expect(input).not.toBeChecked();
-  });
-
-  it('renders checked', () => {
-    render(<Checkbox checked={true} onChange={vi.fn()} />);
-    expect(screen.getByRole('checkbox')).toBeChecked();
-  });
-
-  it('calls onChange when clicked', () => {
-    const onChange = vi.fn();
-    render(<Checkbox checked={false} onChange={onChange} />);
-    fireEvent.click(screen.getByRole('checkbox'));
-    expect(onChange).toHaveBeenCalledOnce();
-  });
-
-  it('sets indeterminate via ref when indeterminate is true', () => {
-    const { container } = render(
-      <Checkbox checked={false} indeterminate={true} onChange={vi.fn()} />,
-    );
-    const input = container.querySelector('input') as HTMLInputElement;
-    expect(input.indeterminate).toBe(true);
-  });
-
-  it('does not set indeterminate when indeterminate is false', () => {
-    const { container } = render(
-      <Checkbox checked={false} indeterminate={false} onChange={vi.fn()} />,
-    );
-    const input = container.querySelector('input') as HTMLInputElement;
-    expect(input.indeterminate).toBe(false);
-  });
-
-  it('does not set indeterminate when indeterminate is undefined', () => {
-    const { container } = render(
-      <Checkbox checked={false} onChange={vi.fn()} />,
-    );
-    const input = container.querySelector('input') as HTMLInputElement;
-    expect(input.indeterminate).toBe(false);
-  });
-
-  it('renders with a label linked by id', () => {
-    render(<Checkbox checked={false} onChange={vi.fn()} id="my-check" />);
-    const label = screen.getByLabelText('');
-    expect(label).toBeDefined();
-  });
-});
-
-/* ============================================================
- * BatchActionBar
- * ============================================================ */
-describe('BatchActionBar', () => {
-  it('renders selected count', () => {
-    render(
-      <BatchActionBar selectedCount={3} onDelete={vi.fn()} onClear={vi.fn()} />,
-    );
-    expect(screen.getByText('3 selected')).toBeInTheDocument();
-  });
-
-  it('renders singular count', () => {
-    render(
-      <BatchActionBar selectedCount={1} onDelete={vi.fn()} onClear={vi.fn()} />,
-    );
-    expect(screen.getByText('1 selected')).toBeInTheDocument();
-  });
-
-  it('calls onDelete when delete button clicked', () => {
-    const onDelete = vi.fn();
-    render(
-      <BatchActionBar
-        selectedCount={2}
-        onDelete={onDelete}
-        onClear={vi.fn()}
-      />,
-    );
-    fireEvent.click(screen.getByText('Delete Selected'));
-    expect(onDelete).toHaveBeenCalledOnce();
-  });
-
-  it('calls onClear when clear button clicked', () => {
-    const onClear = vi.fn();
-    render(
-      <BatchActionBar selectedCount={2} onDelete={vi.fn()} onClear={onClear} />,
-    );
-    fireEvent.click(screen.getByText('Clear selection'));
-    expect(onClear).toHaveBeenCalledOnce();
-  });
-});
+// Checkbox and BatchActionBar are now shared components — see
+// components/common/__tests__/Checkbox.test.tsx and BatchActionBar.test.tsx.
 
 /* ============================================================
  * TemplateTable (pure component tests)
@@ -291,10 +198,12 @@ describe('TemplatesView — selection logic', () => {
     renderWithProviders(<TemplatesView />, {
       preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
     });
-    await waitFor(() => {
-      expect(screen.getByText('Cover Letter Templates')).toBeInTheDocument();
-    });
-    expect(screen.getByText('You have 3 templates')).toBeInTheDocument();
+    expect(screen.getByText('Cover Letter Templates')).toBeInTheDocument();
+    // The heading renders immediately; the count only appears once the
+    // templates fetch resolves, so wait on the count itself.
+    expect(
+      await screen.findByText('You have 3 templates'),
+    ).toBeInTheDocument();
   });
 
   it('renders all template rows after fetch', async () => {
@@ -437,6 +346,22 @@ describe('TemplatesView — CRUD operations', () => {
     vi.unstubAllGlobals();
   });
 
+  it('labels the create button "New" on phones and "New Template" from md up', async () => {
+    renderWithProviders(<TemplatesView />, {
+      preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
+    });
+    const full = await screen.findByText('New Template');
+    const short = screen.getByText('New', { exact: true });
+
+    expect(short).toHaveClass('md:hidden');
+    expect(full).toHaveClass('hidden', 'md:inline');
+    expect(short.closest('button')).toBe(full.closest('button'));
+    expect(short.closest('button')).toHaveClass('whitespace-nowrap');
+
+    fireEvent.click(short);
+    expect(screen.getByText('Add a New Template')).toBeInTheDocument();
+  });
+
   it('opens create modal when New Template is clicked', async () => {
     renderWithProviders(<TemplatesView />, {
       preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
@@ -524,6 +449,67 @@ describe('TemplatesView — CRUD operations', () => {
       );
       expect(batchCall).toBeDefined();
     });
+  });
+});
+
+/* ============================================================
+ * Mobile — grid forced, toggle hidden
+ * ============================================================ */
+describe('TemplatesView — mobile', () => {
+  const mockPaginatedResponse = {
+    data: mockTemplates,
+    total: 3,
+    page: 1,
+    limit: 10,
+    totalPages: 1,
+  };
+
+  beforeEach(() => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve(mockPaginatedResponse),
+      }),
+    );
+    vi.stubGlobal(
+      'matchMedia',
+      vi.fn().mockImplementation((query: string) => ({
+        matches: true,
+        media: query,
+        onchange: null,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+    );
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('renders cards instead of the table on mobile', async () => {
+    renderWithProviders(<TemplatesView />, {
+      preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
+    });
+    await waitFor(() => {
+      expect(screen.getByText('Dev')).toBeInTheDocument();
+    });
+    expect(screen.queryAllByRole('checkbox')).toHaveLength(0);
+  });
+
+  it('hides the grid/list view mode toggle on mobile', async () => {
+    renderWithProviders(<TemplatesView />, {
+      preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
+    });
+    await waitFor(() => {
+      expect(screen.getByText('Dev')).toBeInTheDocument();
+    });
+    expect(screen.queryByTitle('Grid View')).not.toBeInTheDocument();
+    expect(screen.queryByTitle('List View')).not.toBeInTheDocument();
   });
 });
 

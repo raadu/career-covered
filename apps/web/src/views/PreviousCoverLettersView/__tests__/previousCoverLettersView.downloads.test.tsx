@@ -205,7 +205,7 @@ describe('PreviousCoverLettersView — downloads', () => {
     fireEvent.click(screen.getAllByTitle('Choose a PDF design')[0]);
     expect(screen.getByText('Choose a PDF Design')).toBeInTheDocument();
 
-    fireEvent.click(screen.getByLabelText('Close modal'));
+    fireEvent.click(screen.getByLabelText('Close'));
 
     expect(screen.queryByText('Choose a PDF Design')).not.toBeInTheDocument();
     expect(saveSpy).not.toHaveBeenCalled();

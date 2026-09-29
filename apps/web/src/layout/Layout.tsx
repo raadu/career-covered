@@ -48,7 +48,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const shouldShowOnboarding = !apiKey && generationCount > 4 && !isPublicPage;
 
   return (
-    <div className="flex flex-col lg:flex-row h-screen bg-gray-50 dark:bg-gray-950 font-sans text-gray-900 dark:text-gray-100 overflow-hidden">
+    // bg/text/font come from the global `body` base styles (src/index.css) —
+    // not redeclared here, so there's one place to change them.
+    <div className="flex flex-col md:flex-row h-screen overflow-hidden">
       <Sidebar isExpanded={isSidebarExpanded} onToggle={handleToggle} />
       <main className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
         {/* Scrollable Container */}

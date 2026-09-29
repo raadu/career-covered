@@ -1,6 +1,7 @@
 import { FaKey, FaQuestionCircle, FaTimes } from 'react-icons/fa';
 import CommonButton from 'components/common/CommonButton';
 import { PROVIDER_NAME } from 'utils/AIModelUtils';
+import { ICON_BUTTON_SIZE } from 'components/common/buttonSizes';
 
 interface ApiKeySectionProps {
   apiKey: string;
@@ -19,11 +20,11 @@ const ApiKeySection = ({
 }: ApiKeySectionProps) => {
   if (showKeyInput) {
     return (
-      <div className="flex-1 w-full lg:w-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-2 animate-in flex-in slide-in-from-left-2 duration-300">
+      <div className="flex-1 w-full lg:w-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-2 md:order-1 md:col-span-6 lg:order-none animate-in flex-in slide-in-from-left-2 duration-300">
         <div className="relative flex-1 group">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors group-focus-within:text-blue-500">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none transition-colors group-focus-within:text-brand-500">
             <FaKey
-              className="text-gray-400 dark:text-gray-500 group-focus-within:text-blue-500 dark:group-focus-within:text-blue-400 transition-colors"
+              className="text-neutral-400 dark:text-neutral-500 group-focus-within:text-brand-500 dark:group-focus-within:text-brand-400 transition-colors"
               size={12}
             />
           </div>
@@ -32,7 +33,7 @@ const ApiKeySection = ({
             value={apiKey}
             onChange={(e) => setApiKey(e.target.value)}
             placeholder={`Enter ${PROVIDER_NAME} API Key`}
-            className="pl-9 w-full h-9 border border-gray-200 dark:border-gray-600 rounded-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none text-sm bg-gray-50/50 dark:bg-gray-700/50 focus:bg-white dark:focus:bg-gray-600 transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500 font-mono text-gray-900 dark:text-gray-100"
+            className="pl-9 w-full h-10 border border-neutral-200 dark:border-neutral-600 focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none text-sm bg-neutral-50/50 dark:bg-neutral-700/50 focus:bg-white dark:focus:bg-neutral-600 transition-all placeholder:text-neutral-400 dark:placeholder:text-neutral-500 font-mono text-neutral-900 dark:text-neutral-100"
           />
         </div>
 
@@ -40,7 +41,7 @@ const ApiKeySection = ({
           {apiKey && (
             <button
               onClick={() => setShowKeyInput(false)}
-              className="p-2 text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 transition-colors rounded-none hover:bg-red-50 dark:hover:bg-red-900/20"
+              className={`${ICON_BUTTON_SIZE} flex items-center justify-center text-neutral-400 dark:text-neutral-500 hover:text-danger dark:hover:text-danger-fg-dark transition-colors hover:bg-danger-subtle dark:hover:bg-danger-subtle-dark`}
               title="Cancel editing"
             >
               <FaTimes size={14} />
@@ -52,11 +53,10 @@ const ApiKeySection = ({
             onClick={() => setShowHelpModal(true)}
             icon={<FaQuestionCircle size={14} />}
             title="Help with API Key"
-            className="rounded-none"
           >
             Help
           </CommonButton>
-          <div className="bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 px-2 py-1.5 rounded-none text-[10px] font-bold uppercase tracking-wider border border-emerald-100 dark:border-emerald-800 flex items-center justify-center min-w-[50px]">
+          <div className="bg-success-subtle dark:bg-success-subtle-dark text-success-fg dark:text-success-fg-dark px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider border border-success-border dark:border-success-border-dark flex items-center justify-center min-w-[50px]">
             Done
           </div>
         </div>
@@ -65,7 +65,10 @@ const ApiKeySection = ({
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+    // Phones: a 70/30 split across the full row. Tablet: display:contents,
+    // so the two buttons join the parent's grid as the 1st and 3rd thirds of
+    // row 1 (the model select sits between them). lg: side by side.
+    <div className="grid grid-cols-[7fr_3fr] gap-2 w-full md:contents lg:flex lg:flex-wrap lg:items-center lg:gap-3 lg:w-auto">
       <CommonButton
         variant="outline"
         onClick={() => setShowKeyInput(true)}
@@ -75,7 +78,7 @@ const ApiKeySection = ({
             className="group-hover:rotate-12 transition-transform"
           />
         }
-        className="group rounded-none"
+        className="group md:order-1 md:col-span-2 lg:order-none"
       >
         {apiKey ? 'Update API Key' : 'Add Custom API Key'}
       </CommonButton>
@@ -83,7 +86,7 @@ const ApiKeySection = ({
         variant="ghost"
         onClick={() => setShowHelpModal(true)}
         icon={<FaQuestionCircle size={11} />}
-        className="rounded-none"
+        className="md:order-3 md:col-span-2 lg:order-none"
       >
         Help
       </CommonButton>

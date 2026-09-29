@@ -15,7 +15,8 @@ const GenerateAction = ({
   onGenerate,
 }: GenerateActionProps) => {
   return (
-    <div className="flex justify-center w-full sm:w-auto">
+    // Tablet: its own full-width row 3 of the parent grid.
+    <div className="flex justify-center w-full sm:w-auto md:order-6 md:col-span-6 md:w-full lg:order-none lg:w-auto">
       <CommonButton
         variant="primary"
         onClick={onGenerate}
@@ -23,7 +24,7 @@ const GenerateAction = ({
         disabled={isLoading || !hasJobDescription}
         icon={!isLoading && <FaBolt />}
         fullWidth={true}
-        className="bg-black hover:bg-gray-900 dark:bg-cyan-400 dark:hover:bg-cyan-500 text-white dark:text-black border-0 rounded-none sm:w-auto"
+        className="sm:w-auto md:w-full lg:w-auto"
       >
         {hasGeneratedLetter ? 'Generate Another One' : 'Generate Cover Letter'}
       </CommonButton>

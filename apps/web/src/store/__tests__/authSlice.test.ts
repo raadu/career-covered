@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import authReducer, {
   fetchCurrentUser,
   logoutUser,
+  updateProfileLinks,
   setAuthModalOpen,
   setUser,
   setAuthLoading,
@@ -145,6 +146,30 @@ describe('authSlice extraReducers', () => {
       expect(state.authError).toBe('Logout failed');
     });
   });
+
+  describe('updateProfileLinks', () => {
+    it('replaces state.user wholesale on fulfilled, not a partial merge', () => {
+      const staleUser: UserProfile = {
+        ...mockProfile,
+        linkedinUrl: 'https://linkedin.com/in/old',
+        githubUrl: 'https://github.com/old',
+      };
+      const freshUser: UserProfile = {
+        ...mockProfile,
+        linkedinUrl: 'https://linkedin.com/in/new',
+        githubUrl: null,
+        websiteUrl: 'https://new.dev',
+        contactEmail: 'new@example.com',
+      };
+
+      const state = authReducer(
+        createInitialState({ user: staleUser, isAuthenticated: true }),
+        updateProfileLinks.fulfilled(freshUser, 'req', {}),
+      );
+
+      expect(state.user).toEqual(freshUser);
+    });
+  });
 });
 
 describe('authSlice thunks', () => {
@@ -207,6 +232,49 @@ describe('authSlice thunks', () => {
 
       expect(action.type).toBe('auth/logoutUser/rejected');
       expect(action.payload).toBe('Logout failed');
+    });
+  });
+
+  describe('updateProfileLinks', () => {
+    it('sends a PATCH with the given links and resolves with the updated profile', async () => {
+      const updatedProfile: UserProfile = {
+        ...mockProfile,
+        linkedinUrl: 'https://linkedin.com/in/x',
+      };
+      vi.mocked(fetch).mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve(updatedProfile),
+      } as Response);
+
+      const action = await updateProfileLinks({
+        linkedinUrl: 'https://linkedin.com/in/x',
+      })(dispatch, getState, undefined);
+
+      expect(fetch).toHaveBeenCalledWith('/api/profile/links', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ linkedinUrl: 'https://linkedin.com/in/x' }),
+      });
+      expect(action.type).toBe('auth/updateProfileLinks/fulfilled');
+      expect(action.payload).toEqual(updatedProfile);
+    });
+
+    it('rejects with a fixed message when the response is not ok', async () => {
+      vi.mocked(fetch).mockResolvedValue({ ok: false } as Response);
+
+      const action = await updateProfileLinks({})(dispatch, getState, undefined);
+
+      expect(action.type).toBe('auth/updateProfileLinks/rejected');
+      expect(action.payload).toBe('Failed to update profile links');
+    });
+
+    it('rejects with the fallback message when fetch throws a non-Error value', async () => {
+      vi.mocked(fetch).mockRejectedValue('network down');
+
+      const action = await updateProfileLinks({})(dispatch, getState, undefined);
+
+      expect(action.type).toBe('auth/updateProfileLinks/rejected');
+      expect(action.payload).toBe('Failed to update profile links');
     });
   });
 });

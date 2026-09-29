@@ -62,24 +62,24 @@ const ResumeSelector = ({
   return (
     <div
       style={panelStyle}
-      className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 p-2 sm:p-2 flex flex-col gap-1.5 lg:col-start-2 lg:row-start-2 lg:h-[var(--template-height)] lg:overflow-hidden transition-[height] duration-300 ease-in-out"
+      className="bg-white dark:bg-neutral-900 shadow-sm border border-neutral-200 dark:border-neutral-800 p-2 sm:p-2 flex flex-col gap-1.5 lg:col-start-2 lg:row-start-2 lg:h-[var(--template-height)] lg:overflow-hidden transition-[height] duration-300 ease-in-out"
     >
       <div className="shrink-0">
         <div className="flex items-center gap-2">
-          <h2 className="text-sm font-bold text-gray-900 dark:text-gray-100">
+          <h2 className="text-sm font-bold text-neutral-900 dark:text-neutral-100">
             Your Resumes
           </h2>
           {showSeeAll && (
             <button
               type="button"
               onClick={() => dispatch(toggleTemplateExpanded())}
-              className="hidden lg:inline-block text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline"
+              className="hidden lg:inline-block text-xs font-semibold text-brand-700 dark:text-brand-400 hover:underline"
             >
               {isTemplateExpanded ? 'Show Less' : 'See All'}
             </button>
           )}
         </div>
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+        <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">
           Select your resume to create better cover letter
         </p>
       </div>

@@ -26,6 +26,47 @@ describe('TemplateSelector', () => {
     expect(container.firstChild).toBeNull();
   });
 
+  describe('rename/delete icons', () => {
+    const renderOne = () =>
+      render(
+        <TemplateSelector
+          templates={[tplA]}
+          activeId={null}
+          onSelect={vi.fn()}
+          onRename={vi.fn()}
+          onRemove={vi.fn()}
+        />,
+      );
+
+    it('are always visible, not revealed only on hover, at every screen size', () => {
+      renderOne();
+      for (const title of ['Rename Template', 'Delete Template']) {
+        const button = screen.getByTitle(title);
+        expect(button.className).not.toMatch(/opacity-0/);
+        expect(button.className).not.toMatch(/group-hover:opacity/);
+      }
+    });
+
+    it('use compact 24px buttons everywhere so the two icons sit together', () => {
+      renderOne();
+      for (const title of ['Rename Template', 'Delete Template']) {
+        const button = screen.getByTitle(title);
+        expect(button).toHaveClass('min-w-6', 'min-h-10');
+        expect(button.className).not.toMatch(/min-w-10/);
+      }
+    });
+
+    it('are grouped together at the far right of the chip, after the name', () => {
+      renderOne();
+      const rename = screen.getByTitle('Rename Template');
+      const group = rename.parentElement!;
+      expect(group).toBe(screen.getByTitle('Delete Template').parentElement);
+      expect(group).toHaveClass('ml-auto', 'shrink-0');
+      expect(group.parentElement!.lastElementChild).toBe(group);
+      expect(screen.getByText('Template A')).toHaveClass('flex-1');
+    });
+  });
+
   it('renders template boxes for each template', () => {
     render(
       <TemplateSelector
@@ -185,8 +226,8 @@ describe('TemplateSelector', () => {
     );
 
     const boxes = screen.getAllByText(/Template/);
-    expect(boxes[0].parentElement).toHaveClass('bg-blue-50/80');
-    expect(boxes[1].parentElement).not.toHaveClass('bg-blue-50/80');
+    expect(boxes[0].parentElement).toHaveClass('bg-brand-50');
+    expect(boxes[1].parentElement).not.toHaveClass('bg-brand-50');
   });
 
   it('does not apply active class when activeId is null', () => {
@@ -202,7 +243,7 @@ describe('TemplateSelector', () => {
 
     const boxes = screen.getAllByText(/Template/);
     boxes.forEach((box) => {
-      expect(box.parentElement).not.toHaveClass('bg-blue-50/80');
+      expect(box.parentElement).not.toHaveClass('bg-brand-50');
     });
   });
 
@@ -220,7 +261,7 @@ describe('TemplateSelector', () => {
     fireEvent.click(screen.getByTitle('Rename Template'));
 
     expect(screen.queryByTitle('Rename Template')).not.toBeInTheDocument();
-    const checkBtn = document.querySelector('.text-green-500');
+    const checkBtn = document.querySelector('.text-success');
     expect(checkBtn).toBeInTheDocument();
   });
 

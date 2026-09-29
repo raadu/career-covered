@@ -6,7 +6,6 @@ import {
   renderWithProviders,
   waitFor,
 } from '../../../../tests/test-utils';
-import BatchActionBar from 'views/PreviousCoverLettersView/BatchActionBar';
 import PreviousCoverLettersTable from 'views/PreviousCoverLettersView/PreviousCoverLettersTable';
 import PreviousCoverLettersView from 'views/PreviousCoverLettersView/index';
 import type { CoverLetterItem } from 'views/PreviousCoverLettersView/types';
@@ -89,46 +88,8 @@ const withDataProps = {
   totalPages: 1,
 };
 
-/* ============================================================
- * BatchActionBar
- * ============================================================ */
-describe('BatchActionBar', () => {
-  it('renders selected count', () => {
-    render(
-      <BatchActionBar selectedCount={3} onDelete={vi.fn()} onClear={vi.fn()} />,
-    );
-    expect(screen.getByText('3 selected')).toBeInTheDocument();
-  });
-
-  it('renders singular count', () => {
-    render(
-      <BatchActionBar selectedCount={1} onDelete={vi.fn()} onClear={vi.fn()} />,
-    );
-    expect(screen.getByText('1 selected')).toBeInTheDocument();
-  });
-
-  it('calls onDelete when delete button clicked', () => {
-    const onDelete = vi.fn();
-    render(
-      <BatchActionBar
-        selectedCount={2}
-        onDelete={onDelete}
-        onClear={vi.fn()}
-      />,
-    );
-    fireEvent.click(screen.getByText('Delete Selected'));
-    expect(onDelete).toHaveBeenCalledOnce();
-  });
-
-  it('calls onClear when clear button clicked', () => {
-    const onClear = vi.fn();
-    render(
-      <BatchActionBar selectedCount={2} onDelete={vi.fn()} onClear={onClear} />,
-    );
-    fireEvent.click(screen.getByText('Clear selection'));
-    expect(onClear).toHaveBeenCalledOnce();
-  });
-});
+// BatchActionBar is now a shared component — see
+// components/common/__tests__/BatchActionBar.test.tsx.
 
 /* ============================================================
  * PreviousCoverLettersTable (pure component tests)
@@ -327,6 +288,19 @@ describe('PreviousCoverLettersView — integration', () => {
     });
   });
 
+  it('labels the create button "New" on phones and "Create New" from md up', async () => {
+    renderWithProviders(<PreviousCoverLettersView />, {
+      preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
+    });
+    const full = await screen.findByText('Create New');
+    const short = screen.getByText('New', { exact: true });
+
+    expect(short).toHaveClass('md:hidden');
+    expect(full).toHaveClass('hidden', 'md:inline');
+    expect(short.closest('button')).toBe(full.closest('button'));
+    expect(short.closest('button')).toHaveClass('whitespace-nowrap');
+  });
+
   it('does not show batch action bar initially', async () => {
     renderWithProviders(<PreviousCoverLettersView />, {
       preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
@@ -468,6 +442,73 @@ describe('PreviousCoverLettersView — integration', () => {
       );
       expect(batchCall).toBeDefined();
     });
+  });
+});
+
+/* ============================================================
+ * Mobile — grid forced, toggle hidden
+ * ============================================================ */
+describe('PreviousCoverLettersView — mobile', () => {
+  const mockPaginatedResponse = {
+    data: mockItems,
+    total: 3,
+    page: 1,
+    limit: 10,
+    totalPages: 1,
+  };
+
+  beforeEach(() => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve(mockPaginatedResponse),
+      }),
+    );
+    vi.stubGlobal(
+      'matchMedia',
+      vi.fn().mockImplementation((query: string) => ({
+        matches: true,
+        media: query,
+        onchange: null,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+    );
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('renders cards instead of the table on mobile', async () => {
+    renderWithProviders(<PreviousCoverLettersView />, {
+      preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
+    });
+    await waitFor(() => {
+      expect(
+        screen.getByText('Software Engineer at Google'),
+      ).toBeInTheDocument();
+    });
+    // The table renders a checkbox per row + a header checkbox; the card
+    // grid has none.
+    expect(screen.queryAllByRole('checkbox')).toHaveLength(0);
+  });
+
+  it('hides the grid/list view mode toggle on mobile', async () => {
+    renderWithProviders(<PreviousCoverLettersView />, {
+      preloadedState: { auth: { isAuthenticated: true, isLoading: false } },
+    });
+    await waitFor(() => {
+      expect(
+        screen.getByText('Software Engineer at Google'),
+      ).toBeInTheDocument();
+    });
+    expect(screen.queryByTitle('Grid View')).not.toBeInTheDocument();
+    expect(screen.queryByTitle('List View')).not.toBeInTheDocument();
   });
 });
 

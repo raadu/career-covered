@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { showToast } from 'components/common/Toast';
 import { useSelector } from 'react-redux';
 import { buildCoverLetterPrompt } from 'utils/promptUtils';
@@ -143,22 +142,10 @@ const GeneratorControls = ({ selectedResumeId }: GeneratorControlsProps) => {
             sameLanguage: activeCustomization?.sameLanguage || undefined,
           }),
         })
+          // Success is already announced by the "generated" toast above, so
+          // the save itself stays silent — only a failure is surfaced.
           .then((res) => {
-            if (res.ok) {
-              showToast(
-                <span>
-                  Generated cover letter is saved. You can{' '}
-                  <Link
-                    to="/cover-letter/previous"
-                    className="underline font-semibold"
-                  >
-                    check here
-                  </Link>
-                  .
-                </span>,
-                { type: 'success', duration: 2000 },
-              );
-            } else {
+            if (!res.ok) {
               showToast('Failed to save cover letter', { type: 'error' });
             }
           })
@@ -175,8 +162,15 @@ const GeneratorControls = ({ selectedResumeId }: GeneratorControlsProps) => {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 shadow-sm border border-gray-200 dark:border-gray-700 p-2 flex flex-col items-start gap-2">
-      <div className="flex flex-col lg:flex-row w-full gap-3 lg:items-center justify-between">
+    <div className="bg-white dark:bg-neutral-900 shadow-sm border border-neutral-200 dark:border-neutral-800 p-2 flex flex-col items-start gap-2">
+      {/* Tablet (md → lg) only: a 6-column grid. The inner wrappers switch
+          to display:contents there so every control becomes a grid item,
+          placed with md:order-* / md:col-span-* in each child:
+            row 1 — API key · model · Help (2 cols each)
+            row 2 — filter status · Customize More (3 cols each)
+            row 3 — Generate (all 6 cols)
+          Phones keep the stacked flex layout; lg returns to one flex row. */}
+      <div className="flex flex-col w-full gap-3 justify-between md:grid md:grid-cols-6 md:gap-2 lg:flex lg:flex-row lg:gap-3 lg:items-center">
         <ApiKeySection
           apiKey={apiKey}
           setApiKey={(val) => dispatch(setApiKey(val))}
@@ -185,10 +179,16 @@ const GeneratorControls = ({ selectedResumeId }: GeneratorControlsProps) => {
           setShowHelpModal={setShowHelpModal}
         />
 
-        <div className="flex flex-col sm:flex-row w-full lg:w-auto items-stretch lg:items-center gap-1.5">
+        <div className="flex flex-col sm:flex-row w-full items-stretch gap-1.5 md:contents lg:flex lg:w-auto lg:items-center">
           <ModelSelect
             selectedModel={selectedModel}
             onChange={(id) => dispatch(setSelectedModel(id))}
+            // While the key input fills row 1, the model gets its own row.
+            className={
+              showKeyInput
+                ? 'md:order-2 md:col-span-6 lg:order-none'
+                : 'md:order-2 md:col-span-2 lg:order-none'
+            }
           />
 
           <ControlActions
@@ -206,7 +206,7 @@ const GeneratorControls = ({ selectedResumeId }: GeneratorControlsProps) => {
       </div>
 
       {error && (
-        <p className="w-full text-center text-red-500 text-xs">
+        <p className="w-full text-center text-danger dark:text-danger-fg-dark text-xs">
           Error generating. Check API Key.
         </p>
       )}

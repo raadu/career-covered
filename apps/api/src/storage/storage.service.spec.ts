@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
 import {
   InternalServerErrorException,
+  Logger,
   NotFoundException,
 } from '@nestjs/common';
 import { S3Client } from '@aws-sdk/client-s3';
@@ -132,6 +133,33 @@ describe('StorageService', () => {
         .mockRejectedValueOnce(new Error('not found'))
         .mockRejectedValueOnce(alreadyOwned);
       await expect(service.onModuleInit()).resolves.not.toThrow();
+    });
+
+    it('treats BucketAlreadyExists (lost a create race) as success, not an error', async () => {
+      const alreadyExists = new Error('already exists');
+      alreadyExists.name = 'BucketAlreadyExists';
+      const errorSpy = jest.spyOn(Logger.prototype, 'error');
+      sendSpy
+        .mockRejectedValueOnce(new Error('not found'))
+        .mockRejectedValueOnce(alreadyExists);
+
+      await expect(service.onModuleInit()).resolves.toBeUndefined();
+      expect(errorSpy).not.toHaveBeenCalled();
+    });
+
+    it('logs but does not crash startup when CreateBucket fails for another reason', async () => {
+      const errorSpy = jest
+        .spyOn(Logger.prototype, 'error')
+        .mockImplementation();
+      sendSpy
+        .mockRejectedValueOnce(new Error('not found'))
+        .mockRejectedValueOnce(new Error('AccessDenied'));
+
+      await expect(service.onModuleInit()).resolves.toBeUndefined();
+      expect(errorSpy).toHaveBeenCalledWith(
+        'Failed to create storage bucket "test-bucket"',
+        expect.any(Error),
+      );
     });
 
     it('skips bucket auto-create entirely in production', async () => {

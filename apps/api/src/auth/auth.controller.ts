@@ -46,6 +46,14 @@ export function buildCookieOptions(cookieDomain = process.env.COOKIE_DOMAIN) {
 
 const COOKIE_OPTIONS = buildCookieOptions();
 
+// Test runs sign up a fresh throwaway account per case, all from one IP,
+// which the production cap of 5/min would throttle mid-suite. Only an
+// explicit NODE_ENV=test gets the looser cap — every other value, including
+// a missing one, keeps the production limit.
+export function registerThrottleLimit(nodeEnv = process.env.NODE_ENV): number {
+  return nodeEnv === 'test' ? 15 : 5;
+}
+
 const OAUTH_STATE_TTL_MS = 10 * 60 * 1000;
 
 // Temporary store for OAuth state & code verifier (use Redis in production).
@@ -78,12 +86,26 @@ setInterval(
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  private serializeUser(user: db.User) {
+    return {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      avatarUrl: user.avatarUrl,
+      linkedinUrl: user.linkedinUrl,
+      githubUrl: user.githubUrl,
+      websiteUrl: user.websiteUrl,
+      contactEmail: user.contactEmail,
+      phoneNumber: user.phoneNumber,
+    };
+  }
+
   @Public()
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Register with email & password' })
   // Tight cap — no lockout/CAPTCHA yet, so keep brute-force/spam-signup room narrow.
-  @Throttle({ default: { limit: 5, ttl: 60_000 } })
+  @Throttle({ default: { limit: () => registerThrottleLimit(), ttl: 60_000 } })
   async register(
     @Body() dto: RegisterDto,
     @Res({ passthrough: true }) res: express.Response,
@@ -95,7 +117,7 @@ export class AuthController {
     );
     const token = await this.authService.createSession(user.id);
     res.cookie(SESSION_COOKIE, token, COOKIE_OPTIONS);
-    return { id: user.id, email: user.email, name: user.name };
+    return this.serializeUser(user);
   }
 
   @Public()
@@ -111,19 +133,14 @@ export class AuthController {
     const user = await this.authService.login(dto.email, dto.password);
     const token = await this.authService.createSession(user.id);
     res.cookie(SESSION_COOKIE, token, COOKIE_OPTIONS);
-    return { id: user.id, email: user.email, name: user.name };
+    return this.serializeUser(user);
   }
 
   @Get('me')
   @ApiCookieAuth('session')
   @ApiOperation({ summary: 'Get current authenticated user' })
   me(@CurrentUser() user: db.User) {
-    return {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      avatarUrl: user.avatarUrl,
-    };
+    return this.serializeUser(user);
   }
 
   @Post('logout')

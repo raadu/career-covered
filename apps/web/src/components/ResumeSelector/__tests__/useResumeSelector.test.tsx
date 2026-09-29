@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { renderHook, waitFor, act } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { createTestStore } from '../../../../tests/test-utils';
 import { useResumeSelector } from '../useResumeSelector';
 import type { Resume } from 'views/ResumeView/types';
@@ -59,6 +59,119 @@ describe('useResumeSelector', () => {
     renderUseResumeSelector(null, vi.fn(), false);
 
     expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  describe('auto-selecting an uploaded resume', () => {
+    const pdf = () =>
+      new File(['%PDF-1.4'], 'cv.pdf', { type: 'application/pdf' });
+
+    // GET /api/resumes returns `list()` at call time; POST returns the new one.
+    const stubServer = (list: () => Resume[], created: Resume, postOk = true) =>
+      vi.stubGlobal(
+        'fetch',
+        vi.fn(async (_url: string, init?: RequestInit) =>
+          init?.method === 'POST'
+            ? {
+                ok: postOk,
+                json: async () =>
+                  postOk ? created : { message: 'Upload failed' },
+              }
+            : { ok: true, json: async () => list() },
+        ),
+      );
+
+    it('selects the first resume the user uploads', async () => {
+      const created = mockResume({ id: 'first' });
+      let resumes: Resume[] = [];
+      stubServer(() => resumes, created);
+      const onSelectResume = vi.fn();
+      const { result } = renderUseResumeSelector(null, onSelectResume);
+      await waitFor(() => expect(result.current.resumes).toEqual([]));
+
+      resumes = [created];
+      await act(async () => {
+        await result.current.uploadResume(pdf());
+      });
+
+      expect(onSelectResume).toHaveBeenLastCalledWith('first');
+      expect(result.current.resumes.map((r) => r.id)).toEqual(['first']);
+    });
+
+    it('switches the selection to the newly uploaded resume when another was selected', async () => {
+      const existing = mockResume({ id: 'old', order: 0 });
+      const created = mockResume({ id: 'recent', order: 1 });
+      let resumes: Resume[] = [existing];
+      stubServer(() => resumes, created);
+      const onSelectResume = vi.fn();
+      const { result } = renderUseResumeSelector('old', onSelectResume);
+      await waitFor(() => expect(result.current.resumes).toHaveLength(1));
+
+      resumes = [existing, created];
+      await act(async () => {
+        await result.current.uploadResume(pdf());
+      });
+
+      expect(onSelectResume).toHaveBeenLastCalledWith('recent');
+    });
+
+    it('keeps the new selection — the stale-selection cleanup does not clear it', async () => {
+      const created = mockResume({ id: 'new' });
+      let resumes: Resume[] = [];
+      stubServer(() => resumes, created);
+      const store = createTestStore({
+        auth: { isAuthenticated: true, isLoading: false },
+      });
+      const wrapper = ({ children }: { children: ReactNode }) => (
+        <Provider store={store}>{children}</Provider>
+      );
+      // Real selection state, so the hook's cleanup effect runs against the
+      // actual selected id after the upload settles.
+      const { result } = renderHook(
+        () => {
+          const [selected, setSelected] = useState<string | null>(null);
+          return { selected, ...useResumeSelector(selected, setSelected) };
+        },
+        { wrapper },
+      );
+      await waitFor(() => expect(result.current.resumes).toEqual([]));
+
+      resumes = [created];
+      await act(async () => {
+        await result.current.uploadResume(pdf());
+      });
+
+      await waitFor(() => expect(result.current.resumes).toHaveLength(1));
+      expect(result.current.selected).toBe('new');
+    });
+
+    it('does not change the selection when the upload fails', async () => {
+      const existing = mockResume({ id: 'old' });
+      stubServer(() => [existing], mockResume({ id: 'never' }), false);
+      const onSelectResume = vi.fn();
+      const { result } = renderUseResumeSelector('old', onSelectResume);
+      await waitFor(() => expect(result.current.resumes).toHaveLength(1));
+
+      await act(async () => {
+        await result.current.uploadResume(pdf());
+      });
+
+      expect(onSelectResume).not.toHaveBeenCalled();
+    });
+
+    it('does not change the selection for a rejected (non-PDF) file', async () => {
+      stubServer(() => [], mockResume({ id: 'never' }));
+      const onSelectResume = vi.fn();
+      const { result } = renderUseResumeSelector(null, onSelectResume);
+      await waitFor(() => expect(result.current.resumes).toEqual([]));
+
+      await act(async () => {
+        await result.current.uploadResume(
+          new File(['x'], 'cv.docx', { type: 'application/msword' }),
+        );
+      });
+
+      expect(onSelectResume).not.toHaveBeenCalled();
+    });
   });
 
   it('toggleSelect selects an unselected id', async () => {

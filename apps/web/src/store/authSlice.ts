@@ -6,6 +6,11 @@ export interface UserProfile {
   email: string;
   name: string;
   avatarUrl?: string;
+  linkedinUrl?: string | null;
+  githubUrl?: string | null;
+  websiteUrl?: string | null;
+  contactEmail?: string | null;
+  phoneNumber?: string | null;
 }
 
 export interface AuthState {
@@ -47,6 +52,33 @@ export const logoutUser = createApiThunk<void>(
     }
   },
   'Logout failed',
+);
+
+export interface ProfileLinksPayload {
+  linkedinUrl?: string;
+  githubUrl?: string;
+  websiteUrl?: string;
+  contactEmail?: string;
+  phoneNumber?: string;
+}
+
+export const updateProfileLinks = createApiThunk<
+  UserProfile,
+  ProfileLinksPayload
+>(
+  'auth/updateProfileLinks',
+  async (data) => {
+    const response = await fetch('/api/profile/links', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      throw new Error('Failed to update profile links');
+    }
+    return (await response.json()) as UserProfile;
+  },
+  'Failed to update profile links',
 );
 
 export const authSlice = createSlice({
@@ -101,7 +133,14 @@ export const authSlice = createSlice({
       .addCase(logoutUser.rejected, (state, action) => {
         state.isLoading = false;
         state.authError = action.payload as string;
-      });
+      })
+      // Update Profile Links
+      .addCase(
+        updateProfileLinks.fulfilled,
+        (state, action: PayloadAction<UserProfile>) => {
+          state.user = action.payload;
+        },
+      );
   },
 });
 

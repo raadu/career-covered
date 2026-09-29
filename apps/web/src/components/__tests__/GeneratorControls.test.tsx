@@ -13,9 +13,118 @@ vi.mock('utils/apiConfigUtils', () => ({
   API_ENDPOINTS: { CHAT_COMPLETIONS: '/generate' },
 }));
 
+const mockShowToast = vi.hoisted(() => vi.fn());
+vi.mock('components/common/Toast', () => ({ showToast: mockShowToast }));
+
 describe('GeneratorControls', () => {
   afterEach(() => {
     vi.unstubAllGlobals();
+    mockShowToast.mockClear();
+  });
+
+  describe('toasts after generating', () => {
+    const stubGenerateAndSave = (saveStatus: number) =>
+      vi.stubGlobal(
+        'fetch',
+        vi.fn(async (input: RequestInfo | URL) => {
+          const url = typeof input === 'string' ? input : (input as Request).url;
+          if (url.includes('/api/generate')) {
+            return new Response(
+              JSON.stringify({ choices: [{ message: { content: 'Letter' } }] }),
+              { status: 200 },
+            );
+          }
+          return new Response('{}', { status: saveStatus });
+        }),
+      );
+
+    const generateSignedIn = () => {
+      renderWithProviders(<GeneratorControls />, {
+        preloadedState: {
+          coverLetter: { jobDescription: 'Engineer', apiKey: 'gsk-test' },
+          auth: { isAuthenticated: true, isLoading: false },
+        },
+      });
+      fireEvent.click(
+        screen.getByRole('button', { name: /Generate Cover Letter/i }),
+      );
+    };
+
+    it('shows only the "generated successfully" toast when the save also succeeds', async () => {
+      stubGenerateAndSave(201);
+      generateSignedIn();
+
+      await waitFor(() =>
+        expect(mockShowToast).toHaveBeenCalledWith(
+          'Cover letter generated successfully!',
+          { type: 'success' },
+        ),
+      );
+      // Let the background save settle before counting toasts.
+      await waitFor(() =>
+        expect(vi.mocked(fetch)).toHaveBeenCalledWith(
+          '/api/cover-letters',
+          expect.anything(),
+        ),
+      );
+      await new Promise((r) => setTimeout(r, 0));
+      expect(mockShowToast).toHaveBeenCalledOnce();
+    });
+
+    it('still reports a failed save with an error toast', async () => {
+      stubGenerateAndSave(500);
+      generateSignedIn();
+
+      await waitFor(() =>
+        expect(mockShowToast).toHaveBeenCalledWith(
+          'Failed to save cover letter',
+          { type: 'error' },
+        ),
+      );
+      expect(mockShowToast).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe('tablet layout (md → lg grid)', () => {
+    it('makes the controls row a 6-column grid on tablets only', () => {
+      renderWithProviders(<GeneratorControls />);
+      const grid = screen
+        .getByRole('button', { name: /Generate Cover Letter/i })
+        .closest('.md\\:grid')!;
+      expect(grid).toHaveClass('flex', 'flex-col', 'md:grid-cols-6', 'lg:flex');
+    });
+
+    it.each([
+      ['API key button', () => screen.getByRole('button', { name: /Add Custom API Key/i }), 'md:order-1', 'md:col-span-2'],
+      ['model select', () => screen.getByLabelText(/AI Model/i), 'md:order-2', 'md:col-span-2'],
+      ['Help button', () => screen.getByRole('button', { name: /^Help$/i }), 'md:order-3', 'md:col-span-2'],
+      ['filter status', () => screen.getByText(/Custom Filter is/i).parentElement!, 'md:order-4', 'md:col-span-3'],
+      ['Customize More', () => screen.getByRole('button', { name: /Customize More/i }), 'md:order-5', 'md:col-span-3'],
+      ['Generate', () => screen.getByRole('button', { name: /Generate Cover Letter/i }).parentElement!, 'md:order-6', 'md:col-span-6'],
+    ])('places the %s in its tablet slot', (_name, get, order, span) => {
+      renderWithProviders(<GeneratorControls />);
+      expect(get()).toHaveClass(order, span, 'lg:order-none');
+    });
+
+    it('gives the model select its own full tablet row while the key input is open', () => {
+      renderWithProviders(<GeneratorControls />, {
+        preloadedState: { coverLetter: { apiKey: '', generationCount: 5 } },
+      });
+      expect(screen.getByPlaceholderText(/Enter Groq API Key/i)).toBeInTheDocument();
+      expect(screen.getByLabelText(/AI Model/i)).toHaveClass('md:col-span-6');
+    });
+
+    it('dissolves the inner wrappers on tablets so every control is a grid item', () => {
+      renderWithProviders(<GeneratorControls />);
+      const wrappers = [
+        screen.getByRole('button', { name: /Add Custom API Key/i }).parentElement!,
+        screen.getByLabelText(/AI Model/i).parentElement!,
+        screen.getByRole('button', { name: /Customize More/i }).parentElement!,
+      ];
+      for (const wrapper of wrappers) {
+        expect(wrapper).toHaveClass('md:contents', 'lg:flex');
+      }
+    });
   });
 
   it('renders sub-components correctly', () => {

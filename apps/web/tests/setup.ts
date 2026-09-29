@@ -14,6 +14,23 @@ globalThis.ResizeObserver = class ResizeObserver {
   disconnect() {}
 };
 
+// Polyfill matchMedia for jsdom (used by useIsMobile) — defaults to "not
+// mobile" so existing tests keep exercising table/desktop behavior unless a
+// test explicitly overrides window.matchMedia to simulate a phone viewport.
+if (!window.matchMedia) {
+  window.matchMedia = (query: string) =>
+    ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      addListener: () => {},
+      removeListener: () => {},
+      dispatchEvent: () => false,
+    }) as MediaQueryList;
+}
+
 // Automatically cleanup after each test to prevent memory leaks and state bleed
 afterEach(() => {
   cleanup()
