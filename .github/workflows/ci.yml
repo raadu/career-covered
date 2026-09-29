@@ -51,13 +51,18 @@ jobs:
       # container's command, and the MinIO image needs `server /data` to
       # run in server mode — so it's started as a plain background
       # container instead of a declarative service.
+      # MinIO no longer publishes images to Docker Hub or Quay, so the
+      # upstream minio/minio pull fails. Chainguard's maintained MinIO build
+      # is the same server. /data is a tmpfs so MinIO's startup cleanup can
+      # rename within one filesystem (it errors on the container's overlay fs).
       - name: Start MinIO
         run: |
           docker run -d --name minio \
             -p 9000:9000 \
+            --tmpfs /data \
             -e MINIO_ROOT_USER=minioadmin \
             -e MINIO_ROOT_PASSWORD=minioadmin \
-            minio/minio server /data
+            cgr.dev/chainguard/minio:latest server /data
           for i in $(seq 1 30); do
             curl -sf http://localhost:9000/minio/health/live && exit 0
             sleep 1

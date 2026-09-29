@@ -36,7 +36,13 @@ services:
 
   # ─── MinIO (S3-compatible object storage) ────────────────────────────────
   minio:
-    image: minio/minio:latest
+    # MinIO stopped publishing images to Docker Hub/Quay; this is
+    # Chainguard's maintained build of the same server (console included).
+    image: cgr.dev/chainguard/minio:latest
+    # Chainguard runs as non-root (uid 65532), but existing minio_data
+    # volumes were written as root by the old image — root keeps them
+    # writable without a manual chown. Local dev only (prod uses R2).
+    user: '0:0'
     container_name: career-covered-minio
     restart: unless-stopped
     command: server /data --console-address ":9001"
