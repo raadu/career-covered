@@ -1,6 +1,19 @@
+import { canonicalRedirectUrl } from "./canonicalHost";
+
 export default {
-  async fetch(request: Request, env: { ASSETS: Fetcher; BACKEND_URL?: string }) {
+  async fetch(
+    request: Request,
+    env: { ASSETS: Fetcher; BACKEND_URL?: string; CANONICAL_HOST?: string },
+  ) {
     const url = new URL(request.url);
+
+    // ─── www → apex, so browser storage lives in one origin ───
+    const canonicalUrl = canonicalRedirectUrl(
+      url,
+      request.method,
+      env.CANONICAL_HOST,
+    );
+    if (canonicalUrl) return Response.redirect(canonicalUrl, 301);
 
     // ─── API / Auth requests → proxy to NestJS backend ───
     // (Includes /api/generate — the backend is the only place that calls
