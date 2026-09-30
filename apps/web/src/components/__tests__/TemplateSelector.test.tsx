@@ -226,8 +226,28 @@ describe('TemplateSelector', () => {
     );
 
     const boxes = screen.getAllByText(/Template/);
-    expect(boxes[0].parentElement).toHaveClass('bg-brand-50');
-    expect(boxes[1].parentElement).not.toHaveClass('bg-brand-50');
+    // Same solid fill as a selected resume row: brand-800 with matching border.
+    expect(boxes[0].parentElement).toHaveClass('bg-brand-800', 'border-brand-800');
+    expect(boxes[0]).toHaveClass('text-white');
+    expect(boxes[1].parentElement).not.toHaveClass('bg-brand-800');
+    expect(boxes[1].parentElement).toHaveClass('bg-white');
+  });
+
+  it('keeps the icons readable on the active chip', () => {
+    render(
+      <TemplateSelector
+        templates={[tplA, tplB]}
+        activeId="a"
+        onSelect={vi.fn()}
+        onRename={vi.fn()}
+        onRemove={vi.fn()}
+      />,
+    );
+    const [activeRename, inactiveRename] = screen.getAllByTitle('Rename Template');
+    const [activeDelete] = screen.getAllByTitle('Delete Template');
+    expect(activeRename).toHaveClass('text-brand-100');
+    expect(activeDelete).toHaveClass('text-brand-100', 'hover:text-danger-fg-dark');
+    expect(inactiveRename).toHaveClass('text-neutral-400');
   });
 
   it('does not apply active class when activeId is null', () => {
@@ -243,7 +263,7 @@ describe('TemplateSelector', () => {
 
     const boxes = screen.getAllByText(/Template/);
     boxes.forEach((box) => {
-      expect(box.parentElement).not.toHaveClass('bg-brand-50');
+      expect(box.parentElement).not.toHaveClass('bg-brand-800');
     });
   });
 

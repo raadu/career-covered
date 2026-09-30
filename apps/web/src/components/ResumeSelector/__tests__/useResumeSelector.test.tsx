@@ -144,6 +144,52 @@ describe('useResumeSelector', () => {
       expect(result.current.selected).toBe('new');
     });
 
+    it('selects and lists the new resume immediately, without waiting for the list refresh', async () => {
+      const created = mockResume({ id: 'instant', name: 'Instant CV' });
+      let hangRefresh = false;
+      vi.stubGlobal(
+        'fetch',
+        vi.fn(async (_url: string, init?: RequestInit) => {
+          if (init?.method === 'POST') {
+            return { ok: true, json: async () => created };
+          }
+          // After the upload, the background refresh never resolves.
+          if (hangRefresh) return new Promise(() => {});
+          return { ok: true, json: async () => [] };
+        }),
+      );
+      const onSelectResume = vi.fn();
+      const { result } = renderUseResumeSelector(null, onSelectResume);
+      await waitFor(() => expect(result.current.resumes).toEqual([]));
+
+      hangRefresh = true;
+      await act(async () => {
+        await result.current.uploadResume(pdf());
+      });
+
+      expect(onSelectResume).toHaveBeenCalledWith('instant');
+      expect(result.current.resumes.map((r) => r.id)).toEqual(['instant']);
+      expect(result.current.isUploading).toBe(false);
+    });
+
+    it('does not duplicate the row once the refresh returns the same resume', async () => {
+      const existing = mockResume({ id: 'old', order: 0 });
+      const created = mockResume({ id: 'new', order: 1 });
+      let resumes: Resume[] = [existing];
+      stubServer(() => resumes, created);
+      const { result } = renderUseResumeSelector('old', vi.fn());
+      await waitFor(() => expect(result.current.resumes).toHaveLength(1));
+
+      resumes = [existing, created];
+      await act(async () => {
+        await result.current.uploadResume(pdf());
+      });
+
+      await waitFor(() =>
+        expect(result.current.resumes.map((r) => r.id)).toEqual(['old', 'new']),
+      );
+    });
+
     it('does not change the selection when the upload fails', async () => {
       const existing = mockResume({ id: 'old' });
       stubServer(() => [existing], mockResume({ id: 'never' }), false);

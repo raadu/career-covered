@@ -46,12 +46,16 @@ export function useResumeSelector(
   }, [isLoading, resumes, selectedResumeId, onSelectResume]);
 
   // A resume uploaded from this box is the one the user means to use, so it
-  // becomes the selection — whether it's their first or a newer one. Selected
-  // once the refetched list includes it, so the row renders as selected.
+  // becomes the selection — whether it's their first or a newer one. The
+  // upload response already holds the new resume, so it's added and selected
+  // immediately; the refetch then syncs the list in the background.
   const handleUploaded = useCallback(
-    async (created: Resume) => {
-      await fetchResumes();
+    (created: Resume) => {
+      setResumes((prev) =>
+        prev.some((r) => r.id === created.id) ? prev : [...prev, created],
+      );
       onSelectResume(created.id);
+      void fetchResumes();
     },
     [fetchResumes, onSelectResume],
   );
