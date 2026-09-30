@@ -19,6 +19,8 @@ describe('ProfileController', () => {
     websiteUrl: null,
     contactEmail: null,
     phoneNumber: null,
+    extraLink1Url: null,
+    extraLink2Url: null,
   };
 
   beforeEach(async () => {

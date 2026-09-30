@@ -94,6 +94,8 @@ describe('AuthController', () => {
     websiteUrl: null,
     contactEmail: null,
     phoneNumber: null,
+    extraLink1Url: 'https://portfolio.example.com',
+    extraLink2Url: null,
     passwordHash: 'super-secret-hash',
   } as db.User;
 
@@ -157,6 +159,8 @@ describe('AuthController', () => {
       websiteUrl: mockUser.websiteUrl,
       contactEmail: mockUser.contactEmail,
       phoneNumber: mockUser.phoneNumber,
+      extraLink1Url: mockUser.extraLink1Url,
+      extraLink2Url: mockUser.extraLink2Url,
     });
     expect(result).not.toHaveProperty('passwordHash');
   });
@@ -184,6 +188,8 @@ describe('AuthController', () => {
       websiteUrl: mockUser.websiteUrl,
       contactEmail: mockUser.contactEmail,
       phoneNumber: mockUser.phoneNumber,
+      extraLink1Url: mockUser.extraLink1Url,
+      extraLink2Url: mockUser.extraLink2Url,
     });
     expect(result).not.toHaveProperty('passwordHash');
   });
@@ -223,6 +229,8 @@ describe('AuthController', () => {
       websiteUrl: mockUser.websiteUrl,
       contactEmail: mockUser.contactEmail,
       phoneNumber: mockUser.phoneNumber,
+      extraLink1Url: mockUser.extraLink1Url,
+      extraLink2Url: mockUser.extraLink2Url,
     });
     expect(result).not.toHaveProperty('passwordHash');
   });

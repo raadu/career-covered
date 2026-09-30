@@ -2,89 +2,74 @@ import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { UpdateProfileLinksDto } from './profile.dto';
 
+type Field = keyof UpdateProfileLinksDto;
+
+// Every Quick Links field and its length cap. There is no format check on
+// any of them — only "must be text" and the cap.
+const FIELDS: [Field, number][] = [
+  ['linkedinUrl', 2048],
+  ['githubUrl', 2048],
+  ['websiteUrl', 2048],
+  ['contactEmail', 320],
+  ['phoneNumber', 64],
+  ['extraLink1Url', 2048],
+  ['extraLink2Url', 2048],
+];
+
+const build = (body: Record<string, unknown>) =>
+  plainToInstance(UpdateProfileLinksDto, body);
+const errorsFor = async (field: Field, value: unknown) =>
+  (await validate(build({ [field]: value }))).filter(
+    (e) => e.property === field,
+  );
+
 describe('UpdateProfileLinksDto', () => {
   it('is valid when every field is omitted', async () => {
-    const dto = plainToInstance(UpdateProfileLinksDto, {});
-    const errors = await validate(dto);
-    expect(errors).toHaveLength(0);
+    expect(await validate(build({}))).toHaveLength(0);
   });
 
-  it('accepts a valid URL for linkedinUrl/githubUrl/websiteUrl', async () => {
-    const dto = plainToInstance(UpdateProfileLinksDto, {
-      linkedinUrl: 'https://linkedin.com/in/username',
-      githubUrl: 'https://github.com/username',
-      websiteUrl: 'https://mysite.dev',
+  describe.each(FIELDS)('%s (max %i)', (field, max) => {
+    it.each([
+      'https://example.com/profile',
+      'not-a-url',
+      'me at example dot com',
+      '+1 (415) 555-0100 ext. 12',
+      'anything at all ✨',
+    ])('accepts free text: %j', async (value) => {
+      expect(await errorsFor(field, value)).toHaveLength(0);
     });
-    const errors = await validate(dto);
-    expect(errors).toHaveLength(0);
+
+    it(`accepts exactly ${max} characters`, async () => {
+      expect(await errorsFor(field, 'a'.repeat(max))).toHaveLength(0);
+    });
+
+    it(`rejects ${max + 1} characters with a clear message`, async () => {
+      const [error] = await errorsFor(field, 'a'.repeat(max + 1));
+      expect(error?.constraints?.maxLength).toBe(
+        `${field} must be at most ${max} characters`,
+      );
+    });
+
+    it('rejects a non-text value', async () => {
+      const [error] = await errorsFor(field, 12345);
+      expect(error?.constraints?.isString).toBe(`${field} must be text`);
+    });
+
+    it('clears with an empty string (becomes null, no error)', async () => {
+      const dto = build({ [field]: '' });
+      expect(await validate(dto)).toHaveLength(0);
+      expect(dto[field]).toBeNull();
+    });
+
+    it('stays undefined when omitted (distinct from cleared)', () => {
+      expect(build({})[field]).toBeUndefined();
+    });
   });
 
-  it('accepts a valid email for contactEmail', async () => {
-    const dto = plainToInstance(UpdateProfileLinksDto, {
-      contactEmail: 'contact@example.com',
-    });
-    const errors = await validate(dto);
-    expect(errors).toHaveLength(0);
-  });
-
-  it('accepts a valid international phone number for phoneNumber', async () => {
-    const dto = plainToInstance(UpdateProfileLinksDto, {
-      phoneNumber: '+14155552671',
-    });
-    const errors = await validate(dto);
-    expect(errors).toHaveLength(0);
-  });
-
-  it('rejects an invalid URL', async () => {
-    const dto = plainToInstance(UpdateProfileLinksDto, {
-      linkedinUrl: 'not-a-url',
-    });
-    const errors = await validate(dto);
-    expect(errors.some((e) => e.property === 'linkedinUrl')).toBe(true);
-  });
-
-  it('rejects an invalid email', async () => {
-    const dto = plainToInstance(UpdateProfileLinksDto, {
-      contactEmail: 'not-an-email',
-    });
-    const errors = await validate(dto);
-    expect(errors.some((e) => e.property === 'contactEmail')).toBe(true);
-  });
-
-  it('rejects an invalid phone number', async () => {
-    const dto = plainToInstance(UpdateProfileLinksDto, {
-      phoneNumber: 'not-a-phone-number',
-    });
-    const errors = await validate(dto);
-    expect(errors.some((e) => e.property === 'phoneNumber')).toBe(true);
-  });
-
-  it('transforms an empty string to null and skips URL/email/phone validation for it', async () => {
-    const dto = plainToInstance(UpdateProfileLinksDto, {
-      linkedinUrl: '',
-      contactEmail: '',
-      phoneNumber: '',
-    });
-    const errors = await validate(dto);
-    expect(errors).toHaveLength(0);
-    expect(dto.linkedinUrl).toBeNull();
-    expect(dto.contactEmail).toBeNull();
-    expect(dto.phoneNumber).toBeNull();
-  });
-
-  it('leaves an omitted field as undefined after transform (distinct from cleared)', async () => {
-    const dto = plainToInstance(UpdateProfileLinksDto, {
-      linkedinUrl: 'https://linkedin.com/in/x',
-    });
-    expect(dto.githubUrl).toBeUndefined();
-  });
-
-  it('rejects a URL over the 2048-character limit', async () => {
-    const longUrl = `https://example.com/${'a'.repeat(2048)}`;
-    const dto = plainToInstance(UpdateProfileLinksDto, {
-      websiteUrl: longUrl,
-    });
-    const errors = await validate(dto);
-    expect(errors.some((e) => e.property === 'websiteUrl')).toBe(true);
+  it('validates each field independently of the others', async () => {
+    const errors = await validate(
+      build({ linkedinUrl: 'fine', phoneNumber: 'x'.repeat(65) }),
+    );
+    expect(errors.map((e) => e.property)).toEqual(['phoneNumber']);
   });
 });

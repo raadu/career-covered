@@ -8,6 +8,8 @@ import {
   FaGlobe,
   FaEnvelope,
   FaPhone,
+  FaLink,
+  FaExternalLinkAlt,
 } from 'react-icons/fa';
 
 export interface QuickLinkItem {
@@ -21,12 +23,16 @@ export interface QuickLinkItem {
   /** Noun used in the "<label> copied!" toast. */
   label: string;
   hover: string;
+  /** Left out of the list entirely when it has no value (the extras). */
+  hideWhenEmpty?: boolean;
   handleCopy: (value: string, label?: string, e?: MouseEvent) => void;
 }
 
-// Shared by the desktop floating widget and the mobile menu's Quick Links
-// submenu, so both copy the same values with the same toasts. Returns null
-// when signed out — there are no saved links to show.
+// Shared by the desktop floating widget, the tablet rail's flyout and the
+// mobile menu's Quick Links submenu, so all copy the same values with the
+// same toasts. Returns null when signed out — there are no saved links to
+// show. The two extra links only appear once they have a value; the core
+// five always show (dimmed when unset) so users know they can fill them in.
 export function useQuickLinkItems(): QuickLinkItem[] | null {
   const { user, isAuthenticated } = useSelector(
     (state: RootState) => state.auth,
@@ -37,10 +43,12 @@ export function useQuickLinkItems(): QuickLinkItem[] | null {
   const website = useCopy();
   const email = useCopy();
   const phone = useCopy();
+  const extra1 = useCopy();
+  const extra2 = useCopy();
 
   if (!isAuthenticated || !user) return null;
 
-  return [
+  const items: QuickLinkItem[] = [
     {
       key: 'linkedin',
       Icon: FaLinkedin,
@@ -91,5 +99,29 @@ export function useQuickLinkItems(): QuickLinkItem[] | null {
       hover: 'hover:text-brand-600 dark:hover:text-brand-400',
       handleCopy: phone.handleCopy,
     },
+    {
+      key: 'extra1',
+      Icon: FaLink,
+      name: 'Extra Link 1',
+      title: 'Copy Extra Link 1',
+      value: user.extraLink1Url,
+      label: 'Extra link 1',
+      hover: 'hover:text-brand-600 dark:hover:text-brand-400',
+      hideWhenEmpty: true,
+      handleCopy: extra1.handleCopy,
+    },
+    {
+      key: 'extra2',
+      Icon: FaExternalLinkAlt,
+      name: 'Extra Link 2',
+      title: 'Copy Extra Link 2',
+      value: user.extraLink2Url,
+      label: 'Extra link 2',
+      hover: 'hover:text-brand-600 dark:hover:text-brand-400',
+      hideWhenEmpty: true,
+      handleCopy: extra2.handleCopy,
+    },
   ];
+
+  return items.filter((item) => !item.hideWhenEmpty || !!item.value);
 }

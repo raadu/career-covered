@@ -11,6 +11,8 @@ export interface UserProfile {
   websiteUrl?: string | null;
   contactEmail?: string | null;
   phoneNumber?: string | null;
+  extraLink1Url?: string | null;
+  extraLink2Url?: string | null;
 }
 
 export interface AuthState {
@@ -60,6 +62,8 @@ export interface ProfileLinksPayload {
   websiteUrl?: string;
   contactEmail?: string;
   phoneNumber?: string;
+  extraLink1Url?: string;
+  extraLink2Url?: string;
 }
 
 export const updateProfileLinks = createApiThunk<

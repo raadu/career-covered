@@ -18,6 +18,8 @@ export class ProfileService {
       websiteUrl: user.websiteUrl,
       contactEmail: user.contactEmail,
       phoneNumber: user.phoneNumber,
+      extraLink1Url: user.extraLink1Url,
+      extraLink2Url: user.extraLink2Url,
     };
   }
 
@@ -36,6 +38,12 @@ export class ProfileService {
         }),
         ...(dto.phoneNumber !== undefined && {
           phoneNumber: dto.phoneNumber,
+        }),
+        ...(dto.extraLink1Url !== undefined && {
+          extraLink1Url: dto.extraLink1Url,
+        }),
+        ...(dto.extraLink2Url !== undefined && {
+          extraLink2Url: dto.extraLink2Url,
         }),
       },
     });
