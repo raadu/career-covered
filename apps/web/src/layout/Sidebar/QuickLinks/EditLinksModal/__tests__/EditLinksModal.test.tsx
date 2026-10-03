@@ -12,6 +12,8 @@ const baseUser = {
   websiteUrl: 'https://existing.dev',
   contactEmail: 'existing@example.com',
   phoneNumber: '+14155550100',
+  extraLink1Url: 'https://portfolio.dev',
+  // extraLink2Url deliberately unset — the form should show it empty.
 };
 
 const authState = (overrides = {}) => ({
@@ -41,12 +43,12 @@ describe('EditLinksModal', () => {
 
     expect(
       screen.getByText(
-        'Add links of your LinkedIn, portfolio website, GitHub, email and phone number so you can quickly copy from here and then paste in the job application form.',
+        'Add links of your LinkedIn, portfolio website, GitHub, email and phone number so you can quickly copy from here and then paste in the job application form. The two extra links show up in Quick Links only once you fill them in.',
       ),
     ).toBeInTheDocument();
   });
 
-  it('pre-populates all 5 fields from the current user', () => {
+  it('pre-populates all 7 fields from the current user, blank for unset ones', () => {
     renderWithProviders(<EditLinksModal isOpen onClose={onClose} />, {
       preloadedState: { auth: authState() },
     });
@@ -66,9 +68,21 @@ describe('EditLinksModal', () => {
     expect(screen.getByPlaceholderText('Phone number')).toHaveValue(
       '+14155550100',
     );
+    expect(screen.getByPlaceholderText('Extra Link 1 URL')).toHaveValue(
+      'https://portfolio.dev',
+    );
+    expect(screen.getByPlaceholderText('Extra Link 2 URL')).toHaveValue('');
   });
 
-  it('sends all 5 current field values on save, including untouched ones', async () => {
+  it('always shows both extra link inputs, labelled for screen readers', () => {
+    renderWithProviders(<EditLinksModal isOpen onClose={onClose} />, {
+      preloadedState: { auth: authState({ user: { ...baseUser, extraLink1Url: null } }) },
+    });
+    expect(screen.getByLabelText('Extra Link 1 URL')).toHaveValue('');
+    expect(screen.getByLabelText('Extra Link 2 URL')).toHaveValue('');
+  });
+
+  it('sends all 7 current field values on save, including untouched ones', async () => {
     const fetchMock = vi.fn(async () => ({
       ok: true,
       json: async () => baseUser,
@@ -96,6 +110,8 @@ describe('EditLinksModal', () => {
           websiteUrl: 'https://existing.dev',
           contactEmail: 'existing@example.com',
           phoneNumber: '+14155550100',
+          extraLink1Url: 'https://portfolio.dev',
+          extraLink2Url: '',
         }),
       }),
     );

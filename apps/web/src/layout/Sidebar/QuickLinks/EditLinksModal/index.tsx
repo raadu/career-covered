@@ -1,17 +1,20 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { type RootState, useAppDispatch } from 'store';
-import { updateProfileLinks } from 'store/authSlice';
+import { updateProfileLinks, type ProfileLinksPayload } from 'store/authSlice';
 import { showToast } from 'components/common/Toast';
 import Modal from 'components/common/Modal';
 import CommonButton from 'components/common/CommonButton';
 import { ICON_SIZE } from 'components/common/iconSizes';
+import type { IconType } from 'react-icons';
 import {
   FaLinkedin,
   FaGithub,
   FaGlobe,
   FaEnvelope,
   FaPhone,
+  FaLink,
+  FaExternalLinkAlt,
   FaPencilAlt,
 } from 'react-icons/fa';
 
@@ -19,6 +22,27 @@ interface EditLinksModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
+
+type LinkField = keyof Required<ProfileLinksPayload>;
+
+interface FieldConfig {
+  key: LinkField;
+  Icon: IconType;
+  placeholder: string;
+  type: 'text' | 'email' | 'tel';
+}
+
+// Every field is always editable here — the extra links are only hidden from
+// the Quick Links lists while empty, not from this form.
+const FIELDS: FieldConfig[] = [
+  { key: 'linkedinUrl', Icon: FaLinkedin, placeholder: 'LinkedIn URL', type: 'text' },
+  { key: 'githubUrl', Icon: FaGithub, placeholder: 'GitHub URL', type: 'text' },
+  { key: 'websiteUrl', Icon: FaGlobe, placeholder: 'Website URL', type: 'text' },
+  { key: 'contactEmail', Icon: FaEnvelope, placeholder: 'Contact email', type: 'email' },
+  { key: 'phoneNumber', Icon: FaPhone, placeholder: 'Phone number', type: 'tel' },
+  { key: 'extraLink1Url', Icon: FaLink, placeholder: 'Extra Link 1 URL', type: 'text' },
+  { key: 'extraLink2Url', Icon: FaExternalLinkAlt, placeholder: 'Extra Link 2 URL', type: 'text' },
+];
 
 const inputClass =
   'w-full pl-8 pr-3 h-10 bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-600 focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none text-sm transition-all dark:text-neutral-100 placeholder:text-neutral-400';
@@ -29,11 +53,11 @@ const EditLinksModal = ({ isOpen, onClose }: EditLinksModalProps) => {
   const dispatch = useAppDispatch();
   const user = useSelector((state: RootState) => state.auth.user);
 
-  const [linkedinUrl, setLinkedinUrl] = useState(user?.linkedinUrl ?? '');
-  const [githubUrl, setGithubUrl] = useState(user?.githubUrl ?? '');
-  const [websiteUrl, setWebsiteUrl] = useState(user?.websiteUrl ?? '');
-  const [contactEmail, setContactEmail] = useState(user?.contactEmail ?? '');
-  const [phoneNumber, setPhoneNumber] = useState(user?.phoneNumber ?? '');
+  const [values, setValues] = useState<Record<LinkField, string>>(() =>
+    Object.fromEntries(
+      FIELDS.map(({ key }) => [key, user?.[key] ?? '']),
+    ) as Record<LinkField, string>,
+  );
   const [error, setError] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 
@@ -41,15 +65,11 @@ const EditLinksModal = ({ isOpen, onClose }: EditLinksModalProps) => {
     setError('');
     setIsSaving(true);
     try {
-      await dispatch(
-        updateProfileLinks({
-          linkedinUrl: linkedinUrl.trim(),
-          githubUrl: githubUrl.trim(),
-          websiteUrl: websiteUrl.trim(),
-          contactEmail: contactEmail.trim(),
-          phoneNumber: phoneNumber.trim(),
-        }),
-      ).unwrap();
+      // Every field is sent; an empty (trimmed) value clears it server-side.
+      const payload = Object.fromEntries(
+        FIELDS.map(({ key }) => [key, values[key].trim()]),
+      ) as Required<ProfileLinksPayload>;
+      await dispatch(updateProfileLinks(payload)).unwrap();
       showToast('Links updated!', { type: 'success' });
       onClose();
     } catch (err) {
@@ -75,7 +95,8 @@ const EditLinksModal = ({ isOpen, onClose }: EditLinksModalProps) => {
         <p className="text-xs text-neutral-500 dark:text-neutral-400">
           Add links of your LinkedIn, portfolio website, GitHub, email and
           phone number so you can quickly copy from here and then paste in
-          the job application form.
+          the job application form. The two extra links show up in Quick
+          Links only once you fill them in.
         </p>
 
         {error && (
@@ -84,60 +105,21 @@ const EditLinksModal = ({ isOpen, onClose }: EditLinksModalProps) => {
           </p>
         )}
 
-        <div className="relative">
-          <FaLinkedin className={iconClass} size={ICON_SIZE.xs} />
-          <input
-            type="text"
-            placeholder="LinkedIn URL"
-            value={linkedinUrl}
-            onChange={(e) => setLinkedinUrl(e.target.value)}
-            className={inputClass}
-          />
-        </div>
-
-        <div className="relative">
-          <FaGithub className={iconClass} size={ICON_SIZE.xs} />
-          <input
-            type="text"
-            placeholder="GitHub URL"
-            value={githubUrl}
-            onChange={(e) => setGithubUrl(e.target.value)}
-            className={inputClass}
-          />
-        </div>
-
-        <div className="relative">
-          <FaGlobe className={iconClass} size={ICON_SIZE.xs} />
-          <input
-            type="text"
-            placeholder="Website URL"
-            value={websiteUrl}
-            onChange={(e) => setWebsiteUrl(e.target.value)}
-            className={inputClass}
-          />
-        </div>
-
-        <div className="relative">
-          <FaEnvelope className={iconClass} size={ICON_SIZE.xs} />
-          <input
-            type="email"
-            placeholder="Contact email"
-            value={contactEmail}
-            onChange={(e) => setContactEmail(e.target.value)}
-            className={inputClass}
-          />
-        </div>
-
-        <div className="relative">
-          <FaPhone className={iconClass} size={ICON_SIZE.xs} />
-          <input
-            type="tel"
-            placeholder="Phone number"
-            value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
-            className={inputClass}
-          />
-        </div>
+        {FIELDS.map(({ key, Icon, placeholder, type }) => (
+          <div key={key} className="relative">
+            <Icon className={iconClass} size={ICON_SIZE.xs} />
+            <input
+              type={type}
+              placeholder={placeholder}
+              aria-label={placeholder}
+              value={values[key]}
+              onChange={(e) =>
+                setValues((prev) => ({ ...prev, [key]: e.target.value }))
+              }
+              className={inputClass}
+            />
+          </div>
+        ))}
       </div>
     </Modal>
   );

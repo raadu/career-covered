@@ -1,65 +1,55 @@
-import {
-  IsEmail,
-  IsUrl,
-  IsOptional,
-  IsPhoneNumber,
-  MaxLength,
-  ValidateIf,
-} from 'class-validator';
+import { applyDecorators } from '@nestjs/common';
+import { IsOptional, IsString, MaxLength, ValidateIf } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
 // An empty string means "clear this link" (write null) — distinct from the
-// field being omitted entirely, which means "leave it untouched". Without
-// this transform, @IsUrl()/@IsEmail() would reject '' outright, and there'd
-// be no way to remove a previously-saved link from the client.
+// field being omitted entirely, which means "leave it untouched".
 const emptyStringToNull = ({ value }: { value: unknown }) =>
   value === '' ? null : value;
 
+/**
+ * Quick Links are free text by design: users paste them into job application
+ * forms in whatever shape each form wants, so there is no URL/email/phone
+ * format check. Only a type and length bound remain, to reject non-text
+ * payloads and cap storage. Values are never rendered as links or HTML —
+ * only shown as text and copied — so arbitrary text is safe to accept.
+ */
+function QuickLinkField(name: string, maxLength: number, example: string) {
+  return applyDecorators(
+    ApiPropertyOptional({ example, maxLength }),
+    IsOptional(),
+    Transform(emptyStringToNull),
+    // null = "clear this field": skip the checks below for it.
+    ValidateIf((_dto: unknown, value: unknown) => value !== null),
+    IsString({ message: `${name} must be text` }),
+    MaxLength(maxLength, {
+      message: `${name} must be at most ${maxLength} characters`,
+    }),
+  );
+}
+
 export class UpdateProfileLinksDto {
-  @ApiPropertyOptional({ example: 'https://linkedin.com/in/username' })
-  @IsOptional()
-  @Transform(emptyStringToNull)
-  @ValidateIf((o: UpdateProfileLinksDto) => o.linkedinUrl !== null)
-  @IsUrl({}, { message: 'linkedinUrl must be a valid URL' })
-  @MaxLength(2048)
+  @QuickLinkField('linkedinUrl', 2048, 'https://linkedin.com/in/username')
   linkedinUrl?: string | null;
 
-  @ApiPropertyOptional({ example: 'https://github.com/username' })
-  @IsOptional()
-  @Transform(emptyStringToNull)
-  @ValidateIf((o: UpdateProfileLinksDto) => o.githubUrl !== null)
-  @IsUrl({}, { message: 'githubUrl must be a valid URL' })
-  @MaxLength(2048)
+  @QuickLinkField('githubUrl', 2048, 'https://github.com/username')
   githubUrl?: string | null;
 
-  @ApiPropertyOptional({ example: 'https://mysite.dev' })
-  @IsOptional()
-  @Transform(emptyStringToNull)
-  @ValidateIf((o: UpdateProfileLinksDto) => o.websiteUrl !== null)
-  @IsUrl({}, { message: 'websiteUrl must be a valid URL' })
-  @MaxLength(2048)
+  @QuickLinkField('websiteUrl', 2048, 'https://mysite.dev')
   websiteUrl?: string | null;
 
-  @ApiPropertyOptional({ example: 'contact@example.com' })
-  @IsOptional()
-  @Transform(emptyStringToNull)
-  @ValidateIf((o: UpdateProfileLinksDto) => o.contactEmail !== null)
-  @IsEmail({}, { message: 'contactEmail must be a valid email' })
-  @MaxLength(320)
+  @QuickLinkField('contactEmail', 320, 'contact@example.com')
   contactEmail?: string | null;
 
-  @ApiPropertyOptional({ example: '+14155552671' })
-  @IsOptional()
-  @Transform(emptyStringToNull)
-  @ValidateIf((o: UpdateProfileLinksDto) => o.phoneNumber !== null)
-  // No region passed — accepts any country's number in international
-  // (E.164-recognizable) format, since job seekers aren't tied to one.
-  @IsPhoneNumber(undefined, {
-    message: 'phoneNumber must be a valid phone number',
-  })
-  @MaxLength(32)
+  @QuickLinkField('phoneNumber', 64, '+1 (415) 555-0100 ext. 12')
   phoneNumber?: string | null;
+
+  @QuickLinkField('extraLink1Url', 2048, 'https://portfolio.example.com')
+  extraLink1Url?: string | null;
+
+  @QuickLinkField('extraLink2Url', 2048, 'https://blog.example.com')
+  extraLink2Url?: string | null;
 }
 
 export interface ProfileResponseDto {
@@ -72,4 +62,6 @@ export interface ProfileResponseDto {
   websiteUrl: string | null;
   contactEmail: string | null;
   phoneNumber: string | null;
+  extraLink1Url: string | null;
+  extraLink2Url: string | null;
 }

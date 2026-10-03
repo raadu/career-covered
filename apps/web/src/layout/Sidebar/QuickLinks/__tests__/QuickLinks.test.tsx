@@ -163,6 +163,31 @@ describe('QuickLinks', () => {
     expect(screen.getByRole('tooltip')).toHaveTextContent('Copy Website Link');
   });
 
+  it('shows an extra link button only once that link has a value', () => {
+    renderWithProviders(<QuickLinks />, {
+      preloadedState: {
+        auth: authState({
+          user: { ...baseUser, extraLink1Url: 'https://portfolio.dev' },
+          isAuthenticated: true,
+        }),
+      },
+    });
+
+    expect(
+      screen.getByRole('button', { name: 'Copy Extra Link 1' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Copy Extra Link 2' }),
+    ).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Copy Extra Link 1' }));
+    expect(mockHandleCopy).toHaveBeenCalledWith(
+      'https://portfolio.dev',
+      'Extra link 1',
+      expect.anything(),
+    );
+  });
+
   it('opens the edit modal when the edit icon is clicked', () => {
     renderWithProviders(<QuickLinks />, {
       preloadedState: {

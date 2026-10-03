@@ -16,20 +16,22 @@ generator client {
 // ============================================================
 
 model User {
-  id           String   @id @default(uuid())
-  email        String   @unique
-  name         String?
-  avatarUrl    String?
+  id        String  @id @default(uuid())
+  email     String  @unique
+  name      String?
+  avatarUrl String?
 
   // Quick Copy Links — freely editable, independent of the login email above
-  linkedinUrl  String?
-  githubUrl    String?
-  websiteUrl   String?
-  contactEmail String?
-  phoneNumber  String?
+  linkedinUrl   String?
+  githubUrl     String?
+  websiteUrl    String?
+  contactEmail  String?
+  phoneNumber   String?
+  extraLink1Url String?
+  extraLink2Url String?
 
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Email/password auth (nullable → OAuth-only users don't need a password)
   passwordHash String?
@@ -100,7 +102,7 @@ model CoverLetter {
   companyName    String    @default("")
   jobDescription String
   generatedText  String
-  model          String    // AI model used for generation (e.g. "llama-3.3-70b-versatile")
+  model          String // AI model used for generation (e.g. "llama-3.3-70b-versatile")
   wordLimit      Int?
   characterLimit Int?
   minimalChanges Boolean?
@@ -122,13 +124,13 @@ model Resume {
   id               String   @id @default(uuid())
   userId           String
   user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  name             String   // user-editable display name (the rename target)
-  originalFileName String   // immutable, from the uploaded file
-  storageKey       String   // private object key — never exposed to the client as a URL
-  mimeType         String   // "application/pdf" today; stored for forward-compat
-  fileSize         Int      // bytes, of the stored (compressed) file
-  parsedText       String?  // extracted text; null if extraction failed — never blocks upload
-  order            Int      // 0-based position for drag-reorder
+  name             String // user-editable display name (the rename target)
+  originalFileName String // immutable, from the uploaded file
+  storageKey       String // private object key — never exposed to the client as a URL
+  mimeType         String // "application/pdf" today; stored for forward-compat
+  fileSize         Int // bytes, of the stored (compressed) file
+  parsedText       String? // extracted text; null if extraction failed — never blocks upload
+  order            Int // 0-based position for drag-reorder
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 

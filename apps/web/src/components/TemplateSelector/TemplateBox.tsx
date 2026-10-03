@@ -1,6 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
 import { LuPencil, LuX, LuCheck } from 'react-icons/lu';
+import { clsx } from 'clsx';
 import { type SavedTemplate } from 'store/coverLetterSlice';
+
+const iconButtonBase =
+  'min-h-10 [@media(pointer:fine)]:min-h-8 min-w-6 flex items-center justify-center transition-colors';
 
 interface TemplateBoxProps {
   template: SavedTemplate;
@@ -47,11 +51,14 @@ const TemplateBox = ({
   return (
     <div
       onClick={!editing ? onSelect : undefined}
-      className={`group relative flex items-center gap-1 sm:gap-1.5 px-1 sm:px-1.5 cursor-pointer transition-all duration-200 border text-xs sm:text-sm min-w-[160px] max-w-[280px] shrink-0 ${
+      // Active: the same solid brand-800 fill and border as a selected resume
+      // row, with white text and light icons so they stay readable on it.
+      className={clsx(
+        'group relative flex items-center gap-1 sm:gap-1.5 px-1 sm:px-1.5 cursor-pointer transition-all duration-200 border text-xs sm:text-sm min-w-[160px] max-w-[280px] shrink-0',
         isActive
-          ? 'bg-brand-50 dark:bg-brand-900/30 border-brand-300 dark:border-brand-600 shadow-sm'
-          : 'bg-white dark:bg-neutral-900 border-neutral-200 dark:border-neutral-700 hover:border-brand-200 dark:hover:border-brand-700 hover:shadow-sm'
-      }`}
+          ? 'bg-brand-800 border-brand-800 shadow-sm'
+          : 'bg-white dark:bg-neutral-900 border-neutral-200 dark:border-neutral-700 hover:border-brand-200 dark:hover:border-brand-700 hover:shadow-sm',
+      )}
     >
       {editing ? (
         <input
@@ -61,10 +68,20 @@ const TemplateBox = ({
           onBlur={commitRename}
           onKeyDown={handleKeyDown}
           onClick={(e) => e.stopPropagation()}
-          className="flex-1 min-w-0 bg-transparent text-sm font-bold text-neutral-800 dark:text-neutral-200 border-b-2 border-brand-400 outline-none py-0.5"
+          className={clsx(
+            'flex-1 min-w-0 bg-transparent text-sm font-bold border-b-2 outline-none py-0.5',
+            isActive
+              ? 'text-white border-brand-300'
+              : 'text-neutral-800 dark:text-neutral-200 border-brand-400',
+          )}
         />
       ) : (
-        <span className="flex-1 min-w-0 truncate text-sm font-bold text-neutral-800 dark:text-neutral-200">
+        <span
+          className={clsx(
+            'flex-1 min-w-0 truncate text-sm font-bold',
+            isActive ? 'text-white' : 'text-neutral-800 dark:text-neutral-200',
+          )}
+        >
           {template.name}
         </span>
       )}
@@ -80,7 +97,12 @@ const TemplateBox = ({
               e.stopPropagation();
               commitRename();
             }}
-            className="min-h-10 [@media(pointer:fine)]:min-h-8 min-w-6 flex items-center justify-center text-success hover:text-success-hover transition-colors"
+            className={clsx(
+              iconButtonBase,
+              isActive
+                ? 'text-success-fg-dark hover:text-white'
+                : 'text-success hover:text-success-hover',
+            )}
           >
             <LuCheck size={14} />
           </button>
@@ -91,7 +113,12 @@ const TemplateBox = ({
               setEditValue(template.name);
               setEditing(true);
             }}
-            className="min-h-10 [@media(pointer:fine)]:min-h-8 min-w-6 flex items-center justify-center text-neutral-400 hover:text-brand-500 dark:hover:text-brand-400 transition-all duration-200"
+            className={clsx(
+              iconButtonBase,
+              isActive
+                ? 'text-brand-100 hover:text-white'
+                : 'text-neutral-400 hover:text-brand-500 dark:hover:text-brand-400',
+            )}
             title="Rename Template"
           >
             <LuPencil size={12} />
@@ -103,7 +130,12 @@ const TemplateBox = ({
             e.stopPropagation();
             onRemove();
           }}
-          className="min-h-10 [@media(pointer:fine)]:min-h-8 min-w-6 flex items-center justify-center text-neutral-400 hover:text-danger dark:hover:text-danger-fg-dark transition-all duration-200"
+          className={clsx(
+            iconButtonBase,
+            isActive
+              ? 'text-brand-100 hover:text-danger-fg-dark'
+              : 'text-neutral-400 hover:text-danger dark:hover:text-danger-fg-dark',
+          )}
           title="Delete Template"
         >
           <LuX size={12} />

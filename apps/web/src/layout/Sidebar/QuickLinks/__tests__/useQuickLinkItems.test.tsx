@@ -66,6 +66,85 @@ describe('useQuickLinkItems', () => {
     });
   });
 
+  describe('extra links', () => {
+    it('are left out of the list entirely while unset', () => {
+      const keys = renderItems({ user, isAuthenticated: true })!.map(
+        (i) => i.key,
+      );
+      expect(keys).not.toContain('extra1');
+      expect(keys).not.toContain('extra2');
+    });
+
+    it.each([
+      ['null', null],
+      ['undefined', undefined],
+      ['an empty string', ''],
+    ])('stay hidden when the value is %s', (_label, value) => {
+      const keys = renderItems({
+        user: { ...user, extraLink1Url: value, extraLink2Url: value },
+        isAuthenticated: true,
+      })!.map((i) => i.key);
+      expect(keys).toHaveLength(5);
+    });
+
+    it('appear after the core five, with names, icons and toast labels, once set', () => {
+      const items = renderItems({
+        user: {
+          ...user,
+          extraLink1Url: 'https://portfolio.dev',
+          extraLink2Url: 'https://blog.dev',
+        },
+        isAuthenticated: true,
+      })!;
+      expect(items.map((i) => i.key)).toEqual([
+        'linkedin',
+        'github',
+        'website',
+        'email',
+        'phone',
+        'extra1',
+        'extra2',
+      ]);
+      const [extra1, extra2] = items.slice(5);
+      expect(extra1).toMatchObject({
+        name: 'Extra Link 1',
+        title: 'Copy Extra Link 1',
+        label: 'Extra link 1',
+        value: 'https://portfolio.dev',
+      });
+      expect(extra2).toMatchObject({
+        name: 'Extra Link 2',
+        title: 'Copy Extra Link 2',
+        label: 'Extra link 2',
+        value: 'https://blog.dev',
+      });
+      expect(extra1.Icon).not.toBe(extra2.Icon);
+    });
+
+    it('shows only the extra that is set', () => {
+      const keys = renderItems({
+        user: { ...user, extraLink2Url: 'https://blog.dev' },
+        isAuthenticated: true,
+      })!.map((i) => i.key);
+      expect(keys).toContain('extra2');
+      expect(keys).not.toContain('extra1');
+    });
+
+    it('never hides the core five, even when empty', () => {
+      const keys = renderItems({
+        user: {
+          id: '1',
+          email: 'a@b.c',
+          name: 'N',
+          linkedinUrl: null,
+          githubUrl: null,
+        },
+        isAuthenticated: true,
+      })!.map((i) => i.key);
+      expect(keys).toEqual(['linkedin', 'github', 'website', 'email', 'phone']);
+    });
+  });
+
   it('gives every link a distinct copy handler and toast label', () => {
     const items = renderItems({ user, isAuthenticated: true })!;
     expect(new Set(items.map((i) => i.label)).size).toBe(5);

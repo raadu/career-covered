@@ -4,7 +4,12 @@
   "main": "./worker/src/index.ts",
   "assets": {
     "binding": "ASSETS",
-    "directory": "./dist"
+    "directory": "./dist",
+    // Static files are normally served before the Worker runs, which would
+    // skip the www → apex redirect in worker/src/canonicalHost.ts. Page loads
+    // always request "/" (the app uses HashRouter), so running the Worker
+    // first for the HTML entry is enough; JS/CSS/fonts stay asset-direct.
+    "run_worker_first": ["/", "/index.html"]
   },
   "$schema": "node_modules/wrangler/config-schema.json",
   "observability": {
@@ -14,9 +19,12 @@
     "nodejs_compat"
   ],
   // BACKEND_URL is not sensitive (it's a public API hostname), so it's a
-  // plain var here rather than a wrangler secret.
+  // plain var here rather than a wrangler secret. CANONICAL_HOST makes the
+  // Worker 301 www.careercovered.com page loads to the apex, matching the
+  // API's WEB_URL so Google sign-in returns to the same origin.
   "vars": {
-    "BACKEND_URL": "https://api.careercovered.com"
+    "BACKEND_URL": "https://api.careercovered.com",
+    "CANONICAL_HOST": "careercovered.com"
   },
   // Binds this Worker directly to the apex domain. Requires the
   // careercovered.com zone to already be on this Cloudflare account.

@@ -46,6 +46,41 @@ describe('ResumeSelectorRow', () => {
     expect(preview).not.toHaveClass('min-h-10');
   });
 
+  it('gives a selected row a solid brand-800 fill matching its border, with white text and icon', () => {
+    render(
+      <ResumeSelectorRow
+        resume={mockResume()}
+        isSelected={true}
+        onToggleSelect={vi.fn()}
+        onPreview={vi.fn()}
+      />,
+    );
+    const name = screen.getByText('My Resume');
+    const row = name.parentElement!;
+    expect(row).toHaveClass(
+      'bg-brand-800',
+      'border-brand-800',
+    );
+    expect(row.className).not.toMatch(/dark:(bg|border)-brand/);
+    expect(name).toHaveClass('font-semibold', 'text-white');
+    expect(screen.getByTitle('Preview')).toHaveClass('text-brand-100');
+  });
+
+  it('keeps an unselected row white with the neutral border', () => {
+    render(
+      <ResumeSelectorRow
+        resume={mockResume()}
+        isSelected={false}
+        onToggleSelect={vi.fn()}
+        onPreview={vi.fn()}
+      />,
+    );
+    const row = screen.getByText('My Resume').parentElement!;
+    expect(row).toHaveClass('bg-white', 'border-neutral-200');
+    expect(row).not.toHaveClass('bg-brand-800');
+    expect(screen.getByTitle('Preview')).toHaveClass('text-neutral-400');
+  });
+
   it('calls onToggleSelect when the row is clicked', () => {
     const onToggleSelect = vi.fn();
     render(

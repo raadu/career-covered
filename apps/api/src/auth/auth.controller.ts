@@ -97,6 +97,8 @@ export class AuthController {
       websiteUrl: user.websiteUrl,
       contactEmail: user.contactEmail,
       phoneNumber: user.phoneNumber,
+      extraLink1Url: user.extraLink1Url,
+      extraLink2Url: user.extraLink2Url,
     };
   }
 
