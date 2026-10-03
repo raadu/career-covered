@@ -2,6 +2,11 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 
+# bcrypt falls back to compiling from source when its prebuilt binary
+# download fails (intermittent); alpine has no toolchain for that by default.
+# Builder stage only — the runtime stage copies the built node_modules.
+RUN apk add --no-cache python3 make g++
+
 # Copy monorepo manifests and turbo config
 COPY package.json package-lock.json turbo.json ./
 COPY packages/db/package.json ./packages/db/
