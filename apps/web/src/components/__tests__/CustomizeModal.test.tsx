@@ -1,6 +1,9 @@
+import type { ComponentProps } from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
 import CustomizeModal from '../Modals/CustomizeModal';
+
+type CustomizeModalProps = ComponentProps<typeof CustomizeModal>;
 
 const initialOptions = {
   limitWords: false,
@@ -13,8 +16,8 @@ const initialOptions = {
 
 describe('CustomizeModal', () => {
   // Fresh mocks for every test — prevents call-count bleed between tests
-  let onSave: ReturnType<typeof vi.fn>;
-  let onClose: ReturnType<typeof vi.fn>;
+  let onSave: Mock<CustomizeModalProps['onSave']>;
+  let onClose: Mock<CustomizeModalProps['onClose']>;
 
   beforeEach(() => {
     onSave = vi.fn();

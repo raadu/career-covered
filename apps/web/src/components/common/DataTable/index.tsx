@@ -61,6 +61,9 @@ const DataTable = <T extends object>(props: DataTableProps<T>) => {
   const getRowId = sortable ? props.getRowId : undefined;
   const onReorder = sortable ? props.onReorder : undefined;
 
+  // TanStack Table returns a mutable instance the React Compiler can't
+  // memoize, so it skips this component — the correct behavior here.
+  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     columns,
     data,
