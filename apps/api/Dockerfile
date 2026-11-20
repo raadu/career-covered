@@ -1,5 +1,5 @@
 # ─── Stage 1: Builder ─────────────────────────────────────────────────────────
-FROM node:20-alpine AS builder
+FROM node:24-alpine AS builder
 WORKDIR /app
 
 # bcrypt falls back to compiling from source when its prebuilt binary
@@ -30,7 +30,7 @@ RUN npm run -w @career-covered/api build
 RUN npm prune --omit=dev
 
 # ─── Stage 2: Production image ────────────────────────────────────────────────
-FROM node:20-alpine AS runner
+FROM node:24-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production

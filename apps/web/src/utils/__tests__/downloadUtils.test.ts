@@ -17,14 +17,20 @@ const mockToBlob = vi.fn(async () => new Blob(['docx-bytes']));
 const mockSaveAs = vi.fn();
 const capturedParagraphs: unknown[] = [];
 
+// docx classes are called with `new`, and Vitest 4 mocks construct their
+// implementation, so these must be `function`s (arrow functions can't be `new`ed).
 vi.mock('docx', () => ({
-  Document: vi.fn().mockImplementation((config) => config),
+  Document: vi.fn().mockImplementation(function (config) {
+    return config;
+  }),
   Packer: { toBlob: () => mockToBlob() },
-  Paragraph: vi.fn().mockImplementation((config) => {
+  Paragraph: vi.fn().mockImplementation(function (config) {
     capturedParagraphs.push(config);
     return config;
   }),
-  TextRun: vi.fn().mockImplementation((config) => config),
+  TextRun: vi.fn().mockImplementation(function (config) {
+    return config;
+  }),
 }));
 
 vi.mock('file-saver', () => ({

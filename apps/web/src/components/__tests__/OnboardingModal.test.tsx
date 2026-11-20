@@ -1,10 +1,10 @@
 import { screen, fireEvent } from '@testing-library/react';
 import { renderWithProviders } from '../../../tests/test-utils';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
 import OnboardingModal from '../Modals/OnboardingModal';
 
 describe('OnboardingModal', () => {
-  let onComplete: ReturnType<typeof vi.fn>;
+  let onComplete: Mock<() => void>;
 
   beforeEach(() => {
     onComplete = vi.fn();
